@@ -1,0 +1,124 @@
+<template>
+    <view class="chat-message {{isSelf ? 'is-self': ''}}" id="{{id}}">
+        <view class="user-name">
+            <image src="{{ userInfo.avatarUrl }}"></image>
+        </view>
+        <view class="message-info">
+            <block wx:if="{{message.type === 'TEXT'}}">
+                <view class="message-box text-message-box">{{message.content}}</view>
+            </block>
+            <block wx:if="{{message.type === 'AUDIO'}}">
+                <view class="message-box audio-message-box">
+                    <audio src="{{message.content}}" @tap="playAudio({{ message }})"></audio>
+                </view>
+            </block>
+            <block wx:if="{{message.type === 'VIDEO'}}">
+                <view class="message-box vidio-message-box">
+                    <image src="../images/play90.png" @tap="playVideo({{message}})"></image>
+                </view>
+            </block>
+            <block wx:if="{{message.type === 'IMAGE'}}">
+                <view class="message-box image-message-box">
+                    <image src="{{message.content}}"></image>
+                </view>
+            </block>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class ChatMessage extends wepy.component {
+        props = {
+            id: {},
+            userInfo: {},
+            isSelf: {},
+            message: {}
+        }
+
+        components = {
+
+        }
+        methods = {
+            playAudio(message) {
+                wepy.playVoice({
+                    filePath: message.content,
+                    complete(res) {
+                        wepy.stopPlayVoice()
+                    }
+                })
+            },
+            playVideo(message) {
+                wepy.navigateTo({
+                    url: '/practice/pages/playVideo?url=' + message.content
+                })
+            }
+        }
+
+        onLoad() {
+            console.log(this.message)
+        }
+    }
+</script>
+<style type="less">
+    .chat-message {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        font-size: 0.8rem;
+        padding: 10rpx 15rpx;
+        text-align: left;
+        margin-top: 10rpx;
+        box-sizing: border-box;
+    }
+    .chat-message.is-self {
+        flex-direction: row-reverse;
+        justify-content:flex-end;
+
+    }
+    .user-name {
+        width: 80rpx;
+        min-height: 80rpx;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .user-name image {
+        width: 80rpx;
+        height: 80rpx;
+        border: 1px solid #efefef;
+        border-radius: 80rpx;
+    }
+    .message-info {
+        flex: 1;
+        text-align: left;
+        margin-left: 15rpx;
+    }
+    .chat-message.is-self .message-info {
+        text-align: right;
+        margin-right: 15rpx;
+        margin-left: 0;
+    }
+    .message-box {
+        padding: 15rpx;
+        border: 1px solid #dedede;
+        border-radius: 15rpx;
+        max-width: 50vw;
+        word-break: break-all;
+        display: inline-block;
+    }
+    .chat-message.is-self  .message-box {
+        background: #2ddc89;
+    }
+    .message-box image {
+        max-width: 50vw;
+        min-width: 30vw;
+        height: 250rpx;
+    }
+    .message-box audio {
+        width: 50vw;
+        height: 80rpx;
+        background: aqua;
+    }
+</style>

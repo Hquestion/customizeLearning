@@ -1,0 +1,36 @@
+<template>
+    <view class="play-container">
+        <video id="player" src="{{playUrl}}" autoplay></video>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class PlayVideo extends wepy.page {
+        config = {
+            navigationBarTitleText: '视频',
+            navigationBarBackgroundColor: '#0b9'
+        }
+
+        data = {
+            userInfo: null,
+            playUrl: ''
+        }
+
+        methods = {
+
+        }
+
+        onLoad(option) {
+            this.playUrl = option.url
+        }
+    }
+</script>
+
+<style>
+   #player {
+       width: 100%;
+       height: 100vh;
+   }
+</style>
