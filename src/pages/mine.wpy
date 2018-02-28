@@ -5,7 +5,7 @@
             <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
         </view>
         <view>
-            学校和班级任务列表
+            我的
         </view>
     </view>
 </template>
@@ -13,9 +13,9 @@
 <script>
     import wepy from 'wepy'
 
-    export default class Home extends wepy.page {
+    export default class Mine extends wepy.page {
         config = {
-            navigationBarTitleText: '发现'
+            navigationBarTitleText: '个性化学习中心'
         }
 
         data = {

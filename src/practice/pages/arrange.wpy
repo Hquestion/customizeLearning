@@ -1,0 +1,55 @@
+<template>
+    <view class="home-container">
+        <view class="nav">
+            <navigator url="/practice/pages/prevKnow">早知道</navigator>
+            <navigator url="/practice/pages/arrange" class="active">会安排</navigator>
+            <navigator url="/pages/practice" open-type="switchTab">能落实</navigator>
+            <navigator url="/practice/pages/think">有反思</navigator>
+        </view>
+        <view>
+            开始安排
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class Practice extends wepy.page {
+        config = {
+            navigationBarTitleText: '会安排',
+            navigationBarBackgroundColor: '#0b9'
+        }
+
+        data = {
+            userInfo: null
+        }
+
+        onLoad() {
+            let self = this
+            this.$parent.getUserInfo(function(res) {
+                self.userInfo = res
+                self.$apply()
+            })
+        }
+    }
+</script>
+
+<style>
+    .home-container {
+        text-align: center;
+    }
+    .userinfo-avatar {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 80rpx;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+    }
+    .nav navigator{
+        flex: 1;
+    }
+</style>
