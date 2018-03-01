@@ -1,47 +1,85 @@
 <template>
     <view class="course-detail-container">
-        <view class="course-name">
-            {{courseInfo.courseName}}
+        <view class="detail-block">
+            <view class="course-name">
+                {{courseInfo.courseName}}
+            </view>
+            <view class="block">
+                <text class="grey">创建日期：</text><text>{{courseInfo.createDate}}</text>
+            </view>
+            <view class="block">
+                <text class="grey">负责老师：</text><text>{{courseInfo.teacherName}}</text>
+            </view>
+            <view class="block">
+                <text class="grey">协作老师：</text><text>{{courseInfo.helpTeacher}}</text>
+            </view>
+            <view class="block">
+                <text class="grey">小组人数：</text><text>{{courseInfo.groupMaxStuCount}}</text>
+            </view>
+            <view class="block">
+                <text class="grey">课程时长：</text><text>{{courseInfo.duration}}</text>
+            </view>
+            <view class="block">
+                <text class="grey">开放时间：</text><text>{{courseInfo.startTime}}</text>至<text>{{courseInfo.endTime}}</text>
+            </view>
+            <view class="task-status">
+                <view class="grey task-brief">
+                    成功完成<text class="warning">{{courseInfo.finishTimes}}</text>次，
+                    总参与人数<text class="warning">{{courseInfo.stuCount}}</text>人
+                </view>
+                <view class="finish-detail">
+                    <repeat for="{{stuFinishList}}" item="item" index="index">
+                        <view class="finish-item">
+                            <view class="group-name">{{item.groupName}}</view>
+                            <view class="finish-date grey">{{item.finishDate}}</view>
+                            <view class="task-star">
+                                <image class="icon star" src="../../images/xing.png"></image>
+                                <text class="warning">{{item.starCount || 0}}</text>
+                            </view>
+                        </view>
+                    </repeat>
+                </view>
+            </view>
         </view>
-        <view class="block">
-            <text class="grey">创建日期：</text><text>{{courseInfo.createDate}}</text>
-        </view>
-        <view class="block">
-            <text class="grey">负责老师：</text><text>{{courseInfo.teacherName}}</text>
-        </view>
-        <view class="block">
-            <text class="grey">协作老师：</text><text>{{courseInfo.helpTeacher}}</text>
-        </view>
-        <view class="block">
-            <text class="grey">小组人数：</text><text>{{courseInfo.groupMaxStuCount}}</text>
-        </view>
-        <view class="block">
-            <text class="grey">课程时长：</text><text>{{courseInfo.duration}}</text>
-        </view>
-        <view class="block">
-            <text class="grey">开放时间：</text><text>{{courseInfo.startTime}}</text>至<text>{{courseInfo.endTime}}</text>
-        </view>
-        <view class="task-status">
-            <view class="grey">成功完成<text class="warning">{{courseInfo.finishTimes}}</text>次，
-                总参与人数<text class="warning">{{courseInfo.stuCount}}</text>人</view>
+        <view class="button-block">
+            <rich-button text="我要创建小组"></rich-button>
         </view>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
+    import richButton from '../../components/rich-button'
 
     export default class CourseDetail extends wepy.page {
         config = {
             navigationBarTitleText: '课程详情'
         }
 
+        components = {
+            'rich-button': richButton
+        }
+
         data = {
             userInfo: null,
             courseId: '',
             courseInfo: {
-                courseName: '动手小王子'
-            }
+                courseName: '动手小王子',
+                createDate: '2017-12-08'
+            },
+            stuFinishList: [{
+                groupName: '张无忌小组',
+                finishDate: '2017年5月14号完成',
+                starCount: 24
+            }, {
+                groupName: '张无忌小组',
+                finishDate: '2017年5月14号完成',
+                starCount: 24
+            }, {
+                groupName: '张无忌小组',
+                finishDate: '2017年5月14号完成',
+                starCount: 24
+            }]
         }
 
         onLoad(option) {
@@ -64,5 +102,35 @@
     }
     .task-status {
         border-top: 1px dashed #ccc;
+        margin-top: 20rpx;
+        padding: 20rpx 0;
+        text-align: center;
+    }
+    .task-status .task-brief {
+        padding: 10rpx 0 20rpx;
+    }
+    .finish-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10rpx;
+    }
+    .task-star image {
+        width: 50rpx;
+        height: 50rpx;
+    }
+    .task-star text {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .detail-block {
+        height: calc(100% - 120rpx);
+    }
+    .button-block {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 120rpx;
+        padding: 20rpx 0;
     }
 </style>

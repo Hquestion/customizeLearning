@@ -1,0 +1,59 @@
+<style lang="less">
+    .rich-button.big {
+        width: 80vw;
+        height: 80rpx;
+        line-height: 80rpx;
+        color: #fff;
+        text-align: center;
+        border-radius: 80rpx;
+        font-size: 42rpx;
+        margin: 0 auto;
+        &.green {
+            background: #1abcb0;
+        }
+        image {
+            width: 60rpx;
+            height: 60rpx;
+            display: inline-block;
+            margin-right: 10rpx;
+        }
+    }
+</style>
+<template>
+    <view class="rich-button {{size}} {{style}}" @tap="onTap">
+        <image src="{{iconSrc}}" wx:if="{{iconSrc}}"></image>
+        {{text}}
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class Counter extends wepy.component {
+        props = {
+            text: {},
+            size: {
+                type: String,
+                default: 'big'     // small   middle
+            },
+            iconSrc: {},
+            style: {
+                default: 'green'    // blue  pink
+            }
+        }
+
+        data = {}
+        events = {
+
+        }
+
+        watch = {
+
+        }
+
+        methods = {
+            onTap(e) {
+                this.$emit('tap', e)
+            }
+        }
+    }
+</script>

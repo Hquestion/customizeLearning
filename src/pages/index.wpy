@@ -16,7 +16,7 @@
                 <swiper-item class="course-category">
                     <scroll-view scroll-y>
                         <repeat for="{{courseTasks}}" item="item" index="index">
-                            <view @tap.native="navigateToDetail({{item}})">
+                            <view class="course-box" @tap.native="navigateToDetail({{item}})">
                                 <course-task class="course-task-item" :taskInfo="item"></course-task>
                             </view>
                         </repeat>
@@ -25,7 +25,7 @@
                 <swiper-item class="course-category">
                     <scroll-view scroll-y>
                         <repeat for="{{courseTasks}}" item="item" index="index">
-                            <view @tap="navigateToDetail({{item}})">
+                            <view class="course-box" @tap="navigateToDetail({{item}})">
                                 <course-task class="course-task-item" :taskInfo="item"></course-task>
                             </view>
                         </repeat>
@@ -40,7 +40,7 @@
                         </view>
                         <scroll-view scroll-y>
                             <repeat for="{{ cateCourseList }}" item="item" index="index">
-                                <view  @tap.native="navigateToDetail({{item}})">
+                                <view class="course-box" @tap.native="navigateToDetail({{item}})">
                                     <course class="course-item" :course="item"></course>
                                 </view>
                             </repeat>
@@ -79,7 +79,7 @@
                 courseName: '有趣的科学',
                 order: 2,
                 className: '三(2)班',
-                taskStudents: '张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯'
+                taskStudents: '张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯，里斯张三，里斯'
             }, {
                 courseName: '有趣的科学',
                 order: 3,
@@ -206,10 +206,10 @@
     swiper-item {
         height: 100%;
     }
-    .course-task-item, .course-item  {
+    .course-box {
         margin-top: 10rpx;
     }
-    .course-task-item:first-child,  .course-item:first-child {
+    .course-box:first-child {
         margin-top: 0;
     }
     scroll-view {
