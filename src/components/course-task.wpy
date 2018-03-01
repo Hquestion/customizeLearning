@@ -1,0 +1,160 @@
+<template>
+    <view class="course-task {{!!showStatus ? 'show-status': ''}}">
+        <view class="order">
+            <image src="../images/no1.png" wx:if="{{taskInfo.order === 1}}"></image>
+            <image src="../images/no2.png" wx:elif="{{taskInfo.order === 2}}"></image>
+            <image src="../images/no3.png" wx:elif="{{taskInfo.order === 3}}"></image>
+            <text class="order-normal" wx:else>{{taskInfo.order}}</text>
+        </view>
+        <view class="content">
+            <view class="course-name">{{taskInfo.courseName}}</view>
+            <view class="task-class-block">
+                <view class="task-class-info">
+                    <text class="class-name">{{taskInfo.className}}</text>
+                    <text class="stu-list grey">{{taskInfo.taskStudents}}</text>
+                </view>
+            </view>
+            <view class="star-count">
+                <view class="block star-block">
+                    <image class="icon star" src="../images/xing.png"></image><text>{{taskInfo.starCount || 0}}</text>
+                </view>
+                <view class="block fav-block">
+                    <image class="icon fav" src="../images/zan.png" wx:if="{{!taskInfo.isFav}}"></image>
+                    <image class="icon fav" src="../images/zan2.png" wx:else></image>
+                    <text class="{{!!taskInfo.isFav ? 'faved': ''}}">{{taskInfo.favCount || 0}}</text>
+                </view>
+                <view class="block change-block">
+                    <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{taskInfo.orderChange >= 0}}"></image>
+                    <image class="icon change" src="../images/jiantou-xia.png" wx:else></image>
+                    <text>{{taskInfo.orderChange || 0}}</text>
+                </view>
+            </view>
+        </view>
+        <view class="link detail">
+            <image src="../images/jiantou-you.png"></image>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class CourseTask extends wepy.component {
+        props = {
+            taskInfo: {},
+            showStatus: {
+                type: Boolean,
+                default: false
+            },
+            statusCode: {}
+        }
+
+        components = {
+
+        }
+        methods = {
+
+        }
+
+        onLoad() {
+            console.log(this.taskInfo)
+        }
+    }
+</script>
+<style>
+    .course-task {
+        width: 100%;
+        height: 240rpx;
+        display: flex;
+        justify-content: flex-start;
+        padding: 15rpx;
+        box-sizing: border-box;
+        background: #fff;
+        /*border-top: 1px solid #ccc;*/
+        border-bottom: 1px solid #ccc;
+    }
+    .course-task .order {
+        width: 100rpx;
+        height: 100%;
+        text-align:center;
+        line-height:210rpx;
+        color:#1abcb0;
+    }
+    .course-task .order image {
+        width:81rpx;
+        height:113rpx;
+        margin-top:48rpx;
+    }
+    .course-task .order .order-normal {
+        line-height:210rpx;
+        font-size:3em;
+        color:#1abcb0;
+    }
+    .course-task .content {
+        width: calc(100% - 160rpx);
+        height: 100%;
+    }
+    .link.detail {
+        width: 60rpx;
+    }
+    .link image {
+        width:30rpx;
+        margin-left:15rpx;
+        height:60rpx;
+        margin-top:75rpx;
+    }
+    .course-name {
+        font-size: 36rpx;
+        height: 60rpx;
+        line-height: 60rpx;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .task-class-block {
+        font-size: 28rpx;
+        height: 85rpx;
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+    .task-class-block .task-class-info {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+    .task-class-info .class-name {
+        color: #1abcb0;
+    }
+    .task-class-info .stu-list {
+        margin-left: 20rpx;
+    }
+    .star-count {
+        height: 60rpx;
+        line-height: 60rpx;
+        width: 90%;
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 5rpx;
+    }
+    .star-count .icon {
+        display: inline-block;
+        width: 50rpx;
+        height: 50rpx;
+    }
+    .star-count .block {
+        width: 33.3%;
+    }
+    .star-count .block text {
+        vertical-align:top;
+        display:inline-block;
+        margin-left:10rpx;
+    }
+    .star-count .block text.faved {
+        color: #1abcb0;
+    }
+    .star-count .block.star-block {
+        color: #f80;
+    }
+</style>

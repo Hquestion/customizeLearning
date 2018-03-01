@@ -1,0 +1,68 @@
+<template>
+    <view class="course-detail-container">
+        <view class="course-name">
+            {{courseInfo.courseName}}
+        </view>
+        <view class="block">
+            <text class="grey">创建日期：</text><text>{{courseInfo.createDate}}</text>
+        </view>
+        <view class="block">
+            <text class="grey">负责老师：</text><text>{{courseInfo.teacherName}}</text>
+        </view>
+        <view class="block">
+            <text class="grey">协作老师：</text><text>{{courseInfo.helpTeacher}}</text>
+        </view>
+        <view class="block">
+            <text class="grey">小组人数：</text><text>{{courseInfo.groupMaxStuCount}}</text>
+        </view>
+        <view class="block">
+            <text class="grey">课程时长：</text><text>{{courseInfo.duration}}</text>
+        </view>
+        <view class="block">
+            <text class="grey">开放时间：</text><text>{{courseInfo.startTime}}</text>至<text>{{courseInfo.endTime}}</text>
+        </view>
+        <view class="task-status">
+            <view class="grey">成功完成<text class="warning">{{courseInfo.finishTimes}}</text>次，
+                总参与人数<text class="warning">{{courseInfo.stuCount}}</text>人</view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class CourseDetail extends wepy.page {
+        config = {
+            navigationBarTitleText: '课程详情'
+        }
+
+        data = {
+            userInfo: null,
+            courseId: '',
+            courseInfo: {
+                courseName: '动手小王子'
+            }
+        }
+
+        onLoad(option) {
+            this.courseId = option.courseId
+        }
+    }
+</script>
+
+<style>
+    .course-detail-container {
+        padding: 20rpx;
+    }
+    .course-name {
+        color: #1abcb0;
+        font-size: 40rpx;
+        text-align: center;
+    }
+    .block {
+        padding: 20rpx 0;
+    }
+    .task-status {
+        border-top: 1px dashed #ccc;
+    }
+</style>

@@ -15,10 +15,9 @@
 <script>
     import wepy from 'wepy'
 
-    export default class Practice extends wepy.page {
+    export default class prevKonw extends wepy.page {
         config = {
-            navigationBarTitleText: '早知道',
-            navigationBarBackgroundColor: '#0b9'
+            navigationBarTitleText: '早知道'
         }
 
         data = {

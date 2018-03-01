@@ -15,10 +15,9 @@
 <script>
     import wepy from 'wepy'
 
-    export default class Practice extends wepy.page {
+    export default class Think extends wepy.page {
         config = {
-            navigationBarTitleText: '有反思',
-            navigationBarBackgroundColor: '#0b9'
+            navigationBarTitleText: '有反思'
         }
 
         data = {

@@ -9,8 +9,7 @@
 
     export default class PlayVideo extends wepy.page {
         config = {
-            navigationBarTitleText: '视频',
-            navigationBarBackgroundColor: '#0b9'
+            navigationBarTitleText: '视频'
         }
 
         data = {

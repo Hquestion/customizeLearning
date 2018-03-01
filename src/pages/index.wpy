@@ -1,30 +1,168 @@
 <template>
     <view class="home-container">
-        <view>
-            <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-            <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+        <view class="tab-block">
+            <view class="tab-item {{currentTabIndex === 0 ? 'active' : ''}}" id="school-list"
+                  @tap="setCurrentTab({{0}})">学校排行榜
+            </view>
+            <view class="tab-item {{currentTabIndex === 1 ? 'active' : ''}}" id="class-list"
+                  @tap="setCurrentTab({{1}})">班级排行榜
+            </view>
+            <view class="tab-item {{currentTabIndex === 2 ? 'active' : ''}}" id="all-list" @tap="setCurrentTab({{2}})">
+                全部
+            </view>
         </view>
-        <view>
-            学校和班级任务列表
+        <view class="content-container">
+            <swiper current="{{currentTabIndex}}" duration="{{300}}" @change="onSwiperChange">
+                <swiper-item class="course-category">
+                    <scroll-view scroll-y>
+                        <repeat for="{{courseTasks}}" item="item" index="index">
+                            <view @tap.native="navigateToDetail({{item}})">
+                                <course-task class="course-task-item" :taskInfo="item"></course-task>
+                            </view>
+                        </repeat>
+                    </scroll-view>
+                </swiper-item>
+                <swiper-item class="course-category">
+                    <scroll-view scroll-y>
+                        <repeat for="{{courseTasks}}" item="item" index="index">
+                            <view @tap="navigateToDetail({{item}})">
+                                <course-task class="course-task-item" :taskInfo="item"></course-task>
+                            </view>
+                        </repeat>
+                    </scroll-view>
+                </swiper-item>
+                <swiper-item class="course-category">
+                    <view class="cate-course-container">
+                        <view class="course-cate-box">
+                            <repeat for="{{ courseCategories }}" item="item" index="index">
+                                <view class="cate {{activeCateId === item.cateid ? 'active' : ''}}">{{item.cateName}}</view>
+                            </repeat>
+                        </view>
+                        <scroll-view scroll-y>
+                            <repeat for="{{ cateCourseList }}" item="item" index="index">
+                                <view  @tap.native="navigateToDetail({{item}})">
+                                    <course class="course-item" :course="item"></course>
+                                </view>
+                            </repeat>
+                        </scroll-view>
+                    </view>
+                </swiper-item>
+            </swiper>
         </view>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
+    import courseTask from '../components/course-task'
+    import course from '../components/course'
 
     export default class Home extends wepy.page {
         config = {
-            navigationBarTitleText: '发现'
+            navigationBarTitleText: '个性化学习中心'
+        }
+
+        components = {
+            'course-task': courseTask,
+            'course': course
         }
 
         data = {
-            userInfo: null
+            userInfo: null,
+            currentTabIndex: 0,
+            courseTasks: [{
+                courseName: '有趣的科学',
+                order: 1,
+                className: '三(2)班',
+                taskStudents: '张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯'
+            }, {
+                courseName: '有趣的科学',
+                order: 2,
+                className: '三(2)班',
+                taskStudents: '张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯'
+            }, {
+                courseName: '有趣的科学',
+                order: 3,
+                className: '三(2)班',
+                taskStudents: '张三，里斯张三，里斯',
+                isFav: true
+            }, {
+                courseName: '有趣的科学',
+                order: 4,
+                className: '三(2)班',
+                taskStudents: '张三，里斯张三，里斯'
+            }, {
+                courseName: '有趣的科学',
+                order: 5,
+                className: '三(2)班',
+                taskStudents: '张三，里斯张三，里斯'
+            }, {
+                courseName: '有趣的科学',
+                order: 6,
+                className: '三(2)班',
+                taskStudents: '张三，里斯张三，里斯'
+            }],
+            courseCategories: [{
+                cateid: 1,
+                cateName: '核心课程'
+            }, {
+                cateid: 2,
+                cateName: '兴趣课程'
+            }, {
+                cateid: 3,
+                cateName: '动手课程'
+            }],
+            activeCateId: 1,
+            cateCourseList: [{
+                courseName: '我是一个小画家',
+                teacherName: '张三丰',
+                duration: '6天',
+                finishTimes: '16',
+                stuCount: '40'
+            }, {
+                courseName: '我是一个小画家',
+                teacherName: '张三丰',
+                duration: '6天',
+                finishTimes: '16',
+                stuCount: '40'
+            }, {
+                courseName: '我是一个小画家',
+                teacherName: '张三丰',
+                duration: '6天',
+                finishTimes: '16',
+                stuCount: '40'
+            }, {
+                courseName: '我是一个小画家',
+                teacherName: '张三丰',
+                duration: '6天',
+                finishTimes: '16',
+                stuCount: '40'
+            }, {
+                courseName: '我是一个小画家',
+                teacherName: '张三丰',
+                duration: '6天',
+                finishTimes: '16',
+                stuCount: '40'
+            }]
+        }
+
+        methods = {
+            setCurrentTab(index) {
+                this.currentTabIndex = index
+            },
+            onSwiperChange(e) {
+                this.currentTabIndex = e.detail.current
+            },
+            navigateToDetail(item) {
+                wepy.navigateTo({
+                    url: '/course/pages/course-detail?courseId=' + item.courseId
+                })
+            }
         }
 
         onLoad() {
             let self = this
-            this.$parent.getUserInfo(function(res) {
+            this.$parent.getUserInfo(function (res) {
                 self.userInfo = res
                 self.$apply()
             })
@@ -33,12 +171,68 @@
 </script>
 
 <style>
-    .home-container {
+    .tab-block {
+        width: 100%;
+        height: 80rpx;
+        line-height: 80rpx;
+        text-align: center;
+        display: flex;
+        justify-content: flex-start;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tab-block .tab-item {
+        flex: 1;
+        box-sizing: border-box;
+    }
+
+    .tab-block .tab-item.active {
+        position: relative;
+        top: 1px;
+        border-bottom: 2px solid #1abcb0;
+        color: #1abcb0;
+    }
+
+    .content-container {
+        width: 100%;
+        height: calc(100vh - 82rpx);
+        background: #f2f2f2;
+    }
+
+    swiper {
+        height: 100%;
+    }
+
+    swiper-item {
+        height: 100%;
+    }
+    .course-task-item, .course-item  {
+        margin-top: 10rpx;
+    }
+    .course-task-item:first-child,  .course-item:first-child {
+        margin-top: 0;
+    }
+    scroll-view {
+        height: 100%;
+    }
+    .cate-course-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: flex-start;
+    }
+    .course-cate-box {
+        width: 120rpx;
+        height: 100%;
         text-align: center;
     }
-    .userinfo-avatar {
-        width: 80rpx;
-        height: 80rpx;
-        border-radius: 80rpx;
+    .course-cate-box .cate {
+        padding: 30rpx 10rpx;
+        border-bottom: 1px solid #ccc;
+    }
+    .course-cate-box .cate.active {
+        background: #fff;
+        color: #1abcb0;
+        border-left: 2px solid #1abcb0;
     }
 </style>

@@ -62,8 +62,7 @@
 
     export default class Practice extends wepy.page {
         config = {
-            navigationBarTitleText: '个性化学习中心',
-            navigationBarBackgroundColor: '#a29'
+            navigationBarTitleText: '个性化学习中心'
         }
 
         data = {

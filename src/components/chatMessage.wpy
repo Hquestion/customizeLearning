@@ -19,7 +19,7 @@
             </block>
             <block wx:if="{{message.type === 'IMAGE'}}">
                 <view class="message-box image-message-box">
-                    <image src="{{message.content}}"></image>
+                    <image src="{{message.content}}" @tap="previewImage({{ message }})"></image>
                 </view>
             </block>
         </view>
@@ -51,6 +51,11 @@
             playVideo(message) {
                 wepy.navigateTo({
                     url: '/practice/pages/playVideo?url=' + message.content
+                })
+            },
+            previewImage(message) {
+                wepy.previewImage({
+                    urls: [message.content]
                 })
             }
         }

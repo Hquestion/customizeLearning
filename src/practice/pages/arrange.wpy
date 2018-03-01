@@ -15,10 +15,9 @@
 <script>
     import wepy from 'wepy'
 
-    export default class Practice extends wepy.page {
+    export default class Arrange extends wepy.page {
         config = {
-            navigationBarTitleText: '会安排',
-            navigationBarBackgroundColor: '#0b9'
+            navigationBarTitleText: '会安排'
         }
 
         data = {

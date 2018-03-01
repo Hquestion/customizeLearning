@@ -1,4 +1,8 @@
 <style lang='less'>
+    page {
+        font-size: 32rpx;
+        color: #111;
+    }
     .container {
         height: 100%;
         display: flex;
@@ -12,8 +16,14 @@
         padding: 20rpx 20rpx;
     }
     navigator.active {
-        border-bottom: 5rpx solid #007d9c;
+        border-bottom: 5rpx solid #1abcb0;
         padding-bottom: 15rpx;
+    }
+    .warning {
+        color: #f60;
+    }
+    .grey {
+        color: #666;
     }
 </style>
 
@@ -37,22 +47,36 @@
                         'pages/think',
                         'pages/playVideo'
                     ]
+                },
+                {
+                    'root': 'course',
+                    'pages': [
+                        'pages/course-detail'
+                    ]
                 }
             ],
             window: {
                 backgroundTextStyle: 'light',
-                navigationBarBackgroundColor: '#fa0',
+                navigationBarBackgroundColor: '#1abcb0',
                 navigationBarTitleText: '个性化学习中心',
-                navigationBarTextStyle: 'black'
+                navigationBarTextStyle: 'white'
             },
             tabBar: {
+                color: '#666',
+                selectedColor: '#1abcb0',
                 list: [{
+                    selectedIconPath: 'images/menu01-on.png',
+                    iconPath: 'images/menu01.png',
                     pagePath: 'pages/index',
                     text: '发现'
                 }, {
+                    selectedIconPath: 'images/menu02-on.png',
+                    iconPath: 'images/menu02.png',
                     pagePath: 'pages/practice',
                     text: '开始落实'
                 }, {
+                    selectedIconPath: 'images/menu03-on.png',
+                    iconPath: 'images/menu03.png',
                     pagePath: 'pages/mine',
                     text: '我的'
                 }]
@@ -69,20 +93,7 @@
         }
 
         onLaunch() {
-            this.testAsync()
-        }
 
-        sleep(s) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    resolve('promise resolved')
-                }, s * 1000)
-            })
-        }
-
-        async testAsync() {
-            const data = await this.sleep(3)
-            console.log(data)
         }
 
         getUserInfo(cb) {
