@@ -1,6 +1,6 @@
 <template>
     <view class="course-detail-container">
-        <view class="detail-block">
+        <scroll-view scroll-y class="detail-block">
             <view class="course-name">
                 {{courseInfo.courseName}}
             </view>
@@ -40,9 +40,9 @@
                     </repeat>
                 </view>
             </view>
-        </view>
+        </scroll-view>
         <view class="button-block">
-            <rich-button text="我要创建小组"></rich-button>
+            <rich-button text="我要创建小组" @tap.user="selectClassmates"></rich-button>
         </view>
     </view>
 </template>
@@ -80,6 +80,19 @@
                 finishDate: '2017年5月14号完成',
                 starCount: 24
             }]
+        }
+
+        methods = {
+            selectClassmates() {
+                // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
+                wepy.navigateTo({
+                    url: '/course/pages/selectClassmates'
+                })
+            }
+        }
+
+        events = {
+
         }
 
         onLoad(option) {
@@ -123,14 +136,14 @@
         vertical-align: top;
     }
     .detail-block {
-        height: calc(100% - 120rpx);
+        height: calc(100vh - 140rpx);
     }
     .button-block {
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 120rpx;
+        height: 140rpx;
         padding: 20rpx 0;
     }
 </style>

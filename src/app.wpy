@@ -51,7 +51,8 @@
                 {
                     'root': 'course',
                     'pages': [
-                        'pages/course-detail'
+                        'pages/course-detail',
+                        'pages/selectClassmates'
                     ]
                 }
             ],

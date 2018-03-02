@@ -1,0 +1,112 @@
+<template>
+    <view class="course-detail-container">
+        <view>
+            <input type="text" placeholder="请输入姓名搜索" confirm-type="search"></input>
+        </view>
+        <scroll-view scroll-y class="detail-block">
+
+        </scroll-view>
+        <view class="button-block">
+            <rich-button text="创建完成" @tap.user="finishCreate"></rich-button>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import richButton from '../../components/rich-button'
+
+    export default class SelectClassmates extends wepy.page {
+        config = {
+            navigationBarTitleText: '选择小组成员'
+        }
+
+        components = {
+            'rich-button': richButton
+        }
+
+        data = {
+            userInfo: null,
+            courseId: '',
+            courseInfo: {
+                courseName: '动手小王子',
+                createDate: '2017-12-08'
+            },
+            stuFinishList: [{
+                groupName: '张无忌小组',
+                finishDate: '2017年5月14号完成',
+                starCount: 24
+            }, {
+                groupName: '张无忌小组',
+                finishDate: '2017年5月14号完成',
+                starCount: 24
+            }, {
+                groupName: '张无忌小组',
+                finishDate: '2017年5月14号完成',
+                starCount: 24
+            }]
+        }
+
+        methods = {
+            finishCreate() {
+                // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
+
+            }
+        }
+
+        events = {
+
+        }
+
+        onLoad(option) {
+            this.courseId = option.courseId
+        }
+    }
+</script>
+
+<style>
+    .course-detail-container {
+        padding: 20rpx;
+    }
+    .course-name {
+        color: #1abcb0;
+        font-size: 40rpx;
+        text-align: center;
+    }
+    .block {
+        padding: 20rpx 0;
+    }
+    .task-status {
+        border-top: 1px dashed #ccc;
+        margin-top: 20rpx;
+        padding: 20rpx 0;
+        text-align: center;
+    }
+    .task-status .task-brief {
+        padding: 10rpx 0 20rpx;
+    }
+    .finish-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10rpx;
+    }
+    .task-star image {
+        width: 50rpx;
+        height: 50rpx;
+    }
+    .task-star text {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .detail-block {
+        height: calc(100vh - 140rpx);
+    }
+    .button-block {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 140rpx;
+        padding: 20rpx 0;
+    }
+</style>
