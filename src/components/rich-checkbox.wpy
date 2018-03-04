@@ -1,0 +1,35 @@
+<template>
+    <view class="rich-checkbox {{!!isChecked ? 'checked' : ''}}">
+        {{text}}
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class RichCheckBox extends wepy.component {
+        props = {
+            isChecked: {},
+            text: {}
+        }
+
+        components = {
+
+        }
+
+        data = {}
+        events = {
+
+        }
+
+        watch = {
+
+        }
+
+        methods = {
+
+        }
+    }
+</script>
+<style lang="less">
+
+</style>

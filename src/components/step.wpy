@@ -1,0 +1,50 @@
+<template>
+    <view class="step">
+        <view class="step-title">
+            <text>步骤{{index}}</text>
+            <text>{{stepData.stepName}}</text>
+        </view>
+        <view class="step-detail">
+            <block wx:if="{{stepData.isObjective}}">
+                <repeat for="{{stepData.options}}" itme="item" index="index">
+                    <view class="step-option {{!!item.isChecked ? 'checked' : ''}}" @tap="toggleChecked">
+                        {{item.content}}
+                    </view>
+                </repeat>
+            </block>
+            <block wx:else>
+                <textarea auto-height value="{{stepData.detail}}"></textarea>
+            </block>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class Step extends wepy.component {
+        props = {
+            index: {},
+            stepData: {}
+        }
+
+        components = {
+
+        }
+
+        data = {}
+        events = {
+
+        }
+
+        watch = {
+
+        }
+
+        methods = {
+
+        }
+    }
+</script>
+<style lang="less">
+
+</style>

@@ -1,0 +1,118 @@
+<template>
+    <view class="step-list">
+        <repeat for="{{originData}}" itme="item" index="index">
+            <view id="step-index-{{index}}" class="step-item {{movingIndex === index ? 'moving': ''}}"
+                  data-index="{{index}}" style="top: {{offsetTop}}px;"
+                  @touchstart="onStartTouch" @touchmove="onTouchMove"
+                  @touchend="onTouchEnd" @touchcancel="onTouchEnd" >
+                <step :stepData="item" :index="index"></step>
+            </view>
+        </repeat>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import step from './step'
+
+    let sy, my
+
+    export default class StepList extends wepy.component {
+        props = {
+            list: {}
+        }
+
+        components = {
+            'step': step
+        }
+
+        data = {
+            originData: null,
+            offsetTopList: [],
+            movingIndex: -1,
+            offsetTop: 0,
+            opacity: 1
+        }
+        events = {
+
+        }
+
+        watch = {
+
+        }
+
+        methods = {
+            onStartTouch(e) {
+                this.getOffsetTopList()
+                sy = e.touches[0].clientY
+                this.movingIndex = +e.currentTarget.dataset.index
+            },
+            onTouchMove(e) {
+                my = e.touches[0].clientY
+                let distance = my - sy
+                this.offsetTop += distance
+                sy = my
+            },
+            onTouchEnd(e) {
+                this.movingIndex = -1
+                this.offsetTop = 0
+                let distIndex = this.findStepItemIndex(e.currentTarget.offsetTop)
+                this.rebuildList(e.currentTarget.dataset.index, distIndex)
+                this.$emit('list-change', this.originData)
+            }
+        }
+
+        getOffsetTopList() {
+            let offsets = []
+            let selectQuery = wepy.createSelectorQuery()
+            let $nodeRefs = selectQuery.selectAll('.step-item')
+            $nodeRefs.boundingClientRect()
+            selectQuery.exec(function(res) {
+                res[0].forEach(item => {
+                    offsets.push(item.top)
+                })
+            })
+            this.offsetTopList = offsets
+        }
+
+        findStepItemIndex(offset) {
+            let index = 0
+            for (let i = 0, len = this.offsetTopList.length; i < len; i++) {
+                if (offset <= this.offsetTopList[i]) {
+                    index = (i - 1) || 0
+                    break
+                } else if (offset >= this.offsetTopList[i] && offset < this.offsetTopList[i + 1]) {
+                    index = i + 1
+                    break
+                } else if (offset > this.offsetTopList[len - 1]) {
+                    index = len
+                    break
+                }
+            }
+            return index
+        }
+
+        rebuildList(oldIndex, newIndex) {
+            if (oldIndex !== newIndex) {
+                if (oldIndex > newIndex) {
+                    let data = this.originData[oldIndex]
+                    this.originData.splice(oldIndex, 1)
+                    this.originData.splice(newIndex, 0, data)
+                } else {
+                    let data = this.originData[oldIndex]
+                    this.originData.splice(newIndex, 0, data)
+                    this.originData.splice(oldIndex, 1)
+                }
+            }
+        }
+
+        onLoad() {
+            this.originData = JSON.parse(JSON.stringify(this.list))
+        }
+    }
+</script>
+<style lang="less">
+    .step-item.moving {
+        position: relative;
+        opacity: 0.7;
+    }
+</style>

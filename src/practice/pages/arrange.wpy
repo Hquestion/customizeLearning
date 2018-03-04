@@ -1,5 +1,5 @@
 <template>
-    <view class="home-container">
+    <view class="arrange-container">
         <view class="nav">
             <navigator url="/practice/pages/prevKnow">早知道</navigator>
             <navigator url="/practice/pages/arrange" class="active">会安排</navigator>
@@ -7,13 +7,14 @@
             <navigator url="/practice/pages/think">有反思</navigator>
         </view>
         <view>
-            开始安排
+            <step-list :list="datalist"></step-list>
         </view>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
+    import stepList from '../../components/step-list'
 
     export default class Arrange extends wepy.page {
         config = {
@@ -21,12 +22,41 @@
         }
 
         data = {
-            userInfo: null
+            userInfo: null,
+            datalist: [{
+                id: 1,
+                stepName: '绘画工具',
+                isObjective: true,
+                options: [{
+                    content: '速写本',
+                    id: 'o1'
+                }, {
+                    content: '水彩笔',
+                    id: 'o2'
+                }, {
+                    content: '铅笔',
+                    id: 'o3'
+                }, {
+                    content: '毛笔',
+                    id: 'o4'
+                }],
+                detail: ''
+            }, {
+                id: 1,
+                stepName: '记录过程',
+                isObjective: false,
+                options: [],
+                detail: '使用手机拍摄过程照片上传'
+            }]
+        }
+
+        components = {
+            'step-list': stepList
         }
 
         onLoad() {
             let self = this
-            this.$parent.getUserInfo(function(res) {
+            this.$parent.getUserInfo(function (res) {
                 self.userInfo = res
                 self.$apply()
             })
@@ -35,20 +65,18 @@
 </script>
 
 <style>
-    .home-container {
+    .arrange-container {
         text-align: center;
     }
-    .userinfo-avatar {
-        width: 80rpx;
-        height: 80rpx;
-        border-radius: 80rpx;
-    }
+
     .nav {
         display: flex;
         justify-content: center;
         flex-direction: row;
+        border-bottom: 1px solid #efefef;
     }
-    .nav navigator{
+
+    .nav navigator {
         flex: 1;
     }
 </style>
