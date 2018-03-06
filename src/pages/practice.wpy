@@ -239,7 +239,7 @@
         display: flex;
         justify-content: center;
         flex-direction: row;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #efefef;
     }
     .nav navigator{
         flex: 1;

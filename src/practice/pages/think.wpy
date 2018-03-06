@@ -7,7 +7,7 @@
             <navigator url="/practice/pages/think" class="active">有反思</navigator>
         </view>
         <view>
-            早知道内容
+            有反思
         </view>
     </view>
 </template>
@@ -29,11 +29,7 @@
         }
 
         onLoad() {
-            let self = this
-            this.$parent.getUserInfo(function(res) {
-                self.userInfo = res
-                self.$apply()
-            })
+
         }
     }
 </script>
@@ -51,6 +47,7 @@
         display: flex;
         justify-content: center;
         flex-direction: row;
+        border-bottom: 1px solid #efefef;
     }
     .nav navigator{
         flex: 1;

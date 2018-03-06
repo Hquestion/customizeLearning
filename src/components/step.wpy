@@ -60,16 +60,32 @@
         padding: 10rpx;
     }
     .step .step-title {
-        padding: 5rpx;
+        padding: 10rpx;
     }
     .step .step-title .step-index {
-        padding: 5rpx 20rpx;
+        padding: 8rpx 20rpx;
         background: #1abcb0;
         color: #fff;
+        position: relative;
+        box-sizing: border-box;
+        border-radius: 10rpx;
+    }
+    .step .step-title .step-index:after {
+        position: absolute;
+        right: -38rpx;
+        top: 50%;
+        transform: translate3d(0, -50%, 0);
+        width: 1rpx;
+        height: 1rpx;
+        content: '\20';
+        border-top: 12rpx solid transparent;
+        border-left: 20rpx solid #1abcb0;
+        border-right: 20rpx solid transparent;
+        border-bottom: 12rpx solid transparent;
     }
     .step .step-title .step-name {
         color: #1abcb0;
-        margin-left: 10rpx;
+        margin-left: 30rpx;
     }
     .step-detail {
         padding: 10rpx;

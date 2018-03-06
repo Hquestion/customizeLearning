@@ -1,5 +1,5 @@
 <template>
-    <view class="mine-container {{theme}}">
+    <view class="mine-container {{userTheme}}">
         <view class="user-block">
             <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
             <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
@@ -7,11 +7,13 @@
         </view>
         <view class="my-task-block">
             <view class="task-block task-running" wx:if="{{runningTask && runningTask.status === 1}}">
-                <personal-task1 class="task-comp" :theme.sync="userInfo && userInfo.gender === 1 ? 'male': 'female'" :taskInfo="runningTask"></personal-task1>
+                <personal-task1 class="task-comp" :theme.sync="userTheme" :taskInfo="runningTask"
+                                @continue.user="continueTask" @restart.user="restartTask"></personal-task1>
             </view>
             <view class="task-block task-common">
                 <repeat for="{{commonTasks}}" item="item" index="index">
-                    <personal-task2 class="task-comp" :theme="theme" :taskInfo="item"></personal-task2>
+                    <personal-task2 class="task-comp" :theme.sync="userTheme" :taskInfo="item"
+                                    @continue.user="continueTask" @restart.user="restartTask"></personal-task2>
                 </repeat>
             </view>
         </view>
@@ -30,6 +32,7 @@
 
         data = {
             userInfo: null,
+            userTheme: 'male',
             myTaskList: [{
                 taskNo: '001',
                 taskName: '我们都是小画家',
@@ -78,19 +81,22 @@
             'personal-task2': PersonalTask
         }
 
-        computed = {
-            theme() {
-                console.log('huoqu theme')
-                if (this.userInfo) {
-                    if (this.userInfo.gender === 1) {
-                        return 'male'
+        watch = {
+            userInfo: function(val, oldval) {
+                if (val) {
+                    if (val.gender === 1) {
+                        this.userTheme = 'male'
                     } else {
-                        return 'female'
+                        this.userTheme = 'female'
                     }
                 } else {
-                    return ''
+                    this.userTheme = 'male'
                 }
-            },
+                this.$apply()
+            }
+        }
+
+        computed = {
             runningTask() {
                 if (this.myTaskList) {
                     return this.myTaskList.find(item => {
@@ -111,25 +117,28 @@
             }
         }
 
+        methods = {
+            continueTask(task) {
+                console.log(task)
+            },
+            restartTask(task) {
+                console.log(task)
+            }
+        }
+
         onLoad() {
-            let self = this
-            console.log(this.$parent.globalData)
-            this.$parent.getUserInfo().then(function(res) {
-                res.gender = 2
-                self.userInfo = res
-                self.$apply()
-                if (res.gender === 1) {
-                    wepy.setNavigationBarColor({
-                        backgroundColor: '#02CDF9',
-                        frontColor: '#ffffff'
-                    })
-                } else {
-                    wepy.setNavigationBarColor({
-                        backgroundColor: '#FF7D7D',
-                        frontColor: '#ffffff'
-                    })
-                }
-            })
+            this.userInfo = this.$parent.globalData.userInfo
+            if (this.userInfo.gender === 1) {
+                wepy.setNavigationBarColor({
+                    backgroundColor: '#02CDF9',
+                    frontColor: '#ffffff'
+                })
+            } else {
+                wepy.setNavigationBarColor({
+                    backgroundColor: '#FF7D7D',
+                    frontColor: '#ffffff'
+                })
+            }
         }
     }
 </script>
@@ -176,7 +185,6 @@
     }
     .my-task-block .task-block .task-comp {
         margin-top: 20rpx;
-        background: #fff;
     }
     .my-task-block .task-block .task-comp:first-child {
         margin-top: 0;
