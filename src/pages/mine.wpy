@@ -1,44 +1,187 @@
 <template>
-    <view class="home-container">
-        <view>
+    <view class="mine-container {{theme}}">
+        <view class="user-block">
             <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
             <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+            <image src="../images/bolang.png" class="bolang"></image>
         </view>
-        <view>
-            我的
+        <view class="my-task-block">
+            <view class="task-block task-running" wx:if="{{runningTask && runningTask.status === 1}}">
+                <personal-task1 class="task-comp" :theme.sync="userInfo && userInfo.gender === 1 ? 'male': 'female'" :taskInfo="runningTask"></personal-task1>
+            </view>
+            <view class="task-block task-common">
+                <repeat for="{{commonTasks}}" item="item" index="index">
+                    <personal-task2 class="task-comp" :theme="theme" :taskInfo="item"></personal-task2>
+                </repeat>
+            </view>
         </view>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
+    import PersonalTask from '../components/personal-task'
 
     export default class Mine extends wepy.page {
         config = {
-            navigationBarTitleText: '个性化学习中心'
+            navigationBarTitleText: '个性化学习中心',
+            navigationBarBackgroundColor: '#02CDF9'
         }
 
         data = {
-            userInfo: null
+            userInfo: null,
+            myTaskList: [{
+                taskNo: '001',
+                taskName: '我们都是小画家',
+                lastDays: 3,
+                groupMembers: '张三，里斯',
+                teacherName: '王军',
+                duration: '10天',
+                status: 1
+            }, {
+                taskNo: '002',
+                taskName: '我们都是小画家',
+                lastDays: 3,
+                groupMembers: '张三，里斯',
+                teacherName: '王军',
+                duration: '10天',
+                status: 2
+            }, {
+                taskNo: '003',
+                taskName: '我们都是小画家',
+                lastDays: 3,
+                groupMembers: '张三，里斯',
+                teacherName: '王军',
+                duration: '10天',
+                status: 3
+            }, {
+                taskNo: '004',
+                taskName: '我们都是小画家',
+                lastDays: 3,
+                groupMembers: '张三，里斯',
+                teacherName: '王军',
+                duration: '10天',
+                status: 3
+            }, {
+                taskNo: '005',
+                taskName: '我们都是小画家',
+                lastDays: 3,
+                groupMembers: '张三，里斯',
+                teacherName: '王军',
+                duration: '10天',
+                status: 3
+            }]
+        }
+
+        components = {
+            'personal-task1': PersonalTask,
+            'personal-task2': PersonalTask
+        }
+
+        computed = {
+            theme() {
+                console.log('huoqu theme')
+                if (this.userInfo) {
+                    if (this.userInfo.gender === 1) {
+                        return 'male'
+                    } else {
+                        return 'female'
+                    }
+                } else {
+                    return ''
+                }
+            },
+            runningTask() {
+                if (this.myTaskList) {
+                    return this.myTaskList.find(item => {
+                        return item.status === 1
+                    })
+                } else {
+                    return null
+                }
+            },
+            commonTasks() {
+                if (this.myTaskList) {
+                    return this.myTaskList.filter(item => {
+                        return item.status !== 1
+                    })
+                } else {
+                    return []
+                }
+            }
         }
 
         onLoad() {
             let self = this
-            this.$parent.getUserInfo(function(res) {
+            console.log(this.$parent.globalData)
+            this.$parent.getUserInfo().then(function(res) {
+                res.gender = 2
                 self.userInfo = res
                 self.$apply()
+                if (res.gender === 1) {
+                    wepy.setNavigationBarColor({
+                        backgroundColor: '#02CDF9',
+                        frontColor: '#ffffff'
+                    })
+                } else {
+                    wepy.setNavigationBarColor({
+                        backgroundColor: '#FF7D7D',
+                        frontColor: '#ffffff'
+                    })
+                }
             })
         }
     }
 </script>
 
 <style>
-    .home-container {
+    .mine-container {
         text-align: center;
+        background: #fff;
+    }
+    .user-block {
+        padding: 50rpx 0 150rpx;
+        background: #02CDF9;
+        color: #fff;
+        font-size: 36rpx;
+        position: relative;
+    }
+    .mine-container.female .user-block {
+        background: #FF7D7D;
+    }
+    .bolang {
+        width: 100vw;
+        height: 8vw;
+        position: absolute;
+        bottom: 0;
+        left: 0;
     }
     .userinfo-avatar {
-        width: 80rpx;
-        height: 80rpx;
-        border-radius: 80rpx;
+        width: 160rpx;
+        height: 160rpx;
+        border-radius: 160rpx;
+    }
+    .my-task-block {
+        padding: 20rpx;
+        background: #fff;
+        box-sizing: border-box;
+    }
+    .my-task-block .task-block {
+        border: 1rpx solid #02CDF9;
+        margin-top: 20rpx;
+        border-radius: 20rpx;
+    }
+    .mine-container.female .my-task-block .task-block {
+        border: 1rpx solid #ff7d7d;
+    }
+    .my-task-block .task-block .task-comp {
+        margin-top: 20rpx;
+        background: #fff;
+    }
+    .my-task-block .task-block .task-comp:first-child {
+        margin-top: 0;
+    }
+    .task-block.task-common {
+        background: #f2f2f2;
     }
 </style>

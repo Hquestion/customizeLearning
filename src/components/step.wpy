@@ -1,13 +1,13 @@
 <template>
     <view class="step">
         <view class="step-title">
-            <text>步骤{{index}}</text>
-            <text>{{stepData.stepName}}</text>
+            <text class="step-index">步骤{{index}}</text>
+            <text class="step-name">{{stepData.stepName}}</text>
         </view>
         <view class="step-detail">
             <block wx:if="{{stepData.isObjective}}">
-                <repeat for="{{stepData.options}}" itme="item" index="index">
-                    <view class="step-option {{!!item.isChecked ? 'checked' : ''}}" @tap="toggleChecked">
+                <repeat for="{{stepData.options}}" item="item" index="index2">
+                    <view class="option-item {{item.isChecked ? 'checked': ''}}" data-opt-index="{{index2}}" @tap="toggle">
                         {{item.content}}
                     </view>
                 </repeat>
@@ -41,10 +41,51 @@
         }
 
         methods = {
+            toggle(e) {
+                let toggleIndex = e.currentTarget.dataset.optIndex
+                let index = this.stepData.options.findIndex((item, index) => {
+                    return toggleIndex === index
+                })
+                this.stepData.options[index].isChecked = !this.stepData.options[index].isChecked
+            }
+        }
 
+        onLoad() {
+            console.log(this.stepData)
         }
     }
 </script>
-<style lang="less">
-
+<style>
+    .step {
+        padding: 10rpx;
+    }
+    .step .step-title {
+        padding: 5rpx;
+    }
+    .step .step-title .step-index {
+        padding: 5rpx 20rpx;
+        background: #1abcb0;
+        color: #fff;
+    }
+    .step .step-title .step-name {
+        color: #1abcb0;
+        margin-left: 10rpx;
+    }
+    .step-detail {
+        padding: 10rpx;
+    }
+    .option-item {
+        color: #999;
+        border: 1px solid #ccc;
+        padding: 10rpx 20rpx;
+        display: inline-block;
+        margin-left: 10rpx;
+    }
+    .option-item:first-child {
+        margin-left: 0;
+    }
+    .option-item.checked {
+        border: 1px solid #f80;
+        color: #f80;
+    }
 </style>

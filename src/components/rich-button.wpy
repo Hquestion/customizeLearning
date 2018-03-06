@@ -1,4 +1,17 @@
 <style lang="less">
+    .rich-button.green {
+        background: #1abcb0;
+    }
+    .rich-button.blue {
+        background: #02CDF9;
+    }
+    .rich-button.red {
+        background: #ff7d7d;
+    }
+    .rich-button.grey {
+        background: #dedede;
+        color: #666 !important;
+    }
     .rich-button.big {
         width: 80vw;
         height: 100rpx;
@@ -8,9 +21,6 @@
         border-radius: 100rpx;
         font-size: 42rpx;
         margin: 0 auto;
-        &.green {
-            background: #1abcb0;
-        }
         image {
             width: 60rpx;
             height: 60rpx;
@@ -18,9 +28,25 @@
             margin-right: 10rpx;
         }
     }
+    .rich-button.middle {
+        width: 60vw;
+        height: 80rpx;
+        line-height: 80rpx;
+        color: #fff;
+        text-align: center;
+        border-radius: 80rpx;
+        font-size: 42rpx;
+        margin: 0 auto;
+        image {
+            width: 50rpx;
+            height: 50rpx;
+            display: inline-block;
+            margin-right: 10rpx;
+        }
+    }
 </style>
 <template>
-    <view class="rich-button {{size}} {{style}}" @tap="onTap">
+    <view class="rich-button {{size}} {{theme}}" @tap="onTap">
         <image src="{{iconSrc}}" wx:if="{{iconSrc}}"></image>
         {{text}}
     </view>
@@ -36,7 +62,7 @@
                 default: 'big'     // small   middle
             },
             iconSrc: {},
-            style: {
+            theme: {
                 default: 'green'    // blue  pink
             }
         }

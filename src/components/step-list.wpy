@@ -4,7 +4,7 @@
             <view id="step-index-{{index}}" class="step-item {{movingIndex === index ? 'moving': ''}}"
                   data-index="{{index}}" style="top: {{offsetTop}}px;"
                   @touchstart="onStartTouch" @touchmove="onTouchMove"
-                  @touchend="onTouchEnd" @touchcancel="onTouchEnd" >
+                  @touchend="onTouchEnd" @touchcancel="onTouchEnd" @longpress="onLongPress">
                 <step :stepData="item" :index="index"></step>
             </view>
         </repeat>
@@ -15,6 +15,7 @@
     import step from './step'
 
     let sy, my
+    let isPrepareDragging = false
 
     export default class StepList extends wepy.component {
         props = {
@@ -41,23 +42,31 @@
         }
 
         methods = {
+            onLongPress(e) {
+                isPrepareDragging = true
+                this.movingIndex = +e.currentTarget.dataset.index
+            },
             onStartTouch(e) {
                 this.getOffsetTopList()
                 sy = e.touches[0].clientY
-                this.movingIndex = +e.currentTarget.dataset.index
             },
             onTouchMove(e) {
-                my = e.touches[0].clientY
-                let distance = my - sy
-                this.offsetTop += distance
-                sy = my
+                if (isPrepareDragging) {
+                    my = e.touches[0].clientY
+                    let distance = my - sy
+                    this.offsetTop += distance
+                    sy = my
+                }
             },
             onTouchEnd(e) {
-                this.movingIndex = -1
-                this.offsetTop = 0
-                let distIndex = this.findStepItemIndex(e.currentTarget.offsetTop)
-                this.rebuildList(e.currentTarget.dataset.index, distIndex)
-                this.$emit('list-change', this.originData)
+                if (isPrepareDragging) {
+                    this.movingIndex = -1
+                    this.offsetTop = 0
+                    let distIndex = this.findStepItemIndex(e.currentTarget.offsetTop)
+                    this.rebuildList(e.currentTarget.dataset.index, distIndex)
+                    this.$emit('list-change', this.originData)
+                    this.isPrepareDragging = false
+                }
             }
         }
 

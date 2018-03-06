@@ -29,16 +29,20 @@
                 isObjective: true,
                 options: [{
                     content: '速写本',
-                    id: 'o1'
+                    id: 'o1',
+                    isChecked: true
                 }, {
                     content: '水彩笔',
-                    id: 'o2'
+                    id: 'o2',
+                    isChecked: true
                 }, {
                     content: '铅笔',
-                    id: 'o3'
+                    id: 'o3',
+                    isChecked: true
                 }, {
                     content: '毛笔',
-                    id: 'o4'
+                    id: 'o4',
+                    isChecked: true
                 }],
                 detail: ''
             }, {
@@ -66,7 +70,7 @@
 
 <style>
     .arrange-container {
-        text-align: center;
+        text-align: left;
     }
 
     .nav {
@@ -74,6 +78,7 @@
         justify-content: center;
         flex-direction: row;
         border-bottom: 1px solid #efefef;
+        text-align: center;
     }
 
     .nav navigator {
