@@ -3,25 +3,36 @@
         <view class="user-name">
             <image src="{{ userInfo.avatarUrl }}"></image>
         </view>
-        <view class="message-info">
-            <block wx:if="{{message.type === 'TEXT'}}">
-                <view class="message-box text-message-box">{{message.content}}</view>
-            </block>
-            <block wx:if="{{message.type === 'AUDIO'}}">
-                <view class="message-box audio-message-box">
-                    <audio src="{{message.content}}" @tap="playAudio({{ message }})"></audio>
-                </view>
-            </block>
-            <block wx:if="{{message.type === 'VIDEO'}}">
-                <view class="message-box vidio-message-box">
-                    <image src="../images/play90.png" @tap="playVideo({{message}})"></image>
-                </view>
-            </block>
-            <block wx:if="{{message.type === 'IMAGE'}}">
-                <view class="message-box image-message-box">
-                    <image src="{{message.content}}" @tap="previewImage({{ message }})"></image>
-                </view>
-            </block>
+        <view class="message-info" @longpress="moreActions">
+            <view class="nick-name">{{userInfo.nickName}}</view>
+            <view class="message-box">
+                <block wx:if="{{message.type === 'TEXT'}}">
+                    <view class="padding-box text-message-box">{{message.content}}</view>
+                </block>
+                <block wx:if="{{message.type === 'AUDIO'}}">
+                    <view class="padding-box audio-message-box">
+                        <audio src="{{message.content}}" @tap="playAudio({{ message }})">
+                            <image src="../images/yuyin2.png"></image>
+                        </audio>
+                    </view>
+                </block>
+                <block wx:if="{{message.type === 'VIDEO'}}">
+                    <view class="vidio-message-box">
+                        <image class="chat-img" lazy-load src="../images/vid.png" @tap="playVideo({{message}})"></image>
+                    </view>
+                </block>
+                <block wx:if="{{message.type === 'IMAGE'}}">
+                    <view class="image-message-box">
+                        <image class="chat-img" lazy-load src="{{message.content}}" @tap="previewImage({{ message }})"></image>
+                    </view>
+                </block>
+                <image class="box-arrow left" src="../images/lt.png" wx:if="{{!isSelf}}" hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
+                <image class="box-arrow right" src="../images/liaotian-you.png" wx:else hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
+            </view>
+            <view class="more-action-btn" hidden="{{!ifShowMoreActions}}">
+                <view>复制</view>
+                <view>删除</view>
+            </view>
         </view>
     </view>
 </template>
@@ -34,6 +45,10 @@
             userInfo: {},
             isSelf: {},
             message: {}
+        }
+
+        data = {
+            ifShowMoreActions: false
         }
 
         components = {
@@ -57,6 +72,9 @@
                 wepy.previewImage({
                     urls: [message.content]
                 })
+            },
+            moreActions() {
+                this.ifShowMoreActions = true
             }
         }
 
@@ -65,7 +83,7 @@
         }
     }
 </script>
-<style type="less">
+<style>
     .chat-message {
         display: flex;
         justify-content: flex-start;
@@ -88,6 +106,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin-top: 10rpx;
     }
     .user-name image {
         width: 80rpx;
@@ -100,31 +119,66 @@
         text-align: left;
         margin-left: 30rpx;
     }
+    .message-info .nick-name {
+        font-size: 24rpx;
+        padding: 5rpx 0;
+    }
     .chat-message.is-self .message-info {
         text-align: right;
         margin-right: 30rpx;
         margin-left: 0;
     }
     .message-box {
-        padding: 15rpx;
-        border: 1px solid #dedede;
-        border-radius: 15rpx;
         max-width: 50vw;
         word-break: break-all;
         display: inline-block;
         position: relative;
     }
-    .chat-message.is-self  .message-box {
-        background: #1abdef;
+    .message-box .padding-box {
+        padding: 15rpx 20rpx;
+        border: 1px solid #dedede;
+        border-radius: 15rpx;
     }
-    .message-box image {
+    .chat-message.is-self  .message-box .padding-box {
+        background: #A9CBF5;
+        border: 1px solid #89CBF5;
+    }
+    .message-box .chat-img {
         max-width: 50vw;
         min-width: 30vw;
         height: 250rpx;
     }
     .message-box audio {
-        width: 50vw;
-        height: 80rpx;
-        background: aqua;
+        width: 30vw;
+        height: 50rpx;
+        position: relative;
+    }
+    .message-box audio image {
+        float: left;
+        margin-left: 10rpx;
+        width: 40rpx;
+        height: 50rpx;
+    }
+    .chat-message.is-self .message-box audio image {
+        float: right;
+        margin-right: 10rpx;
+    }
+    .box-arrow {
+        position: absolute;
+        top: 15rpx;
+        width: 18rpx;
+        height: 29rpx;
+        min-width: 0;
+        z-index: 10;
+    }
+    .box-arrow.left {
+        left: -14rpx;
+    }
+    .box-arrow.right {
+        right: -14rpx;
+    }
+    .vidio-message-box image {
+        width: 351rpx;
+        height: 181rpx;
     }
 </style>

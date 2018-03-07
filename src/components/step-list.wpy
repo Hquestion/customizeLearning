@@ -65,7 +65,7 @@
                     let distIndex = this.findStepItemIndex(e.currentTarget.offsetTop)
                     this.rebuildList(e.currentTarget.dataset.index, distIndex)
                     this.$emit('list-change', this.originData)
-                    this.isPrepareDragging = false
+                    isPrepareDragging = false
                 }
             }
         }

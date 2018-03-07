@@ -6,7 +6,7 @@
             <navigator url="/pages/practice" open-type="switchTab" class="active">能落实</navigator>
             <navigator url="/practice/pages/think">有反思</navigator>
         </view>
-        <view>
+        <view @tap="hideChatMsgMore">
             <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}">
                 <repeat for="{{messages}}" index="index" item="item">
                     <chat-message :id="'message_' + index" :userInfo="item.userInfo" :message="item.message" :isSelf="item.isSelf"></chat-message>
@@ -14,18 +14,28 @@
             </scroll-view>
             <view class="chat-input">
                 <!--功能按钮-->
-                <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}">
-                    <view class="picker">
-                        <view class="step-tip" wx:if="{{arrangeIndex < 0}}">选择会安排步骤，提交作业</view>
-                        <view wx:else>
-                            {{arrangeList[arrangeIndex]}}
+                <view class="picker-view">
+                    <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}">
+                        <view class="picker">
+                            <view class="step-tip" wx:if="{{arrangeIndex < 0}}">如需提交作业，请先选择会安排步骤</view>
+                            <view wx:else>
+                                {{arrangeList[arrangeIndex]}}
+                            </view>
                         </view>
+                        <image src="../images/xia.png"></image>
+                    </picker>
+                    <view class="filter">
+                        <image src="../images/man.png"></image>
                     </view>
-                </picker>
+                </view>
                 <view id="btn-tools">
                     <view class="record-text-toggle">
-                        <view hidden="{{inputMode === 'TEXT'}}" class="btn-radius btn-audio-input" @tap="setInputMode">录音</view>
-                        <view hidden="{{inputMode === 'AUDIO'}}" class="btn-radius btn-text-input" @tap="setInputMode">文字</view>
+                        <view hidden="{{inputMode === 'TEXT'}}" class="btn-radius btn-audio-input" @tap="setInputMode">
+                            <image src="../images/jianpan.png"></image>
+                        </view>
+                        <view hidden="{{inputMode === 'AUDIO'}}" class="btn-radius btn-text-input" @tap="setInputMode">
+                            <image src="../images/yuyin.png"></image>
+                        </view>
                     </view>
                     <view class="input-area">
                         <view hidden="{{inputMode === 'AUDIO'}}" style="width:100%;height:100%;">
@@ -37,18 +47,27 @@
                             </view>
                         </view>
                         <view hidden="{{inputMode === 'TEXT'}}" class="audio-input-widget">
-                            <button size="mini" type="default" @touchstart="startRecordAudio" @touchend="stopRecordAudio" @touchcancel="stopRecordAudio">按住录音</button>
+                            <button size="mini" type="default" @touchstart="startRecordAudio" @touchend="stopRecordAudio" @touchcancel="stopRecordAudio">按住讲话</button>
                         </view>
                     </view>
                     <view class="more-area">
-                        <icon type="clear" color="#aaa" size="24" hidden="{{userTextInput !== ''}}" @tap="showMoreActions"></icon>
+                        <image class="chat-icon" src="../images/liaotian.png" hidden="{{userTextInput !== ''}}" @tap="showMoreActions"></image>
                         <button size="mini" type="primary" hidden="{{userTextInput === ''}}" @tap="sendTextMsg">发送</button>
                     </view>
                 </view>
                 <view id="btn-tools-more" hidden="{{!moreActionShown}}">
-                    <view class="upload-btn photo-btn" @tap="uploadPic">图片</view>
-                    <view class="upload-btn take-btn" @tap="takePhoto">拍摄</view>
-                    <view class="upload-btn file-btn" @tap="uploadFile">文件</view>
+                    <view class="upload-btn photo-btn" @tap="uploadPic">
+                        <view class="image-box">
+                            <image src="../images/pic.png"></image>
+                        </view>
+                        <view class="indicator">相册</view>
+                    </view>
+                    <view class="upload-btn take-btn" @tap="takePhoto">
+                        <view class="image-box">
+                            <image src="../images/video.png"></image>
+                        </view>
+                        <view class="indicator">视频</view>
+                    </view>
                 </view>
             </view>
         </view>
@@ -76,17 +95,17 @@
             messageId: '',
             messages: [{
                 userInfo: {
-                    nickName: 'zhangsan',
+                    nickName: '张三',
                     avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
                 },
                 message: {
                     type: 'TEXT',
                     content: 'nihao'
                 },
-                isSelf: false
+                isSelf: true
             }, {
                 userInfo: {
-                    nickName: 'zhangsan',
+                    nickName: '赵四',
                     avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
                 },
                 message: {
@@ -110,8 +129,8 @@
                     avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
                 },
                 message: {
-                    type: 'TEXT',
-                    content: 'nihao'
+                    type: 'AUDIO',
+                    content: 'http://www.baidu.com'
                 },
                 isSelf: false
             }, {
@@ -124,6 +143,26 @@
                     content: 'http://www.baidu.com'
                 },
                 isSelf: false
+            }, {
+                userInfo: {
+                    nickName: 'zhangsan',
+                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
+                },
+                message: {
+                    type: 'VIDEO',
+                    content: 'http://www.baidu.com'
+                },
+                isSelf: true
+            }, {
+                userInfo: {
+                    nickName: 'zhangsan',
+                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
+                },
+                message: {
+                    type: 'AUDIO',
+                    content: 'http://www.baidu.com'
+                },
+                isSelf: true
             }]
         }
 
@@ -158,7 +197,7 @@
             showMoreActions() {
                 // 显示更多操作
                 this.moreActionShown = !this.moreActionShown
-                this.chatHistoryHeight = this.moreActionShown ? 'calc(100vh - 400rpx)' : 'calc(100vh - 250rpx)'
+                this.chatHistoryHeight = this.moreActionShown ? 'calc(100vh - 450rpx)' : 'calc(100vh - 250rpx)'
             },
             uploadPic() {
                 let that = this
@@ -209,6 +248,9 @@
             },
             stopRecordAudio() {
                 wepy.stopRecord()
+            },
+            hideChatMsgMore() {
+                this.$broadcast('hide-more-actions')
             }
         }
 
@@ -274,11 +316,13 @@
         height: 60rpx;
         margin-left: 14rpx;
         margin-top: 14rpx;
-        border-radius: 60rpx;
-        border: 1px solid #bbb;
         text-align: center;
         line-height: 60rpx;
         font-size: 0.5em;
+    }
+    .record-text-toggle image {
+        width: 100%;
+        height: 100%;
     }
     .input-area {
         width: calc(100% - 250rpx);
@@ -315,35 +359,76 @@
         position: relative;
     }
     .audio-input-widget button {
-        margin-top:20rpx;
+        margin-top:15rpx;
         width:80%;
     }
     .more-area {
         width: 150rpx;
     }
-    .more-area icon {
+    .more-area .chat-icon {
         margin-top: 23rpx;
+        width: 50rpx;
+        height: 50rpx;
     }
     .more-area button {
         margin-top: 15rpx;
     }
     #btn-tools-more {
-        height: 150rpx;
+        height: 200rpx;
         width: 100%;
-        background: #efefef;
+        background: #f8f8f8;
         text-align: left;
+    }
+    #btn-tools-more .image-box {
+        width: 100%;
+        height: 100%;
     }
     #btn-tools-more .upload-btn {
         width: 120rpx;
         height: 120rpx;
-        line-height: 120rpx;
         text-align: center;
         border: 1px solid #ccc;
         display: inline-block;
         margin-left:30rpx;
         margin-top:15rpx;
-        background:#ccc;
+        background:#fff;
         color:#666;
         border-radius:15rpx;
+    }
+    #btn-tools-more  .upload-btn.photo-btn image {
+        width: 89rpx;
+        height: 72rpx;
+        margin-top: 24rpx;
+    }
+    #btn-tools-more  .upload-btn.take-btn image {
+        width: 98rpx;
+        height: 60rpx;
+        margin-top: 30rpx;
+    }
+    #btn-tools-more  .upload-btn .indicator {
+        margin-top: 10rpx;
+    }
+    .picker-view {
+        display: flex;
+    }
+    .picker-view picker {
+        flex: 1;
+        position: relative;
+    }
+    .picker-view picker image {
+        width:20rpx;
+        height:20rpx;
+        position:absolute;
+        right:10rpx;
+        top:25rpx;
+    }
+    .picker-view .filter {
+        width: 70rpx;
+        height: 70rpx;
+    }
+    .picker-view .filter image {
+        width: 50rpx;
+        height: 50rpx;
+        margin-top: 10rpx;
     }
 </style>
