@@ -29,7 +29,7 @@
                 <image class="box-arrow left" src="../images/lt.png" wx:if="{{!isSelf}}" hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
                 <image class="box-arrow right" src="../images/liaotian-you.png" wx:else hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
             </view>
-            <view class="more-action-btn" hidden="{{!ifShowMoreActions}}">
+            <view class="more-action-btn" hidden="{{!isShowMore}}">
                 <view>复制</view>
                 <view>删除</view>
             </view>
@@ -42,13 +42,17 @@
     export default class ChatMessage extends wepy.component {
         props = {
             id: {},
+            msgData: {},
             userInfo: {},
             isSelf: {},
-            message: {}
+            message: {},
+            isShowMore: {
+                twoWay: true
+            }
         }
 
         data = {
-            ifShowMoreActions: false
+
         }
 
         components = {
@@ -74,7 +78,16 @@
                 })
             },
             moreActions() {
-                this.ifShowMoreActions = true
+                this.$emit('hide-other-actions', this.msgData)
+                this.msgData.isShowMore = true
+                this.$apply()
+            }
+        }
+
+        events = {
+            'hide-more-actions': function() {
+                this.isShowMore = false
+                this.$apply()
             }
         }
 

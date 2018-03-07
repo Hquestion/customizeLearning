@@ -8,8 +8,10 @@
         </view>
         <view @tap="hideChatMsgMore">
             <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}">
-                <repeat for="{{messages}}" index="index" item="item">
-                    <chat-message :id="'message_' + index" :userInfo="item.userInfo" :message="item.message" :isSelf="item.isSelf"></chat-message>
+                <repeat for="{{messages}}" index="index" item="item" key="index">
+                    <chat-message :id="'message_' + index" :userInfo="item.userInfo" :msgData.sync="item"
+                                  :message="item.message" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
+                    </chat-message>
                 </repeat>
             </scroll-view>
             <view class="chat-input">
@@ -102,7 +104,9 @@
                     type: 'TEXT',
                     content: 'nihao'
                 },
-                isSelf: true
+                isSelf: true,
+                isShowMore: false,
+                id: 1
             }, {
                 userInfo: {
                     nickName: '赵四',
@@ -112,7 +116,9 @@
                     type: 'TEXT',
                     content: 'nihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihao '
                 },
-                isSelf: false
+                isSelf: false,
+                isShowMore: false,
+                id: 2
             }, {
                 userInfo: {
                     nickName: 'zhangsan',
@@ -122,7 +128,9 @@
                     type: 'IMAGE',
                     content: 'http://192.168.0.116:8083/1.jpg'
                 },
-                isSelf: false
+                isSelf: false,
+                isShowMore: false,
+                id: 3
             }, {
                 userInfo: {
                     nickName: 'zhangsan',
@@ -132,7 +140,9 @@
                     type: 'AUDIO',
                     content: 'http://www.baidu.com'
                 },
-                isSelf: false
+                isSelf: false,
+                isShowMore: false,
+                id: 4
             }, {
                 userInfo: {
                     nickName: 'zhangsan',
@@ -142,7 +152,9 @@
                     type: 'VIDEO',
                     content: 'http://www.baidu.com'
                 },
-                isSelf: false
+                isSelf: false,
+                isShowMore: false,
+                id: 5
             }, {
                 userInfo: {
                     nickName: 'zhangsan',
@@ -152,7 +164,9 @@
                     type: 'VIDEO',
                     content: 'http://www.baidu.com'
                 },
-                isSelf: true
+                isSelf: true,
+                isShowMore: false,
+                id: 6
             }, {
                 userInfo: {
                     nickName: 'zhangsan',
@@ -162,7 +176,9 @@
                     type: 'AUDIO',
                     content: 'http://www.baidu.com'
                 },
-                isSelf: true
+                isSelf: true,
+                isShowMore: false,
+                id: 7
             }]
         }
 
@@ -251,6 +267,20 @@
             },
             hideChatMsgMore() {
                 this.$broadcast('hide-more-actions')
+            }
+        }
+
+        events = {
+            'hide-other-actions': function(e) {
+                let msgs = this.messages.filter(item => {
+                    return item.id !== e.id
+                })
+                console.log(msgs)
+                msgs.forEach(item => {
+                    item.isShowMore = false
+                })
+                console.log(this.messages)
+                this.$apply()
             }
         }
 
