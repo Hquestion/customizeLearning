@@ -17,13 +17,9 @@
                 <rich-button2 text="保存" theme="green" @tap.user="saveChange"></rich-button2>
             </view>
         </view>
-        <view class="add-step-dialog" hidden="{{!addStepDialogVisible}}">
-            <view class="mask"></view>
-            <view class="dialog-content">
-                <view class="title">
-                    <view>添加步骤</view>
-                    <icon type="cancel" size="40" color="#666" @tap="cancelAdd"></icon>
-                </view>
+        <dialog class="add-step-dialog" :visible.sync="addStepDialogVisible">
+            <view slot="title">添加步骤</view>
+            <view slot="main">
                 <view class="content">
                     <input type="text" placeholder="请输入步骤名称" confirm-type="确定" value="{{stepName}}"/>
                     <textarea fixed value="{{stepDesc}}" placeholder="请输入步骤详情"></textarea>
@@ -32,7 +28,7 @@
                     <rich-button3 text="提交" theme="green" width="100%;" @tap.user="onSubmitAddStep"></rich-button3>
                 </view>
             </view>
-        </view>
+        </dialog>
     </view>
 </template>
 
@@ -40,6 +36,7 @@
     import wepy from 'wepy'
     import stepList from '../../components/step-list'
     import richButton from '../../components/rich-button'
+    import dialog from '../../components/dialog'
 
     export default class Arrange extends wepy.page {
         config = {
@@ -50,8 +47,8 @@
             userInfo: null,
             scrollable: true,
             addStepDialogVisible: false,
-            stepName: '',
-            stepDesc: '',
+            stepName: '22',
+            stepDesc: 'ee',
             datalist: [{
                 id: 1,
                 stepName: '绘画工具',
@@ -163,15 +160,20 @@
             'step-list': stepList,
             'rich-button1': richButton,
             'rich-button2': richButton,
-            'rich-button3': richButton
+            'rich-button3': richButton,
+            'dialog': dialog
         }
 
         methods = {
             addStep() {
                 this.addStepDialogVisible = true
+                this.$apply()
             },
-            cancelAdd() {
+            onSubmitAddStep() {
+                console.log(this.stepName)
+                console.log(this.stepDesc)
                 this.addStepDialogVisible = false
+                this.$apply()
             }
         }
 
@@ -227,44 +229,10 @@
         width: 100%;
         height: calc(100vh - 240rpx);
     }
-    .add-step-dialog {
-        position: fixed;
-        top:0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 999;
-    }
-    .add-step-dialog .mask {
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0, .6);
-    }
-    .dialog-content {
-        width: 90vw;
-        height: auto;
-        background:#fff;
-        padding:20rpx 40rpx;
-        border-radius:20rpx;
-        position:absolute;
-        top:15vh;
-        left:5vw;
-        box-sizing:border-box;
-    }
-    .dialog-content .title {
-        font-size: 40rpx;
-        text-align: center;
-        position: relative;
-    }
-    .dialog-content .title icon {
-        position: absolute;
-        right: -15rpx;
-        top: -15rpx;
-    }
-    .dialog-content .dialog-btn {
+    .add-step-dialog .dialog-btn {
         margin-top: 20rpx;
     }
-    .dialog-content .content input {
+    .add-step-dialog .content input {
         height:90rpx;
         width:100%;
         border:1px solid #dedede;
@@ -273,7 +241,7 @@
         box-sizing:border-box;
         margin-top: 20rpx;
     }
-    .dialog-content .content textarea {
+    .add-step-dialog .content textarea {
         margin-top: 10rpx;
         border:1px solid #dedede;
         border-radius: 10rpx;

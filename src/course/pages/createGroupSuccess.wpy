@@ -27,7 +27,7 @@
     import wepy from 'wepy'
     import richButton from '../../components/rich-button'
 
-    export default class CourseDetail extends wepy.page {
+    export default class CreateGroupSuccess extends wepy.page {
         config = {
             navigationBarTitleText: '课程详情'
         }
