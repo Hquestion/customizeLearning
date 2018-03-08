@@ -6,14 +6,18 @@
         </view>
         <view class="step-detail">
             <block wx:if="{{stepData.isObjective}}">
-                <repeat for="{{stepData.options}}" item="item" index="index2">
-                    <view class="option-item {{item.isChecked ? 'checked': ''}}" data-opt-index="{{index2}}" @tap="toggle">
-                        {{item.content}}
-                    </view>
-                </repeat>
+                <view class="option-group flex-box">
+                    <repeat for="{{stepData.options}}" item="item" index="index2">
+                        <view class="option-item {{item.isChecked ? 'checked': ''}}" data-opt-index="{{index2}}" @tap="toggle">
+                            {{item.content}}
+                        </view>
+                    </repeat>
+                </view>
             </block>
             <block wx:else>
-                <textarea auto-height value="{{stepData.detail}}"></textarea>
+                <view>
+                    <text>{{stepData.detail}}</text>
+                </view>
             </block>
         </view>
     </view>
@@ -96,12 +100,22 @@
         padding: 10rpx 20rpx;
         display: inline-block;
         margin-left: 10rpx;
-    }
-    .option-item:first-child {
-        margin-left: 0;
+        margin-top: 10rpx;
+        min-width: 20vw;
+        text-align: center;
+        box-sizing: border-box;
     }
     .option-item.checked {
         border: 1px solid #f80;
         color: #f80;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAA3NCSVQICAjb4U/gAAAAIVBMVEX/kgH+6s//rT/////+x3/+lw//47/+pzD/u1//8eD/mRGn0WbrAAAACXBIWXMAAAsSAAALEgHS3X78AAAAFnRFWHRDcmVhdGlvbiBUaW1lADAzLzA2LzE4HZ4bUgAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAB2SURBVCiRXc6xDYMwGAXhv7Ei0VEkBWtc45YNIBNlFFJmS2RjMLlXnr7ixSe07IAJJphgggl38j7CRdKrhUpSxDq1UMm8pHE7QyHfZwVHKGQYK2ihkN8UPRTy2O6hf6GT/5AdLoIJJphgggkmmGCCCSaYYKKQdxNyQMxUNbqvAAAAAElFTkSuQmCC);
+        background-position: right top;
+        background-size: 30rpx 30rpx;
+        background-repeat: no-repeat;
+    }
+    .option-group {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin-left: -10rpx;
     }
 </style>

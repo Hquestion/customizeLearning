@@ -8,12 +8,15 @@
     .rich-button.red {
         background: #ff7d7d;
     }
+    .rich-button.warning {
+        background: #f90;
+    }
     .rich-button.grey {
         background: #dedede;
         color: #666 !important;
     }
     .rich-button.big {
-        width: 80vw;
+        width: 80%;
         height: 100rpx;
         line-height: 100rpx;
         color: #fff;
@@ -26,10 +29,11 @@
             height: 60rpx;
             display: inline-block;
             margin-right: 10rpx;
+            vertical-align: middle;
         }
     }
     .rich-button.middle {
-        width: 60vw;
+        width: 60%;
         height: 80rpx;
         line-height: 80rpx;
         color: #fff;
@@ -42,11 +46,12 @@
             height: 50rpx;
             display: inline-block;
             margin-right: 10rpx;
+            vertical-align: middle;
         }
     }
 </style>
 <template>
-    <view class="rich-button {{size}} {{theme}}" @tap="onTap">
+    <view class="rich-button {{size}} {{theme}}" @tap="onTap" style="{{width ? ('width:' + width) : ''}}">
         <image src="{{iconSrc}}" wx:if="{{iconSrc}}"></image>
         {{text}}
     </view>
@@ -64,7 +69,8 @@
             iconSrc: {},
             theme: {
                 default: 'green'    // blue  pink
-            }
+            },
+            width: {}
         }
 
         data = {}

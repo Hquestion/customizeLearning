@@ -1,0 +1,118 @@
+<template>
+    <view class="success-container">
+        <view class="header">
+            <view>
+                <image src="../../images/wancheng.png"></image>
+            </view>
+            <view class="success-tip">小组创建成功！</view>
+        </view>
+        <view class="success-brief">
+            <view class="grey">您参加的课程</view>
+            <view class="success">{{taskInfo.courseNo}}.{{taskInfo.courseName}}</view>
+            <view class="grey member-mark">小组成员</view>
+            <view class="member-view">
+                <repeat for="{{taskInfo.groupMembers}}" item="item" index="index">
+                    <text>{{item.name}}</text>
+                    <text wx:if="{{index < taskInfo.groupMembers.length -1}}">、</text>
+                </repeat>
+            </view>
+        </view>
+        <view class="button-view">
+            <rich-button text="开始课程" size="big" theme="warning" @tap.user="startCourse"></rich-button>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import richButton from '../../components/rich-button'
+
+    export default class CourseDetail extends wepy.page {
+        config = {
+            navigationBarTitleText: '课程详情'
+        }
+
+        components = {
+            'rich-button': richButton
+        }
+
+        data = {
+            userInfo: null,
+            taskId: '',
+            taskInfo: {
+                courseName: '水的流动',
+                courseNo: '002',
+                groupMembers: [{
+                    name: '水均益'
+                }, {
+                    name: '水均益'
+                }, {
+                    name: '水均益'
+                }, {
+                    name: '水均益'
+                }, {
+                    name: '水均益'
+                }, {
+                    name: '水均益'
+                }, {
+                    name: '水均益'
+                }]
+            }
+        }
+
+        methods = {
+            startCourse() {
+                // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
+                wepy.switchTab({
+                    url: '/pages/practice'
+                })
+            }
+        }
+
+        events = {
+
+        }
+
+        onLoad(option) {
+            this.taskId = option.taskId
+        }
+    }
+</script>
+
+<style>
+    .success-container .header{
+        padding: 20rpx 0 120rpx;
+        background: #1abcb0;
+        text-align: center;
+        font-size: 44rpx;
+        color: #fff;
+        box-sizing: border-box;
+    }
+    .success-container .header image {
+        width: 16vw;
+        height:16vw;
+    }
+    .success-container .header .success-tip {
+        padding: 30rpx;
+    }
+    .success-brief {
+        text-align: center;
+        font-size: 30rpx;
+    }
+    .success-brief .success {
+        padding: 20rpx 0 40rpx;
+        font-size: 40rpx;
+    }
+    .success-brief  .member-mark {
+        padding: 10rpx 0 20rpx;
+    }
+    .member-view {
+        font-size: 36rpx;
+        width: 70%;
+        line-height: 45rpx;
+        margin: 0 auto;
+    }
+    .button-view {
+        margin-top: 200rpx;
+    }
+</style>

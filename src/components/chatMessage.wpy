@@ -28,10 +28,10 @@
                 </block>
                 <image class="box-arrow left" src="../images/lt.png" wx:if="{{!isSelf}}" hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
                 <image class="box-arrow right" src="../images/liaotian-you.png" wx:else hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
-            </view>
-            <view class="more-action-btn" hidden="{{!isShowMore}}">
-                <view>复制</view>
-                <view>删除</view>
+                <view class="more-action-btn" hidden="{{!isShowMore}}">
+                    <view @tap="copy">复制</view>
+                    <view @tap="deleteMsg">删除</view>
+                </view>
             </view>
         </view>
     </view>
@@ -79,16 +79,27 @@
             },
             moreActions() {
                 this.$emit('hide-other-actions', this.msgData)
+                this.$nextTick(() => {
+                    this.msgData.isShowMore = true
+                })
                 this.msgData.isShowMore = true
-                this.$apply()
+                console.log(this.msgData)
+            },
+            copy() {
+                if (this.msgData.message.type === 'TEXT') {
+                    wepy.setClipboardData({
+                        data: this.msgData.message.content
+                    })
+                }
+            },
+            deleteMsg() {
+                console.log('删除此消息')
+                this.$emit('delete-msg', this.msgData)
             }
         }
 
         events = {
-            'hide-more-actions': function() {
-                this.isShowMore = false
-                this.$apply()
-            }
+
         }
 
         onLoad() {
@@ -131,6 +142,7 @@
         flex: 1;
         text-align: left;
         margin-left: 30rpx;
+        position: relative;
     }
     .message-info .nick-name {
         font-size: 24rpx;
@@ -146,6 +158,7 @@
         word-break: break-all;
         display: inline-block;
         position: relative;
+        text-align: left;
     }
     .message-box .padding-box {
         padding: 15rpx 20rpx;
@@ -193,5 +206,24 @@
     .vidio-message-box image {
         width: 351rpx;
         height: 181rpx;
+    }
+    .more-action-btn {
+        position: absolute;
+        top: 30rpx;
+        right: 20rpx;
+        z-index: 10;
+        background: #fff;
+        width: 180rpx;
+        height: 160rpx;
+        border: 1px solid #dedede;
+    }
+    .more-action-btn view {
+        width: 100%;
+        height: 80rpx;
+        line-height: 80rpx;
+        text-align: center;
+    }
+    .more-action-btn view:first-child {
+        border-bottom: 1px solid #dedede;
     }
 </style>

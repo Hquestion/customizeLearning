@@ -19,6 +19,9 @@
         border-bottom: 5rpx solid #1abcb0;
         padding-bottom: 15rpx;
     }
+    .success {
+        color: #1abcb0;
+    }
     .warning {
         color: #f60;
     }
@@ -57,7 +60,8 @@
                     'root': 'course',
                     'pages': [
                         'pages/course-detail',
-                        'pages/selectClassmates'
+                        'pages/selectClassmates',
+                        'pages/createGroupSuccess'
                     ]
                 }
             ],

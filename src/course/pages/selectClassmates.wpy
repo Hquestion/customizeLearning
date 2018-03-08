@@ -1,13 +1,29 @@
 <template>
-    <view class="course-detail-container">
-        <view>
+    <view class="select-class-container">
+        <view class="search-block flex-box">
+            <image src="../../images/search.png"></image>
             <input type="text" placeholder="请输入姓名搜索" confirm-type="search"></input>
         </view>
         <scroll-view scroll-y class="detail-block">
-
+            <repeat for="{{classmatesList}}" item="item" index="index" key="index">
+                <view class="flex-box stu-block {{item.isSelected ? 'active': ''}}" @tap="selectClassMate({{item}})">
+                    <view>{{item.name}}</view>
+                    <view class="select-box">
+                        <image src="../../images/xuanzhe.png" wx:if="{{!item.isSelected}}"></image>
+                        <image src="../../images/xuanzhe2.png" wx:else></image>
+                    </view>
+                </view>
+            </repeat>
         </scroll-view>
+        <view class="selected-block" hidden="{{selectedClassmates.length === 0}}">
+            已选择<text class="warning">{{selectedClassmates.length}}</text>人：
+            <repeat for="{{selectedClassmates}}" item="item" index="index" key="index">
+                <text class="success">{{item.name}}</text>
+                <text class="success" wx:if="{{index < selectedClassmates.length - 1}}">,</text>
+            </repeat>
+        </view>
         <view class="button-block">
-            <rich-button text="创建完成" @tap.user="finishCreate"></rich-button>
+            <rich-button text="创建完成" iconSrc="../../images/wancheng-xiao.png" @tap.user="finishCreate"></rich-button>
         </view>
     </view>
 </template>
@@ -27,30 +43,41 @@
 
         data = {
             userInfo: null,
-            courseId: '',
-            courseInfo: {
-                courseName: '动手小王子',
-                createDate: '2017-12-08'
-            },
-            stuFinishList: [{
-                groupName: '张无忌小组',
-                finishDate: '2017年5月14号完成',
-                starCount: 24
+            classmatesList: [{
+                id: '1',
+                name: '张三',
+                pinyin: 'Z',
+                isSelected: false
             }, {
-                groupName: '张无忌小组',
-                finishDate: '2017年5月14号完成',
-                starCount: 24
+                id: '2',
+                name: '王张三',
+                pinyin: 'W',
+                isSelected: false
             }, {
-                groupName: '张无忌小组',
-                finishDate: '2017年5月14号完成',
-                starCount: 24
+                id: '3',
+                name: '李张三',
+                pinyin: 'L',
+                isSelected: false
             }]
+        }
+
+        computed = {
+            selectedClassmates() {
+                return this.classmatesList.filter(item => !!item.isSelected)
+            }
         }
 
         methods = {
             finishCreate() {
                 // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
-
+                wepy.navigateTo({
+                    url: '/course/pages/createGroupSuccess'
+                })
+            },
+            selectClassMate(stu) {
+                let toggleStu = this.classmatesList.find(item => item.id === stu.id)
+                toggleStu.isSelected = !toggleStu.isSelected
+                this.$apply()
             }
         }
 
@@ -65,30 +92,22 @@
 </script>
 
 <style>
-    .course-detail-container {
-        padding: 20rpx;
+    .select-class-container .search-block{
+        width:calc(100% - 40rpx);
+        height:100rpx;
+        margin:20rpx auto 0;
+        border:1px solid #dedede;
+        padding:10rpx;
+        border-radius:10rpx;
+        box-sizing:border-box;
     }
-    .course-name {
-        color: #1abcb0;
-        font-size: 40rpx;
-        text-align: center;
+    .search-block image {
+        width: 60rpx;
+        height: 60rpx;
     }
-    .block {
-        padding: 20rpx 0;
-    }
-    .task-status {
-        border-top: 1px dashed #ccc;
-        margin-top: 20rpx;
-        padding: 20rpx 0;
-        text-align: center;
-    }
-    .task-status .task-brief {
-        padding: 10rpx 0 20rpx;
-    }
-    .finish-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 10rpx;
+    .search-block input {
+        width: calc(100% - 60rpx);
+        height: 60rpx;
     }
     .task-star image {
         width: 50rpx;
@@ -99,7 +118,7 @@
         vertical-align: top;
     }
     .detail-block {
-        height: calc(100vh - 140rpx);
+        height: calc(100vh - 360rpx);
     }
     .button-block {
         position: fixed;
@@ -108,5 +127,27 @@
         width: 100%;
         height: 140rpx;
         padding: 20rpx 0;
+        background:#fff;
+    }
+    .stu-block {
+        width: 100%;
+        height: 100rpx;
+        border-bottom: 1rpx solid #dedede;
+        padding: 10rpx 50rpx 10rpx 30rpx;
+        box-sizing: border-box;
+    }
+    .stu-block.active {
+        color: #1abcb0;
+    }
+    .select-box image {
+        width: 50rpx;
+        height: 50rpx;
+    }
+    .selected-block {
+        height: 80rpx;
+        width: 100%;
+        font-size: 30rpx;
+        padding:10rpx 20rpx;
+        box-sizing: border-box;
     }
 </style>

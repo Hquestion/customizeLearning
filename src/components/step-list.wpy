@@ -45,6 +45,7 @@
             onLongPress(e) {
                 isPrepareDragging = true
                 this.movingIndex = +e.currentTarget.dataset.index
+                this.$emit('disable-scroll')
             },
             onStartTouch(e) {
                 this.getOffsetTopList()
@@ -66,6 +67,7 @@
                     this.rebuildList(e.currentTarget.dataset.index, distIndex)
                     this.$emit('list-change', this.originData)
                     isPrepareDragging = false
+                    this.$emit('enable-scroll')
                 }
             }
         }

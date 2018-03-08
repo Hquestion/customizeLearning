@@ -6,8 +6,32 @@
             <navigator url="/pages/practice" open-type="switchTab">能落实</navigator>
             <navigator url="/practice/pages/think">有反思</navigator>
         </view>
-        <view>
+        <scroll-view scroll-y="{{scrollable}}">
             <step-list :list="datalist"></step-list>
+        </scroll-view>
+        <view class="button-block flex-box">
+            <view class="btn btn-add">
+                <rich-button1 text="添加步骤" theme="grey" @tap.user="addStep"></rich-button1>
+            </view>
+            <view class="btn btn-save">
+                <rich-button2 text="保存" theme="green" @tap.user="saveChange"></rich-button2>
+            </view>
+        </view>
+        <view class="add-step-dialog" hidden="{{!addStepDialogVisible}}">
+            <view class="mask"></view>
+            <view class="dialog-content">
+                <view class="title">
+                    <view>添加步骤</view>
+                    <icon type="cancel" size="40" color="#666" @tap="cancelAdd"></icon>
+                </view>
+                <view class="content">
+                    <input type="text" placeholder="请输入步骤名称" confirm-type="确定" value="{{stepName}}"/>
+                    <textarea fixed value="{{stepDesc}}" placeholder="请输入步骤详情"></textarea>
+                </view>
+                <view class="dialog-btn">
+                    <rich-button3 text="提交" theme="green" width="100%;" @tap.user="onSubmitAddStep"></rich-button3>
+                </view>
+            </view>
         </view>
     </view>
 </template>
@@ -15,6 +39,7 @@
 <script>
     import wepy from 'wepy'
     import stepList from '../../components/step-list'
+    import richButton from '../../components/rich-button'
 
     export default class Arrange extends wepy.page {
         config = {
@@ -23,8 +48,48 @@
 
         data = {
             userInfo: null,
+            scrollable: true,
+            addStepDialogVisible: false,
+            stepName: '',
+            stepDesc: '',
             datalist: [{
                 id: 1,
+                stepName: '绘画工具',
+                isObjective: true,
+                options: [{
+                    content: '速写本',
+                    id: 'o1',
+                    isChecked: true
+                }, {
+                    content: '水彩笔',
+                    id: 'o2',
+                    isChecked: true
+                }, {
+                    content: '铅笔',
+                    id: 'o3',
+                    isChecked: true
+                }, {
+                    content: '毛笔',
+                    id: 'o4',
+                    isChecked: true
+                }, {
+                    content: '橡皮擦',
+                    id: 'o5',
+                    isChecked: true
+                }, {
+                    content: '16K宣纸',
+                    id: 'o6',
+                    isChecked: true
+                }],
+                detail: ''
+            }, {
+                id: 2,
+                stepName: '记录过程',
+                isObjective: false,
+                options: [],
+                detail: '使用手机拍摄过程照片上传'
+            }, {
+                id: 3,
                 stepName: '绘画工具',
                 isObjective: true,
                 options: [{
@@ -46,7 +111,47 @@
                 }],
                 detail: ''
             }, {
-                id: 1,
+                id: 4,
+                stepName: '记录过程',
+                isObjective: false,
+                options: [],
+                detail: '使用手机拍摄过程照片上传'
+            }, {
+                id: 5,
+                stepName: '绘画工具',
+                isObjective: true,
+                options: [{
+                    content: '速写本',
+                    id: 'o1',
+                    isChecked: true
+                }, {
+                    content: '水彩笔',
+                    id: 'o2',
+                    isChecked: true
+                }, {
+                    content: '铅笔',
+                    id: 'o3',
+                    isChecked: true
+                }, {
+                    content: '毛笔',
+                    id: 'o4',
+                    isChecked: true
+                }],
+                detail: ''
+            }, {
+                id: 6,
+                stepName: '记录过程',
+                isObjective: false,
+                options: [],
+                detail: '使用手机拍摄过程照片上传'
+            }, {
+                id: 7,
+                stepName: '记录过程',
+                isObjective: false,
+                options: [],
+                detail: '使用手机拍摄过程照片上传'
+            }, {
+                id: 8,
                 stepName: '记录过程',
                 isObjective: false,
                 options: [],
@@ -55,7 +160,30 @@
         }
 
         components = {
-            'step-list': stepList
+            'step-list': stepList,
+            'rich-button1': richButton,
+            'rich-button2': richButton,
+            'rich-button3': richButton
+        }
+
+        methods = {
+            addStep() {
+                this.addStepDialogVisible = true
+            },
+            cancelAdd() {
+                this.addStepDialogVisible = false
+            }
+        }
+
+        events = {
+            'disable-scroll': function () {
+                this.scrollable = false
+                this.$apply()
+            },
+            'enable-scroll': function() {
+                this.scrollable = true
+                this.$apply()
+            }
         }
 
         onLoad() {
@@ -83,5 +211,75 @@
 
     .nav navigator {
         flex: 1;
+    }
+    .button-block {
+        position: fixed;
+        width: 100%;
+        height: 160rpx;
+        background: #fff;
+        bottom: 0;
+        left: 0;
+    }
+    .button-block .btn {
+        width: 50%;
+    }
+    scroll-view {
+        width: 100%;
+        height: calc(100vh - 240rpx);
+    }
+    .add-step-dialog {
+        position: fixed;
+        top:0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999;
+    }
+    .add-step-dialog .mask {
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0, .6);
+    }
+    .dialog-content {
+        width: 90vw;
+        height: auto;
+        background:#fff;
+        padding:20rpx 40rpx;
+        border-radius:20rpx;
+        position:absolute;
+        top:15vh;
+        left:5vw;
+        box-sizing:border-box;
+    }
+    .dialog-content .title {
+        font-size: 40rpx;
+        text-align: center;
+        position: relative;
+    }
+    .dialog-content .title icon {
+        position: absolute;
+        right: -15rpx;
+        top: -15rpx;
+    }
+    .dialog-content .dialog-btn {
+        margin-top: 20rpx;
+    }
+    .dialog-content .content input {
+        height:90rpx;
+        width:100%;
+        border:1px solid #dedede;
+        border-radius:10rpx;
+        padding:10rpx 20rpx;
+        box-sizing:border-box;
+        margin-top: 20rpx;
+    }
+    .dialog-content .content textarea {
+        margin-top: 10rpx;
+        border:1px solid #dedede;
+        border-radius: 10rpx;
+        width:100%;
+        height: 450rpx;
+        padding: 10rpx 20rpx;
+        box-sizing:border-box;
     }
 </style>

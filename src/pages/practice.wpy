@@ -7,7 +7,7 @@
             <navigator url="/practice/pages/think">有反思</navigator>
         </view>
         <view @tap="hideChatMsgMore">
-            <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}">
+            <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper">
                 <repeat for="{{messages}}" index="index" item="item" key="index">
                     <chat-message :id="'message_' + index" :userInfo="item.userInfo" :msgData.sync="item"
                                   :message="item.message" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
@@ -266,7 +266,13 @@
                 wepy.stopRecord()
             },
             hideChatMsgMore() {
-                this.$broadcast('hide-more-actions')
+                this.messages.forEach(item => {
+                    item.isShowMore = false
+                })
+                this.$apply()
+            },
+            onScrollUpper(e) {
+                // 向上滚动，加载更多数据
             }
         }
 
@@ -275,11 +281,9 @@
                 let msgs = this.messages.filter(item => {
                     return item.id !== e.id
                 })
-                console.log(msgs)
                 msgs.forEach(item => {
                     item.isShowMore = false
                 })
-                console.log(this.messages)
                 this.$apply()
             }
         }
