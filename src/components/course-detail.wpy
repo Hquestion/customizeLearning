@@ -1,0 +1,78 @@
+<template>
+    <view class="course-detail-comp">
+        <view class="course-name">
+            {{courseInfo.courseName}}
+        </view>
+        <view class="block flex-box">
+            <view class="grey">创建日期：</view>
+            <view class="block-meta">{{courseInfo.createDate}}</view>
+        </view>
+        <view class="block flex-box">
+            <view class="grey">负责老师：</view>
+            <view class="block-meta">{{courseInfo.teacherName}}</view>
+        </view>
+        <view class="block flex-box">
+            <view class="grey">协作老师：</view>
+            <view class="block-meta">{{courseInfo.helpTeacher}}</view>
+        </view>
+        <view class="block-group flex-box" style="width: 80%">
+            <view class="block flex-box">
+                <view class="grey">小组人数：</view>
+                <view>{{courseInfo.groupMaxStuCount}}</view>
+            </view>
+            <view class="block flex-box">
+                <view class="grey">课程时长：</view>
+                <view>{{courseInfo.duration}}</view>
+            </view>
+        </view>
+        <view class="block flex-box">
+            <view class="grey">开放时间：</view>
+            <view class="block-meta">
+                <text>{{courseInfo.startTime}}</text>至<text>{{courseInfo.endTime}}</text>
+            </view>
+        </view>
+        <view class="block flex-box" hidden="{{!courseInfo.groupMembers}}">
+            <view class="grey">小组成员：</view>
+            <view class="block-meta">
+                <text>{{courseInfo.groupMembers}}</text>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class CourseDetailComp extends wepy.component {
+        data = {
+
+        }
+
+        props = {
+            courseInfo: {}
+        }
+    }
+</script>
+<style>
+    .course-detail-comp {
+        padding: 20rpx;
+        background: #fff;
+    }
+    .course-detail-comp .course-name {
+        color: #1abcb0;
+        font-size: 40rpx;
+        text-align: center;
+    }
+    .course-detail-comp .block {
+        padding: 20rpx 0;
+    }
+    .course-detail-comp .block.flex-box {
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .course-detail-comp .block .grey {
+        width: 160rpx;
+    }
+    .course-detail-comp .block .block-meta{
+        width: calc(100% - 160rpx);
+    }
+</style>

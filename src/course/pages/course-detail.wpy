@@ -1,27 +1,7 @@
 <template>
     <view class="course-detail-container">
         <scroll-view scroll-y class="detail-block">
-            <view class="course-name">
-                {{courseInfo.courseName}}
-            </view>
-            <view class="block">
-                <text class="grey">创建日期：</text><text>{{courseInfo.createDate}}</text>
-            </view>
-            <view class="block">
-                <text class="grey">负责老师：</text><text>{{courseInfo.teacherName}}</text>
-            </view>
-            <view class="block">
-                <text class="grey">协作老师：</text><text>{{courseInfo.helpTeacher}}</text>
-            </view>
-            <view class="block">
-                <text class="grey">小组人数：</text><text>{{courseInfo.groupMaxStuCount}}</text>
-            </view>
-            <view class="block">
-                <text class="grey">课程时长：</text><text>{{courseInfo.duration}}</text>
-            </view>
-            <view class="block">
-                <text class="grey">开放时间：</text><text>{{courseInfo.startTime}}</text>至<text>{{courseInfo.endTime}}</text>
-            </view>
+            <course-detail :courseInfo="courseInfo"></course-detail>
             <view class="task-status">
                 <view class="grey task-brief">
                     成功完成<text class="warning">{{courseInfo.finishTimes}}</text>次，
@@ -50,6 +30,7 @@
 <script>
     import wepy from 'wepy'
     import richButton from '../../components/rich-button'
+    import courseDetail from '../../components/course-detail'
 
     export default class CourseDetail extends wepy.page {
         config = {
@@ -57,7 +38,8 @@
         }
 
         components = {
-            'rich-button': richButton
+            'rich-button': richButton,
+            'course-detail': courseDetail
         }
 
         data = {
@@ -65,7 +47,13 @@
             courseId: '',
             courseInfo: {
                 courseName: '动手小王子',
-                createDate: '2017-12-08'
+                createDate: '2017-12-08',
+                teacherName: '王建峰',
+                helpTeacher: '张三、柳絮、股价同、张三、柳絮、股价同、张三、柳絮、股价同',
+                groupMaxStuCount: 10,
+                duration: '10天',
+                startTime: '2017-12-10',
+                endTime: '2018-1-5'
             },
             stuFinishList: [{
                 groupName: '张无忌小组',

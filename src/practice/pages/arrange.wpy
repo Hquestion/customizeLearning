@@ -11,14 +11,14 @@
         </scroll-view>
         <view class="button-block flex-box">
             <view class="btn btn-add">
-                <rich-button1 text="添加步骤" theme="grey" @tap.user="addStep"></rich-button1>
+                <rich-button1 text="添加步骤" theme="grey" @tap.user="addStep" width="90%"></rich-button1>
             </view>
             <view class="btn btn-save">
-                <rich-button2 text="保存" theme="green" @tap.user="saveChange"></rich-button2>
+                <rich-button2 text="保存" theme="green" @tap.user="saveChange" width="90%"></rich-button2>
             </view>
         </view>
         <dialog class="add-step-dialog" :visible.sync="addStepDialogVisible">
-            <view slot="title">添加步骤</view>
+            <view slot="title">{{addStepTitle}}</view>
             <view slot="main">
                 <view class="content">
                     <input type="text" placeholder="请输入步骤名称" confirm-type="确定" value="{{stepName}}"/>
@@ -47,8 +47,10 @@
             userInfo: null,
             scrollable: true,
             addStepDialogVisible: false,
-            stepName: '22',
-            stepDesc: 'ee',
+            stepName: '',
+            stepDesc: '',
+            addStepTitle: '添加步骤',
+            toEditStep: null,
             datalist: [{
                 id: 1,
                 stepName: '绘画工具',
@@ -166,12 +168,19 @@
 
         methods = {
             addStep() {
+                this.addStepTitle = '添加步骤'
+                this.toEditStep = null
                 this.addStepDialogVisible = true
                 this.$apply()
             },
             onSubmitAddStep() {
                 console.log(this.stepName)
                 console.log(this.stepDesc)
+                if (this.toEditStep) {
+                    // 编辑步骤处理
+                } else {
+                    // 添加步骤处理
+                }
                 this.addStepDialogVisible = false
                 this.$apply()
             }
@@ -185,6 +194,29 @@
             'enable-scroll': function() {
                 this.scrollable = true
                 this.$apply()
+            },
+            'edit-step': function(e) {
+                this.addStepTitle = '编辑步骤'
+                this.toEditStep = e
+                this.stepName = e.stepName
+                this.stepDesc = e.detail
+                this.addStepDialogVisible = true
+                this.$apply()
+            },
+            'delete-step': function(e) {
+                let self = this
+                wepy.showModal({
+                    title: '提示',
+                    content: '删除步骤之后将无法恢复，确定删除该步骤？',
+                    success: function(res) {
+                        if (res.confirm) {
+                            let index = self.datalist.findIndex(item => item.id === e.id)
+                            self.datalist.splice(index, 1)
+                            self.$apply()
+                            self.$com['step-list'].$apply()
+                        }
+                    }
+                })
             }
         }
 

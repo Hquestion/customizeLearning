@@ -3,6 +3,10 @@
         <view class="step-title">
             <text class="step-index">步骤{{index}}</text>
             <text class="step-name">{{stepData.stepName}}</text>
+            <view class="step-btns">
+                <text class="step-btn grey" @tap="editStep" wx:if="{{!stepData.isObjective}}">编辑</text>
+                <text class="step-btn grey" @tap="deleteStep">删除</text>
+            </view>
         </view>
         <view class="step-detail">
             <block wx:if="{{stepData.isObjective}}">
@@ -51,6 +55,12 @@
                     return toggleIndex === index
                 })
                 this.stepData.options[index].isChecked = !this.stepData.options[index].isChecked
+            },
+            editStep() {
+                this.$emit('edit-step', this.stepData)
+            },
+            deleteStep() {
+                this.$emit('delete-step', this.stepData)
             }
         }
 
@@ -65,6 +75,7 @@
     }
     .step .step-title {
         padding: 10rpx;
+        position: relative;
     }
     .step .step-title .step-index {
         padding: 8rpx 20rpx;
@@ -117,5 +128,14 @@
         flex-wrap: wrap;
         justify-content: flex-start;
         margin-left: -10rpx;
+    }
+    .step-btns {
+        position: absolute;
+        top: 5rpx;
+        right: 10rpx;
+        font-size: 26rpx;
+    }
+    .step-btns .step-btn {
+        padding: 5rpx 10rpx;
     }
 </style>
