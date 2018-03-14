@@ -57,6 +57,8 @@
     import courseTask from '../components/course-task'
     import course from '../components/course'
 
+    import {getCourseCateBySchool} from '../api'
+
     export default class Home extends wepy.page {
         config = {
             navigationBarTitleText: '个性化学习中心'
@@ -160,12 +162,21 @@
             }
         }
 
+        init() {
+            getCourseCateBySchool('1').then(res => {
+                console.log(res)
+            }, res => {
+                console.log(res)
+            })
+        }
+
         onLoad() {
             let self = this
             this.$parent.getUserInfo(function (res) {
                 self.userInfo = res
                 self.$apply()
             })
+            this.init()
         }
     }
 </script>
