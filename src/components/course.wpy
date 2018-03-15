@@ -1,19 +1,19 @@
 <template>
     <view class="course">
         <view class="content">
-            <view class="course-name">{{course.courseName}}</view>
+            <view class="course-name">{{course.CourseName}}</view>
             <view class="course-info">
                 <view class="course-teacher-info">
                     <text class="label grey">负责老师：</text>
-                    <text class="label-val">{{course.teacherName}}</text>
+                    <text class="label-val">{{course.HeadTeacherName}}</text>
                 </view>
                 <view class="course-time-info">
                     <text class="label grey">课程时长：</text>
-                    <text class="label-val">{{course.duration}}</text>
+                    <text class="label-val">{{course.CourseDuration || '不限'}}天</text>
                 </view>
             </view>
             <view class="course-brief grey">
-                成功完成<text class="warning">{{course.finishTimes}}</text>次，总共参与人数<text class="warning">{{course.stuCount}}</text>人
+                成功完成<text class="warning">{{course.SuccessNum || 0}}</text>次，总共参与人数<text class="warning">{{course.ParterNum || 0}}</text>人
             </view>
         </view>
         <view class="link detail">

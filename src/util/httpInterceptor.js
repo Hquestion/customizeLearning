@@ -1,7 +1,7 @@
 import wepy from 'wepy'
 
-var requestCount = 0
-var clearLoadingTimer = null
+let requestCount = 0
+let clearLoadingTimer = null
 
 export function interceptor() {
     // 拦截request请求
@@ -9,14 +9,14 @@ export function interceptor() {
         // 发出请求时的回调函数
         config (p) {
             requestCount++
-            console.log(requestCount)
-            // 对所有request请求中的OBJECT参数对象统一附加时间戳属性
-            p.timestamp = +new Date()
+            let isIgnoreLoading = (p.header && !!p.header.ignoreLoading)
             // 必须返回OBJECT参数对象，否则无法发送请求到服务端
-            wepy.showLoading({
-                title: '加载中。。',
-                mask: true
-            })
+            if (requestCount <= 1 && !isIgnoreLoading) {
+                wepy.showLoading({
+                    title: '加载中',
+                    mask: true
+                })
+            }
             clearTimeout(clearLoadingTimer)
             return p
         },

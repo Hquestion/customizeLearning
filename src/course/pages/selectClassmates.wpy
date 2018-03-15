@@ -7,7 +7,7 @@
         <scroll-view scroll-y class="detail-block">
             <repeat for="{{classmatesList}}" item="item" index="index" key="index">
                 <view class="flex-box stu-block {{item.isSelected ? 'active': ''}}" @tap="selectClassMate({{item}})">
-                    <view>{{item.name}}</view>
+                    <view>{{item.XM}}</view>
                     <view class="select-box">
                         <image src="../../images/xuanzhe.png" wx:if="{{!item.isSelected}}"></image>
                         <image src="../../images/xuanzhe2.png" wx:else></image>
@@ -15,10 +15,13 @@
                 </view>
             </repeat>
         </scroll-view>
+        <view hidden="{{classmatesList.length > 0}}">
+            <empty-content></empty-content>
+        </view>
         <view class="selected-block" hidden="{{selectedClassmates.length === 0}}">
             已选择<text class="warning">{{selectedClassmates.length}}</text>人：
             <repeat for="{{selectedClassmates}}" item="item" index="index" key="index">
-                <text class="success">{{item.name}}</text>
+                <text class="success">{{item.XM}}</text>
                 <text class="success" wx:if="{{index < selectedClassmates.length - 1}}">,</text>
             </repeat>
         </view>
@@ -31,6 +34,9 @@
 <script>
     import wepy from 'wepy'
     import richButton from '../../components/rich-button'
+    import emptyContent from '../../components/empty-content'
+
+    import {getClassmateList, createCourseGroup} from '../../api'
 
     export default class SelectClassmates extends wepy.page {
         config = {
@@ -38,27 +44,13 @@
         }
 
         components = {
-            'rich-button': richButton
+            'rich-button': richButton,
+            'empty-content': emptyContent
         }
 
         data = {
             userInfo: null,
-            classmatesList: [{
-                id: '1',
-                name: '张三',
-                pinyin: 'Z',
-                isSelected: false
-            }, {
-                id: '2',
-                name: '王张三',
-                pinyin: 'W',
-                isSelected: false
-            }, {
-                id: '3',
-                name: '李张三',
-                pinyin: 'L',
-                isSelected: false
-            }]
+            classmatesList: []
         }
 
         computed = {
@@ -70,23 +62,61 @@
         methods = {
             finishCreate() {
                 // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
-                wepy.navigateTo({
-                    url: '/course/pages/createGroupSuccess'
+                let modelList = this.selectedClassmates.map(item => {
+                    return {
+                        CourseFID: this.courseId,
+                        MemberFID: item.StudentFID,
+                        Creater: this.$parent.globalData.userInfo.FlnkID,
+                        MemberName: item.XM
+                    }
+                })
+                let param = {
+                    StudentFID: this.$parent.globalData.userInfo.FlnkID,
+                    CourseFID: this.courseId,
+                    AttendMembers: this.selectedClassmates.map(item => item.XM).join(','),
+                    modelList: modelList
+                }
+                createCourseGroup(param).then(res => {
+                    if (res.Flag) {
+                        wepy.navigateTo({
+                            url: '/course/pages/createGroupSuccess'
+                        })
+                    } else {
+                        wepy.showToast({
+                            title: '操作失败',
+                            icon: 'none'
+                        })
+                    }
+                }, () => {
+                    wepy.showToast({
+                        title: '操作失败',
+                        icon: 'none'
+                    })
                 })
             },
             selectClassMate(stu) {
-                let toggleStu = this.classmatesList.find(item => item.id === stu.id)
+                let toggleStu = this.classmatesList.find(item => item.StudentFID === stu.StudentFID)
                 toggleStu.isSelected = !toggleStu.isSelected
                 this.$apply()
             }
         }
 
-        events = {
-
+        init() {
+            getClassmateList(this.$parent.globalData.userInfo.FlnkID, this.courseId).then(res => {
+                this.classmatesList = res || []
+                this.classmatesList.forEach(item => {
+                    item.isSelected = false
+                })
+                this.$apply()
+            }, res => {
+                this.classmatesList = []
+                this.$apply()
+            })
         }
 
         onLoad(option) {
             this.courseId = option.courseId
+            this.init()
         }
     }
 </script>
@@ -118,7 +148,7 @@
         vertical-align: top;
     }
     .detail-block {
-        height: calc(100vh - 360rpx);
+        height: calc(100vh - 400rpx);
     }
     .button-block {
         position: fixed;
@@ -144,7 +174,7 @@
         height: 50rpx;
     }
     .selected-block {
-        height: 80rpx;
+        height: 100rpx;
         width: 100%;
         font-size: 30rpx;
         padding:10rpx 20rpx;

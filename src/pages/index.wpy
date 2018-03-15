@@ -33,18 +33,28 @@
                 </swiper-item>
                 <swiper-item class="course-category">
                     <view class="cate-course-container">
-                        <view class="course-cate-box">
-                            <repeat for="{{ courseCategories }}" item="item" index="index">
-                                <view class="cate {{activeCateId === item.cateid ? 'active' : ''}}">{{item.cateName}}</view>
-                            </repeat>
-                        </view>
-                        <scroll-view scroll-y>
-                            <repeat for="{{ cateCourseList }}" item="item" index="index">
-                                <view class="course-box" @tap.native="navigateToDetail({{item}})">
-                                    <course class="course-item" :course="item"></course>
+                        <block wx:if="{{courseCategories && courseCategories.length > 0}}">
+                            <view class="course-cate-box">
+                                <repeat for="{{ courseCategories }}" item="item" index="index">
+                                    <view class="cate {{activeCateId === item.cateid ? 'active' : ''}}" @tap="changeCategory({{item}})">{{item.cateName}}</view>
+                                </repeat>
+                            </view>
+                            <scroll-view scroll-y>
+                                <view>
+                                    <repeat for="{{ cateCourseList }}" item="item" index="index">
+                                        <view class="course-box" @tap.native="navigateToDetail({{item}})">
+                                            <course class="course-item" :course="item"></course>
+                                        </view>
+                                    </repeat>
                                 </view>
-                            </repeat>
-                        </scroll-view>
+                                <view hidden="{{cateCourseList.length > 0}}">
+                                    <empty-content></empty-content>
+                                </view>
+                            </scroll-view>
+                        </block>
+                        <block wx:else>
+                            <empty-content></empty-content>
+                        </block>
                     </view>
                 </swiper-item>
             </swiper>
@@ -56,8 +66,9 @@
     import wepy from 'wepy'
     import courseTask from '../components/course-task'
     import course from '../components/course'
+    import emptyContent from '../components/empty-content'
 
-    import {getCourseCateBySchool} from '../api'
+    import {login, getCourseCateBySchool, getCoursesByCategory} from '../api'
 
     export default class Home extends wepy.page {
         config = {
@@ -66,11 +77,14 @@
 
         components = {
             'course-task': courseTask,
-            'course': course
+            'course': course,
+            'empty-content': emptyContent
         }
 
         data = {
             userInfo: null,
+            userLocalInfo: null,
+            classCourseTaskLoaded: false,
             currentTabIndex: 0,
             courseTasks: [{
                 courseName: '有趣的科学',
@@ -104,48 +118,15 @@
                 className: '三(2)班',
                 taskStudents: '张三，里斯张三，里斯'
             }],
-            courseCategories: [{
-                cateid: 1,
-                cateName: '核心课程'
-            }, {
-                cateid: 2,
-                cateName: '兴趣课程'
-            }, {
-                cateid: 3,
-                cateName: '动手课程'
-            }],
-            activeCateId: 1,
-            cateCourseList: [{
-                courseName: '我是一个小画家',
-                teacherName: '张三丰',
-                duration: '6天',
-                finishTimes: '16',
-                stuCount: '40'
-            }, {
-                courseName: '我是一个小画家',
-                teacherName: '张三丰',
-                duration: '6天',
-                finishTimes: '16',
-                stuCount: '40'
-            }, {
-                courseName: '我是一个小画家',
-                teacherName: '张三丰',
-                duration: '6天',
-                finishTimes: '16',
-                stuCount: '40'
-            }, {
-                courseName: '我是一个小画家',
-                teacherName: '张三丰',
-                duration: '6天',
-                finishTimes: '16',
-                stuCount: '40'
-            }, {
-                courseName: '我是一个小画家',
-                teacherName: '张三丰',
-                duration: '6天',
-                finishTimes: '16',
-                stuCount: '40'
-            }]
+            courseCategories: [],
+            activeCateId: '',
+            cateCourseList: []
+        }
+
+        computed = {
+            schoolId() {
+                return this.$parent.globalData.userInfo && this.$parent.globalData.userInfo.SchoolFID
+            }
         }
 
         methods = {
@@ -154,20 +135,79 @@
             },
             onSwiperChange(e) {
                 this.currentTabIndex = e.detail.current
+                this.handleSwiperChange(e.detail.current)
             },
             navigateToDetail(item) {
                 wepy.navigateTo({
-                    url: '/course/pages/course-detail?courseId=' + item.courseId
+                    url: '/course/pages/course-detail?courseId=' + item.FlnkID
                 })
+            },
+            changeCategory(cate) {
+                this.activeCateId = cate.cateid
+                this.$apply()
+                this.getCoursesByCategory(cate.cateid)
             }
         }
 
-        init() {
-            getCourseCateBySchool('1').then(res => {
-                console.log(res)
-            }, res => {
-                console.log(res)
+        handleSwiperChange(index) {
+            if (index === 1) {
+                // 切换到第二个tab，加载数据
+                if (!this.classCourseTaskLoaded) {
+                    // 加载数据
+                }
+            } else if (index === 2) {
+                if (!this.courseCateLoaded) {
+                    // 加载课程分类列表，同时加载当前分类的课程
+                    this.getCourseCategory()
+                }
+            }
+        }
+
+        getCourseCategory() {
+            getCourseCateBySchool(this.userLocalInfo.SchoolFID).then(res => {
+                this.courseCategories = res.ResultObj.map(item => {
+                    return {
+                        cateid: item.CourseCategoryFID,
+                        cateName: item.CourseCategoryName
+                    }
+                })
+                this.activeCateId = this.courseCategories[0].cateid
+                this.$apply()
+                this.getCoursesByCategory(this.activeCateId)
+                this.courseCateLoaded = true
             })
+        }
+
+        getCoursesByCategory(cateid) {
+            getCoursesByCategory(cateid, this.userLocalInfo.SchoolFID).then(res => {
+                this.cateCourseList = res
+                this.$apply()
+            })
+        }
+
+        init() {
+            login().then(res => {
+                // 登陆接口判断用户是否绑定，未绑定则跳转绑定页面
+                if (res.FlnkID) {
+                    // 获取到用户信息，说明用户已绑定,缓存用户信息
+                    this.$parent.globalData.userInfo = res
+                    this.loadPageData()
+                } else {
+                    // 跳转到注册绑定页面
+                    wepy.redirectTo({
+                        url: '/pages/register?openid=' + res.WechatAccount
+                    })
+                }
+            }, res => {
+                wepy.showToast({
+                    title: '登陆失败',
+                    icon: 'none'
+                })
+            })
+        }
+
+        loadPageData() {
+            this.userLocalInfo = this.$parent.globalData.userInfo
         }
 
         onLoad() {
@@ -176,7 +216,7 @@
                 self.userInfo = res
                 self.$apply()
             })
-            this.init()
+            self.init()
         }
     }
 </script>

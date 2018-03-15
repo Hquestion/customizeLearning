@@ -1,34 +1,34 @@
 <template>
     <view class="course-detail-comp">
         <view class="course-name">
-            {{courseInfo.courseName}}
+            {{courseInfo.CourseName}}
         </view>
         <view class="block flex-box">
             <view class="grey">创建日期：</view>
-            <view class="block-meta">{{courseInfo.createDate}}</view>
+            <view class="block-meta">{{courseInfo.showCreateTime}}</view>
         </view>
         <view class="block flex-box">
             <view class="grey">负责老师：</view>
-            <view class="block-meta">{{courseInfo.teacherName}}</view>
+            <view class="block-meta">{{courseInfo.HeadTeacherName}}</view>
         </view>
         <view class="block flex-box">
             <view class="grey">协作老师：</view>
-            <view class="block-meta">{{courseInfo.helpTeacher}}</view>
+            <view class="block-meta">{{courseInfo.CoordTeachers}}</view>
         </view>
         <view class="block-group flex-box" style="width: 80%">
             <view class="block flex-box">
                 <view class="grey">小组人数：</view>
-                <view>{{courseInfo.groupMaxStuCount}}</view>
+                <view>{{courseInfo.GroupNum || '不限'}}人</view>
             </view>
             <view class="block flex-box">
                 <view class="grey">课程时长：</view>
-                <view>{{courseInfo.duration}}</view>
+                <view>{{courseInfo.CourseDuration || '不限'}}天</view>
             </view>
         </view>
         <view class="block flex-box">
             <view class="grey">开放时间：</view>
             <view class="block-meta">
-                <text>{{courseInfo.startTime}}</text>至<text>{{courseInfo.endTime}}</text>
+                <text>{{courseInfo.showOpenStartTime}}</text>至<text>{{courseInfo.showOpenEndTime}}</text>
             </view>
         </view>
         <view class="block flex-box" hidden="{{!courseInfo.groupMembers}}">

@@ -127,7 +127,7 @@
         }
 
         onLoad() {
-            this.userInfo = this.$parent.globalData.userInfo
+            this.userInfo = this.$parent.globalData.wxUserInfo
             if (this.userInfo.gender === 1) {
                 wepy.setNavigationBarColor({
                     backgroundColor: '#02CDF9',

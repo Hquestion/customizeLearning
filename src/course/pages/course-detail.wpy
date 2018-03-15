@@ -1,20 +1,20 @@
 <template>
     <view class="course-detail-container">
         <scroll-view scroll-y class="detail-block">
-            <course-detail :courseInfo="courseInfo"></course-detail>
+            <course-detail :courseInfo.sync="courseInfo"></course-detail>
             <view class="task-status">
                 <view class="grey task-brief">
-                    成功完成<text class="warning">{{courseInfo.finishTimes}}</text>次，
-                    总参与人数<text class="warning">{{courseInfo.stuCount}}</text>人
+                    成功完成<text class="warning">{{courseInfo.SuccessNum || 0}}</text>次，
+                    总参与人数<text class="warning">{{courseInfo.stuCount || 0}}</text>人
                 </view>
                 <view class="finish-detail">
                     <repeat for="{{stuFinishList}}" item="item" index="index">
                         <view class="finish-item">
-                            <view class="group-name">{{item.groupName}}</view>
-                            <view class="finish-date grey">{{item.finishDate}}</view>
+                            <view class="group-name">{{item.GroupName}}</view>
+                            <view class="finish-date grey">{{item.showCompleteDate}}</view>
                             <view class="task-star">
                                 <image class="icon star" src="../../images/xing.png"></image>
-                                <text class="warning">{{item.starCount || 0}}</text>
+                                <text class="warning">{{item.StarNum || 0}}</text>
                             </view>
                         </view>
                     </repeat>
@@ -32,6 +32,9 @@
     import richButton from '../../components/rich-button'
     import courseDetail from '../../components/course-detail'
 
+    import {getCourseDetailById, getSuccessTasksByCourseId} from '../../api'
+    import {parseTime} from '../../util'
+
     export default class CourseDetail extends wepy.page {
         config = {
             navigationBarTitleText: '课程详情'
@@ -45,36 +48,15 @@
         data = {
             userInfo: null,
             courseId: '',
-            courseInfo: {
-                courseName: '动手小王子',
-                createDate: '2017-12-08',
-                teacherName: '王建峰',
-                helpTeacher: '张三、柳絮、股价同、张三、柳絮、股价同、张三、柳絮、股价同',
-                groupMaxStuCount: 10,
-                duration: '10天',
-                startTime: '2017-12-10',
-                endTime: '2018-1-5'
-            },
-            stuFinishList: [{
-                groupName: '张无忌小组',
-                finishDate: '2017年5月14号完成',
-                starCount: 24
-            }, {
-                groupName: '张无忌小组',
-                finishDate: '2017年5月14号完成',
-                starCount: 24
-            }, {
-                groupName: '张无忌小组',
-                finishDate: '2017年5月14号完成',
-                starCount: 24
-            }]
+            courseInfo: null,
+            stuFinishList: []
         }
 
         methods = {
             selectClassmates() {
                 // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
                 wepy.navigateTo({
-                    url: '/course/pages/selectClassmates'
+                    url: '/course/pages/selectClassmates?courseId=' + this.courseId
                 })
             }
         }
@@ -83,8 +65,30 @@
 
         }
 
+        init() {
+            getCourseDetailById(this.courseId).then(res => {
+                this.courseInfo = res
+                this.courseInfo.showCreateTime = parseTime(this.courseInfo.CreateTime)
+                this.courseInfo.showOpenStartTime = parseTime(this.courseInfo.OpenStartTime)
+                this.courseInfo.showOpenEndTime = parseTime(this.courseInfo.OpenEndTime)
+                this.$apply()
+            })
+
+            getSuccessTasksByCourseId(this.courseId).then(res => {
+                this.stuFinishList = res || []
+                this.stuFinishList.forEach(item => {
+                    item.showCompleteDate = parseTime(item.CompleteDate)
+                })
+                this.$apply()
+            }, res => {
+                this.stuFinishList = []
+                this.$apply()
+            })
+        }
+
         onLoad(option) {
             this.courseId = option.courseId
+            this.init()
         }
     }
 </script>
