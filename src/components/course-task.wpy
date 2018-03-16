@@ -7,26 +7,26 @@
             <text class="order-normal" wx:else>{{taskInfo.order}}</text>
         </view>
         <view class="content">
-            <view class="course-name">{{taskInfo.courseName}}</view>
+            <view class="course-name">{{taskInfo.CourseCode}}.{{taskInfo.CourseName}}</view>
             <view class="task-class-block">
                 <view class="task-class-info">
-                    <text class="class-name">{{taskInfo.className}}</text>
-                    <text class="stu-list grey">{{taskInfo.taskStudents}}</text>
+                    <text class="class-name">{{taskInfo.ClassName}}</text>
+                    <text class="stu-list grey">{{taskInfo.AttendMembers}}</text>
                 </view>
             </view>
             <view class="star-count">
                 <view class="block star-block">
-                    <image class="icon star" src="../images/xing.png"></image><text>{{taskInfo.starCount || 0}}</text>
+                    <image class="icon star" src="../images/xing.png"></image><text>{{taskInfo.StarNum || 0}}</text>
                 </view>
-                <view class="block fav-block">
-                    <image class="icon fav" src="../images/zan.png" wx:if="{{!taskInfo.isFav}}"></image>
+                <view class="block fav-block" @tap.stop="toggleFav({{taskInfo}})">
+                    <image class="icon fav" src="../images/zan.png" wx:if="{{!taskInfo.IsPraise}}"></image>
                     <image class="icon fav" src="../images/zan2.png" wx:else></image>
-                    <text class="{{!!taskInfo.isFav ? 'faved': ''}}">{{taskInfo.favCount || 0}}</text>
+                    <text class="{{!!taskInfo.IsPraise ? 'faved': ''}}">{{taskInfo.PraiseNum || 0}}</text>
                 </view>
                 <view class="block change-block">
-                    <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{taskInfo.orderChange >= 0}}"></image>
+                    <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{taskInfo.RankChange >= 0}}"></image>
                     <image class="icon change" src="../images/jiantou-xia.png" wx:else></image>
-                    <text>{{taskInfo.orderChange || 0}}</text>
+                    <text>{{taskInfo.RankChange || 0}}</text>
                 </view>
             </view>
         </view>
@@ -40,7 +40,9 @@
 
     export default class CourseTask extends wepy.component {
         props = {
-            taskInfo: {},
+            taskInfo: {
+                twoWay: true
+            },
             showStatus: {
                 type: Boolean,
                 default: false
@@ -52,7 +54,9 @@
 
         }
         methods = {
-
+            toggleFav(data) {
+                this.$emit('toggle-praise', data)
+            }
         }
 
         onLoad() {

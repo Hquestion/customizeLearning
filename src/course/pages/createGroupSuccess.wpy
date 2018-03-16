@@ -5,15 +5,16 @@
                 <image src="../../images/wancheng.png"></image>
             </view>
             <view class="success-tip">小组创建成功！</view>
+            <view class="radius-bg"></view>
         </view>
         <view class="success-brief">
             <view class="grey">您参加的课程</view>
-            <view class="success">{{taskInfo.courseNo}}.{{taskInfo.courseName}}</view>
+            <view class="success">{{courseInfo.CourseCode}}.{{courseInfo.CourseName}}</view>
             <view class="grey member-mark">小组成员</view>
             <view class="member-view">
-                <repeat for="{{taskInfo.groupMembers}}" item="item" index="index">
-                    <text>{{item.name}}</text>
-                    <text wx:if="{{index < taskInfo.groupMembers.length -1}}">、</text>
+                <repeat for="{{groupMembers}}" item="item" index="index">
+                    <text>{{item.MemberName}}</text>
+                    <text wx:if="{{index < groupMembers.length -1}}">、</text>
                 </repeat>
             </view>
         </view>
@@ -27,6 +28,8 @@
     import wepy from 'wepy'
     import richButton from '../../components/rich-button'
 
+    import {getCourseDetailById, activateGroupTask} from '../../api'
+
     export default class CreateGroupSuccess extends wepy.page {
         config = {
             navigationBarTitleText: '课程详情'
@@ -38,33 +41,24 @@
 
         data = {
             userInfo: null,
-            taskId: '',
-            taskInfo: {
-                courseName: '水的流动',
-                courseNo: '002',
-                groupMembers: [{
-                    name: '水均益'
-                }, {
-                    name: '水均益'
-                }, {
-                    name: '水均益'
-                }, {
-                    name: '水均益'
-                }, {
-                    name: '水均益'
-                }, {
-                    name: '水均益'
-                }, {
-                    name: '水均益'
-                }]
-            }
+            courseId: '',
+            groupId: '',
+            courseInfo: null,
+            groupMembers: []
         }
 
         methods = {
             startCourse() {
                 // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
-                wepy.switchTab({
-                    url: '/pages/practice'
+                activateGroupTask(this.$parent.globalData.userInfo.FlnkID, this.groupId, this.courseId).then(res => {
+                    wepy.switchTab({
+                        url: '/pages/practice'
+                    })
+                }, () => {
+                    wepy.showToast({
+                        title: '操作失败',
+                        icon: 'none'
+                    })
                 })
             }
         }
@@ -73,20 +67,35 @@
 
         }
 
+        init() {
+            getCourseDetailById(this.courseId).then(res => {
+                this.courseInfo = res
+                this.$apply()
+            })
+        }
+
         onLoad(option) {
-            this.taskId = option.taskId
+            this.courseId = option.courseId
+            this.groupId = option.groupId
+            this.groupMembers = (wepy.getStorageSync('groupMembers') || [])
+            this.groupMembers.unshift({
+                MemberName: this.$parent.globalData.userInfo.XM
+            })
+            this.init()
         }
     }
 </script>
 
 <style>
     .success-container .header{
-        padding: 20rpx 0 120rpx;
+        padding: 20rpx 0 160rpx;
         background: #1abcb0;
         text-align: center;
         font-size: 44rpx;
         color: #fff;
         box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
     }
     .success-container .header image {
         width: 16vw;
@@ -95,9 +104,20 @@
     .success-container .header .success-tip {
         padding: 30rpx;
     }
+    .success-container .header .radius-bg {
+        position: absolute;
+        width:120vw;
+        height:100vw;
+        border-radius:120vw/50vw;
+        bottom:-85vw;
+        left:-10vw;
+        background:#fff;
+    }
     .success-brief {
         text-align: center;
         font-size: 30rpx;
+        position: relative;
+        top: - 20rpx;
     }
     .success-brief .success {
         padding: 20rpx 0 40rpx;

@@ -78,8 +78,9 @@
                 }
                 createCourseGroup(param).then(res => {
                     if (res.Flag) {
+                        wepy.setStorageSync('groupMembers', modelList)
                         wepy.navigateTo({
-                            url: '/course/pages/createGroupSuccess'
+                            url: '/course/pages/createGroupSuccess?courseId=' + this.courseId + '&groupId=' + res.ResultObj
                         })
                     } else {
                         wepy.showToast({
@@ -103,7 +104,7 @@
 
         init() {
             getClassmateList(this.$parent.globalData.userInfo.FlnkID, this.courseId).then(res => {
-                this.classmatesList = res || []
+                this.classmatesList = (res || []).filter(item => item.StudentFID !== this.$parent.globalData.userInfo.FlnkID)
                 this.classmatesList.forEach(item => {
                     item.isSelected = false
                 })

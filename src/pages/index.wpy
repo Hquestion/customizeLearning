@@ -15,20 +15,26 @@
             <swiper current="{{currentTabIndex}}" duration="{{300}}" @change="onSwiperChange">
                 <swiper-item class="course-category">
                     <scroll-view scroll-y>
-                        <repeat for="{{courseTasks}}" item="item" index="index">
+                        <repeat for="{{schoolCourseTasks}}" item="item" index="index">
                             <view class="course-box" @tap.native="navigateToDetail({{item}})">
-                                <course-task class="course-task-item" :taskInfo="item"></course-task>
+                                <course-task class="course-task-item" :taskInfo.sync="item" @toggle-praise.user="onTogglePraise"></course-task>
                             </view>
                         </repeat>
+                        <view hidden="{{schoolCourseTasks.length > 0}}">
+                            <empty-content></empty-content>
+                        </view>
                     </scroll-view>
                 </swiper-item>
                 <swiper-item class="course-category">
                     <scroll-view scroll-y>
-                        <repeat for="{{courseTasks}}" item="item" index="index">
+                        <repeat for="{{classCourseTasks}}" item="item" index="index">
                             <view class="course-box" @tap="navigateToDetail({{item}})">
-                                <course-task class="course-task-item" :taskInfo="item"></course-task>
+                                <course-task class="course-task-item" :taskInfo.sync="item" @toggle-praise.user="onTogglePraise"></course-task>
                             </view>
                         </repeat>
+                        <view hidden="{{classCourseTasks.length > 0}}">
+                            <empty-content></empty-content>
+                        </view>
                     </scroll-view>
                 </swiper-item>
                 <swiper-item class="course-category">
@@ -68,7 +74,7 @@
     import course from '../components/course'
     import emptyContent from '../components/empty-content'
 
-    import {login, getCourseCateBySchool, getCoursesByCategory} from '../api'
+    import {login, getCourseCateBySchool, getCoursesByCategory, getCourseTaskOrderList, getStuDetailInfo, userPraise, userCancelPraise, getCurrentActivateTask} from '../api'
 
     export default class Home extends wepy.page {
         config = {
@@ -86,41 +92,12 @@
             userLocalInfo: null,
             classCourseTaskLoaded: false,
             currentTabIndex: 0,
-            courseTasks: [{
-                courseName: '有趣的科学',
-                order: 1,
-                className: '三(2)班',
-                taskStudents: '张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯'
-            }, {
-                courseName: '有趣的科学',
-                order: 2,
-                className: '三(2)班',
-                taskStudents: '张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯张三，里斯，里斯张三，里斯'
-            }, {
-                courseName: '有趣的科学',
-                order: 3,
-                className: '三(2)班',
-                taskStudents: '张三，里斯张三，里斯',
-                isFav: true
-            }, {
-                courseName: '有趣的科学',
-                order: 4,
-                className: '三(2)班',
-                taskStudents: '张三，里斯张三，里斯'
-            }, {
-                courseName: '有趣的科学',
-                order: 5,
-                className: '三(2)班',
-                taskStudents: '张三，里斯张三，里斯'
-            }, {
-                courseName: '有趣的科学',
-                order: 6,
-                className: '三(2)班',
-                taskStudents: '张三，里斯张三，里斯'
-            }],
+            schoolCourseTasks: [],
+            classCourseTasks: [],
             courseCategories: [],
             activeCateId: '',
-            cateCourseList: []
+            cateCourseList: [],
+            userInfoDetail: null
         }
 
         computed = {
@@ -138,14 +115,48 @@
                 this.handleSwiperChange(e.detail.current)
             },
             navigateToDetail(item) {
+                let courseId = ''
+                if (item.CourseFID) {
+                    courseId = item.CourseFID
+                } else {
+                    courseId = item.FlnkID
+                }
                 wepy.navigateTo({
-                    url: '/course/pages/course-detail?courseId=' + item.FlnkID
+                    url: '/course/pages/course-detail?courseId=' + courseId
                 })
             },
             changeCategory(cate) {
                 this.activeCateId = cate.cateid
                 this.$apply()
                 this.getCoursesByCategory(cate.cateid)
+            },
+            onTogglePraise(item) {
+                let dataSource = ''
+                if (this.currentTabIndex === 0) {
+                    dataSource = 'schoolCourseTasks'
+                } else {
+                    dataSource = 'classCourseTasks'
+                }
+                let groupFID = item.FlnkID
+                if (item.IsPraise) {
+                    userCancelPraise(this.userLocalInfo.FlnkID, groupFID, item.CourseFID).then(res => {
+                        let data = this[dataSource].find(oitem => groupFID === oitem.FlnkID)
+                        if (data) {
+                            data.IsPraise = false
+                            data.PraiseNum--
+                            this.$apply()
+                        }
+                    })
+                } else {
+                    userPraise(this.userLocalInfo.FlnkID, groupFID, item.CourseFID).then(res => {
+                        let data = this[dataSource].find(oitem => groupFID === oitem.FlnkID)
+                        if (data) {
+                            data.IsPraise = true
+                            data.PraiseNum++
+                            this.$apply()
+                        }
+                    })
+                }
             }
         }
 
@@ -154,6 +165,24 @@
                 // 切换到第二个tab，加载数据
                 if (!this.classCourseTaskLoaded) {
                     // 加载数据
+                    getStuDetailInfo(this.userLocalInfo.FlnkID).then(detail => {
+                        this.getCourseTaskOrder(this.userLocalInfo.SchoolFID, this.userLocalInfo.FlnkID, {
+                            LevelNum: detail.LevelNum,
+                            GradeNum: detail.GradeNum,
+                            ClassNum: detail.ClassNum
+                        }).then(res => {
+                            this.classCourseTasks = res.DataSource || []
+                            this.classCourseTasks.forEach(item => {
+                                item.order = item.ClassSortCode || item.SchoolSortCode
+                            })
+                            this.$apply()
+                            this.classCourseTaskLoaded = true
+                        }, () => {
+                            this.classCourseTasks = []
+                            this.$apply()
+                            this.classCourseTaskLoaded = true
+                        })
+                    })
                 }
             } else if (index === 2) {
                 if (!this.courseCateLoaded) {
@@ -185,6 +214,14 @@
             })
         }
 
+        getCourseTaskOrder(schoolId, userId, userInfo = {}) {
+            return new Promise((resolve, reject) => {
+                getCourseTaskOrderList(schoolId, userId, userInfo.LevelNum, userInfo.GradeNum, userInfo.ClassNum).then(res => {
+                    resolve(res.ResultObj)
+                }, reject)
+            })
+        }
+
         init() {
             login().then(res => {
                 // 登陆接口判断用户是否绑定，未绑定则跳转绑定页面
@@ -208,6 +245,22 @@
 
         loadPageData() {
             this.userLocalInfo = this.$parent.globalData.userInfo
+            this.getCourseTaskOrder(this.userLocalInfo.SchoolFID, this.userLocalInfo.FlnkID).then(res => {
+                this.schoolCourseTasks = res.DataSource || []
+                this.schoolCourseTasks.forEach(item => {
+                    item.order = item.SchoolSortCode
+                })
+                this.$apply()
+            }, () => {
+                this.schoolCourseTasks = []
+                this.$apply()
+            })
+            getCurrentActivateTask(this.userLocalInfo.FlnkID).then(res => {
+                let activeTaskInfo = {CourseFID: res.CourseFID, GroupFID: res.GroupFID}
+                wepy.setStorageSync('activeTaskInfo', activeTaskInfo)
+            }, () => {
+                wepy.removeStorageSync('activeTaskInfo')
+            })
         }
 
         onLoad() {

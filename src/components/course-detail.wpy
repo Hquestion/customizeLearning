@@ -1,7 +1,7 @@
 <template>
     <view class="course-detail-comp">
         <view class="course-name">
-            {{courseInfo.CourseName}}
+            {{courseInfo.CourseCode}}.{{courseInfo.CourseName}}
         </view>
         <view class="block flex-box">
             <view class="grey">创建日期：</view>

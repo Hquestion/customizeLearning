@@ -1,50 +1,50 @@
 <template>
-    <view class="personal-task {{theme}} {{taskInfo.status === 2 ? 'paused': ''}} {{taskInfo.status === 3 ? 'stopped': ''}}">
-        <view class="task-tag" wx:if="{{taskInfo.status === 1}}">
+    <view class="personal-task {{theme}} {{(taskInfo.Status === 0 && !taskInfo.IsActivationGroup) ? 'paused': ''}} {{(taskInfo.Status === 1 || taskInfo.Status === 2 ) ? 'stopped': ''}}">
+        <view class="task-tag" wx:if="{{taskInfo.Status === 0 && taskInfo.IsActivationGroup}}">
             <view class="dashed-line"></view>
             <view class="tag">进行中的课程</view>
         </view>
         <view class="task-content">
             <view class="row-block task-title-block">
-                <text>{{taskInfo.taskNo}}</text>.
-                <text>{{taskInfo.taskName}}</text>
-                <text class="normal" wx:if="{{taskInfo.status !== 3}}">（已进行<text class="warning">{{taskInfo.lastDays}}</text>天）</text>
+                <text>{{taskInfo.CourseCode}}</text>.
+                <text>{{taskInfo.CourseName}}</text>
+                <text class="normal" wx:if="{{taskInfo.Status === 0}}">（已进行<text class="warning">{{taskInfo.lastDays}}</text>天）</text>
             </view>
             <view class="row-block task-group-block">
                 <text class="grey">小组组员：</text>
-                <text class="group-people">{{taskInfo.groupMembers}}</text>
+                <text class="group-people">{{taskInfo.AttendMembers}}</text>
             </view>
             <view class="row-block flex-box">
                 <view class="task-teacher-block">
                     <text class="grey">负责老师：</text>
-                    <text class="group-people">{{taskInfo.teacherName}}</text>
+                    <text class="group-people">{{taskInfo.HeadTaecherName}}</text>
                 </view>
                 <view class="task-duration-block">
                     <text class="grey">课程时长：</text>
-                    <text class="group-people">{{taskInfo.duration}}</text>
+                    <text class="group-people">{{taskInfo.CourseDuration || '不限'}}天</text>
                 </view>
             </view>
         </view>
         <view class="star-count">
-            <view class="block star-block" wx:if="{{taskInfo.status === 3}}">
-                <image class="icon star" src="../images/xing.png"></image><text>{{taskInfo.starCount || 0}}</text>
+            <view class="block star-block" wx:if="{{taskInfo.Status !== 0}}">
+                <image class="icon star" src="../images/xing.png"></image><text>{{taskInfo.StarNum || 0}}</text>
             </view>
             <view class="block fav-block">
-                <image class="icon fav" src="../images/zan.png" wx:if="{{!taskInfo.isFav}}"></image>
+                <image class="icon fav" src="../images/zan.png" wx:if="{{!taskInfo.IsPraise}}"></image>
                 <image class="icon fav" src="../images/zan2.png" wx:else></image>
-                <text class="{{!!taskInfo.isFav ? 'faved': ''}}">{{taskInfo.favCount || 0}}</text>
+                <text class="{{!!taskInfo.IsPraise ? 'faved': ''}}">{{taskInfo.PraiseNum || 0}}</text>
             </view>
             <view class="block change-block">
-                <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{taskInfo.orderChange >= 0}}"></image>
+                <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{taskInfo.RankChange >= 0}}"></image>
                 <image class="icon change" src="../images/jiantou-xia.png" wx:else></image>
-                <text>{{taskInfo.orderChange || 0}}</text>
+                <text>{{taskInfo.RankChange || 0}}</text>
             </view>
         </view>
         <view class="button-block">
-            <view class="running" wx:if="{{taskInfo.status === 1}}">
+            <view class="running" wx:if="{{taskInfo.Status === 0 && taskInfo.IsActivationGroup}}">
                 <rich-button1 size="middle" text="继续课程" :theme.sync="bTheme" @tap.user="onTapCoutinue"></rich-button1>
             </view>
-            <view class="paused" wx:if="{{taskInfo.status === 2}}">
+            <view class="paused" wx:if="{{taskInfo.Status === 0 && !taskInfo.IsActivationGroup}}">
                 <rich-button2 size="middle" text="已暂停，点击启动" theme="grey" @tap.user="onTapStart"></rich-button2>
             </view>
         </view>

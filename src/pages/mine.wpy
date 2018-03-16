@@ -1,18 +1,19 @@
 <template>
     <view class="mine-container {{userTheme}}">
         <view class="user-block">
-            <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-            <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+            <image class="userinfo-avatar" src="{{ wxUserInfo.avatarUrl }}" background-size="cover"/>
+            <view class="userinfo-nickname">{{ userName }}<text hidden="{{!isTeacher}}">&nbsp;老师</text></view>
+            <view class="userinfo-class">{{ userClass }}</view>
             <image src="../images/bolang.png" class="bolang"></image>
         </view>
         <view class="my-task-block">
-            <view class="task-block task-running" wx:if="{{runningTask && runningTask.status === 1}}">
-                <personal-task1 class="task-comp" :theme.sync="userTheme" :taskInfo="runningTask"
+            <view class="task-block task-running" wx:if="{{!!runningTask}}">
+                <personal-task1 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="runningTask"
                                 @continue.user="continueTask" @restart.user="restartTask"></personal-task1>
             </view>
             <view class="task-block task-common">
                 <repeat for="{{commonTasks}}" item="item" index="index">
-                    <personal-task2 class="task-comp" :theme.sync="userTheme" :taskInfo="item"
+                    <personal-task2 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="item"
                                     @continue.user="continueTask" @restart.user="restartTask"></personal-task2>
                 </repeat>
             </view>
@@ -24,6 +25,9 @@
     import wepy from 'wepy'
     import PersonalTask from '../components/personal-task'
 
+    import {getStuDetailInfo, getMyCourseTasks, activateGroupTask} from '../api'
+    import {getLastDays} from '../util'
+
     export default class Mine extends wepy.page {
         config = {
             navigationBarTitleText: '个性化学习中心',
@@ -31,49 +35,12 @@
         }
 
         data = {
-            userInfo: null,
+            wxUserInfo: null,
+            userName: '',
+            userClass: '',
+            isTeacher: false,
             userTheme: 'male',
-            myTaskList: [{
-                taskNo: '001',
-                taskName: '我们都是小画家',
-                lastDays: 3,
-                groupMembers: '张三，里斯',
-                teacherName: '王军',
-                duration: '10天',
-                status: 1
-            }, {
-                taskNo: '002',
-                taskName: '我们都是小画家',
-                lastDays: 3,
-                groupMembers: '张三，里斯',
-                teacherName: '王军',
-                duration: '10天',
-                status: 2
-            }, {
-                taskNo: '003',
-                taskName: '我们都是小画家',
-                lastDays: 3,
-                groupMembers: '张三，里斯',
-                teacherName: '王军',
-                duration: '10天',
-                status: 3
-            }, {
-                taskNo: '004',
-                taskName: '我们都是小画家',
-                lastDays: 3,
-                groupMembers: '张三，里斯',
-                teacherName: '王军',
-                duration: '10天',
-                status: 3
-            }, {
-                taskNo: '005',
-                taskName: '我们都是小画家',
-                lastDays: 3,
-                groupMembers: '张三，里斯',
-                teacherName: '王军',
-                duration: '10天',
-                status: 3
-            }]
+            myTaskList: []
         }
 
         components = {
@@ -82,7 +49,7 @@
         }
 
         watch = {
-            userInfo: function(val, oldval) {
+            wxUserInfo: function(val, oldval) {
                 if (val) {
                     if (val.gender === 1) {
                         this.userTheme = 'male'
@@ -100,7 +67,7 @@
             runningTask() {
                 if (this.myTaskList) {
                     return this.myTaskList.find(item => {
-                        return item.status === 1
+                        return item.Status === 0 && item.IsActivationGroup
                     })
                 } else {
                     return null
@@ -109,7 +76,7 @@
             commonTasks() {
                 if (this.myTaskList) {
                     return this.myTaskList.filter(item => {
-                        return item.status !== 1
+                        return item.Status !== 0 || !item.IsActivationGroup
                     })
                 } else {
                     return []
@@ -119,16 +86,42 @@
 
         methods = {
             continueTask(task) {
-                console.log(task)
+                wepy.switchTab({
+                    url: '/pages/practice'
+                })
             },
             restartTask(task) {
-                console.log(task)
+                let groupTaskId = task.FlnkID
+                activateGroupTask(this.$parent.globalData.userInfo.FlnkID, task.FlnkID, task.CourseFID).then(res => {
+                    this.myTaskList.forEach(item => {
+                        item.IsActivationGroup = item.FlnkID === groupTaskId
+                    })
+                    this.$apply()
+                })
             }
         }
 
+        init() {
+            let id = this.$parent.globalData.userInfo.FlnkID
+            this.userName = this.$parent.globalData.userInfo.XM
+            this.isTeacher = (this.$parent.globalData.userInfo.RoleNum + '') === '2'
+            getStuDetailInfo(id).then(res => {
+                this.userClass = res.NJ + '年级（' + res.BJBH + '）班'
+                this.$apply()
+            })
+            getMyCourseTasks(this.$parent.globalData.userInfo.SchoolFID, id).then(res => {
+                this.myTaskList = res || []
+                this.myTaskList.forEach(item => {
+                    if (item.Status === 0) {
+                        item.lastDays = getLastDays(item.CreateTime)
+                    }
+                })
+            })
+        }
+
         onLoad() {
-            this.userInfo = this.$parent.globalData.wxUserInfo
-            if (this.userInfo.gender === 1) {
+            this.wxUserInfo = this.$parent.globalData.wxUserInfo
+            if (this.wxUserInfo.gender === 1) {
                 wepy.setNavigationBarColor({
                     backgroundColor: '#02CDF9',
                     frontColor: '#ffffff'
@@ -139,6 +132,7 @@
                     frontColor: '#ffffff'
                 })
             }
+            this.init()
         }
     }
 </script>
@@ -169,6 +163,10 @@
         width: 160rpx;
         height: 160rpx;
         border-radius: 160rpx;
+    }
+    .userinfo-nickname {
+        font-size:42rpx;
+        padding: 10rpx;
     }
     .my-task-block {
         padding: 20rpx;

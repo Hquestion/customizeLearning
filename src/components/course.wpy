@@ -1,7 +1,7 @@
 <template>
     <view class="course">
         <view class="content">
-            <view class="course-name">{{course.CourseName}}</view>
+            <view class="course-name">{{course.CourseCode}}.{{course.CourseName}}</view>
             <view class="course-info">
                 <view class="course-teacher-info">
                     <text class="label grey">负责老师：</text>

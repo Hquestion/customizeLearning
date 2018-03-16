@@ -22,7 +22,7 @@
             </view>
         </scroll-view>
         <view class="button-block">
-            <rich-button text="我要创建小组" @tap.user="selectClassmates"></rich-button>
+            <rich-button :text.sync="buttonText" @tap.user="selectClassmates" :theme.sync="buttonTheme"></rich-button>
         </view>
     </view>
 </template>
@@ -32,7 +32,7 @@
     import richButton from '../../components/rich-button'
     import courseDetail from '../../components/course-detail'
 
-    import {getCourseDetailById, getSuccessTasksByCourseId} from '../../api'
+    import {getCourseDetailById, getSuccessTasksByCourseId, isStuInCourseGroup} from '../../api'
     import {parseTime} from '../../util'
 
     export default class CourseDetail extends wepy.page {
@@ -49,20 +49,26 @@
             userInfo: null,
             courseId: '',
             courseInfo: null,
-            stuFinishList: []
+            stuFinishList: [],
+            buttonText: '',
+            canCreateGroup: false
         }
 
         methods = {
             selectClassmates() {
                 // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
-                wepy.navigateTo({
-                    url: '/course/pages/selectClassmates?courseId=' + this.courseId
-                })
+                if (this.canCreateGroup) {
+                    wepy.navigateTo({
+                        url: '/course/pages/selectClassmates?courseId=' + this.courseId
+                    })
+                }
             }
         }
 
-        events = {
-
+        computed = {
+            buttonTheme() {
+                return this.canCreateGroup ? 'green' : 'grey'
+            }
         }
 
         init() {
@@ -82,6 +88,21 @@
                 this.$apply()
             }, res => {
                 this.stuFinishList = []
+                this.$apply()
+            })
+
+            isStuInCourseGroup(this.$parent.globalData.userInfo.FlnkID, this.courseId).then(res => {
+                if (res) {
+                    this.buttonText = '我已加入小组'
+                    this.canCreateGroup = false
+                } else {
+                    this.buttonText = '我要创建小组'
+                    this.canCreateGroup = true
+                }
+                this.$apply()
+            }, res => {
+                this.buttonText = '我要创建小组'
+                this.canCreateGroup = true
                 this.$apply()
             })
         }
