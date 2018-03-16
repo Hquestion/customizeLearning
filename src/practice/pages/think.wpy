@@ -6,26 +6,70 @@
             <navigator url="/pages/practice" open-type="switchTab">能落实</navigator>
             <navigator url="/practice/pages/think" class="active">有反思</navigator>
         </view>
-        <view>
-            有反思
+        <view class="think-content">
+            <view class="submit-steps">
+                <view class="step-list-container"></view>
+            </view>
+            <view class="my-think">
+                <panel>
+                    <view slot="title">反思内容</view>
+                    <view slot="content" class="{{!myThinkContent ? 'grey' : ''}}">
+                        {{myThinkContent || '您还没有填写反思内容'}}
+                    </view>
+                </panel>
+            </view>
+            <view class="btn-area">
+                <rich-button theme="green" text="填写反思" size="big" iconSrc="../../images/yfs.png" @tap.user="onEditThink"></rich-button>
+            </view>
         </view>
+        <dialog class="edit-think-dialog" :visible.sync="editThinkDialogVisible">
+            <view slot="title">填写反思</view>
+            <view slot="main">
+                <view class="content">
+                    <textarea fixed value="{{myThinkContent}}" placeholder="请填写反思内容" @input="onThinkInput"></textarea>
+                </view>
+                <view class="dialog-btn">
+                    <rich-button2 text="提交" theme="green" width="100%;" @tap.user="onSubmitThink"></rich-button2>
+                </view>
+            </view>
+        </dialog>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
+    import panel from '../../components/panel'
+    import richButton from '../../components/rich-button'
+    import dialog from '../../components/dialog'
 
     export default class Think extends wepy.page {
         config = {
             navigationBarTitleText: '有反思'
         }
 
+        components = {
+            panel: panel,
+            'rich-button': richButton,
+            'rich-button2': richButton,
+            dialog: dialog
+        }
+
         data = {
-            userInfo: null
+            userInfo: null,
+            editThinkDialogVisible: false,
+            myThinkContent: ''
         }
 
         methods = {
+            onEditThink() {
+                this.editThinkDialogVisible = true
+            },
+            onSubmitThink() {
 
+            },
+            onThinkInput(e) {
+                this.myThinkContent = e.detail.value
+            }
         }
 
         onLoad() {
@@ -38,11 +82,6 @@
     .home-container {
         text-align: center;
     }
-    .userinfo-avatar {
-        width: 80rpx;
-        height: 80rpx;
-        border-radius: 80rpx;
-    }
     .nav {
         display: flex;
         justify-content: center;
@@ -51,5 +90,37 @@
     }
     .nav navigator{
         flex: 1;
+    }
+    .think-content {
+        text-align: left;
+        width: 100%;
+        height: calc(100vh - 86rpx);
+    }
+    .btn-area {
+        margin-top: 40rpx;
+    }
+    .submit-steps {
+        padding-bottom: 20rpx;
+        background: #f2f2f2;
+    }
+    .step-list-container {
+        padding: 20rpx;
+        background: #fff;
+    }
+    .edit-think-dialog .content {
+        text-align: left;
+        margin-top: 20rpx;
+    }
+    .edit-think-dialog .content textarea {
+        margin-top: 10rpx;
+        border:1px solid #dedede;
+        border-radius: 10rpx;
+        width:100%;
+        height: 450rpx;
+        padding: 10rpx 20rpx;
+        box-sizing:border-box;
+    }
+    .dialog-btn {
+        margin-top: 40rpx;
     }
 </style>

@@ -315,3 +315,28 @@ export function getCurrentActivateTask(userFID) {
         }, reject)
     })
 }
+
+/**
+ * 获取小组任务详情
+ * @param groupFID
+ * @returns {Promise<any>}
+ */
+export function getGroupDetail(groupFID) {
+    return new Promise((resolve, reject) => {
+        httpService.get('api/CourseGroup/GetSingleCourseGroup', {
+            groupFID: groupFID
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+export function getRemarkStandard(courseFID) {
+    return new Promise((resolve, reject) => {
+        httpService.get('api/CourseManage/GetListCourseReflectConfigDetails', {
+            courseFID: courseFID
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}

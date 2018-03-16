@@ -7,14 +7,19 @@
             <navigator url="/practice/pages/think">有反思</navigator>
         </view>
         <view class="prev-know-main">
-            <course-detail :courseInfo="courseInfo"></course-detail>
+            <course-detail :courseInfo.sync="courseInfo"></course-detail>
             <panel class="prev-know-panel">
                 <view slot="title">早知道</view>
                 <view slot="content">
-                    香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人，
-                    香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人，
-                    香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人，
-                    香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人，香甜可口的苹果，看着就非常诱人
+                    {{prevKnowContent}}
+                </view>
+            </panel>
+            <panel class="remark-standard-panel">
+                <view slot="title">评分标准</view>
+                <view slot="content">
+                    <repeat for="{{remarkStandardList}}" item="item" index="index">
+                        <remark-tpl :remarkInfo.sync="item"></remark-tpl>
+                    </repeat>
                 </view>
             </panel>
         </view>
@@ -25,6 +30,10 @@
     import wepy from 'wepy'
     import courseDetail from '../../components/course-detail'
     import Panel from '../../components/panel'
+    import remarkTpl from '../../components/remark-tpl'
+
+    import {getCourseDetailById, getGroupDetail, getPrevKnowByCourse, getRemarkStandard} from '../../api'
+    import {parseTime} from '../../util'
 
     export default class prevKonw extends wepy.page {
         config = {
@@ -33,15 +42,37 @@
 
         data = {
             userInfo: null,
-            courseInfo: {
-                courseNo: '002',
-                courseName: '物理小实验--水的流动'
-            }
+            courseInfo: null,
+            prevKnowContent: '',
+            remarkStandardList: []
         }
 
         components = {
             'course-detail': courseDetail,
-            'panel': Panel
+            'panel': Panel,
+            'remark-tpl': remarkTpl
+        }
+
+        init() {
+            let activeGroupTask = wepy.getStorageSync('activeTaskInfo')
+            getCourseDetailById(activeGroupTask.CourseFID).then(res => {
+                getGroupDetail(activeGroupTask.GroupFID).then(groupRes => {
+                    res.groupMembers = groupRes.AttendMembers
+                    res.showCreateTime = parseTime(res.CreateTime)
+                    res.showOpenStartTime = parseTime(res.OpenStartTime)
+                    res.showOpenEndTime = parseTime(res.OpenEndTime)
+                    this.courseInfo = res
+                    this.$apply()
+                })
+            })
+            getPrevKnowByCourse(activeGroupTask.CourseFID).then(res => {
+                this.prevKnowContent = res.KnowContent
+                this.$apply()
+            })
+            getRemarkStandard(activeGroupTask.CourseFID).then(res => {
+                this.remarkStandardList = res
+                this.$apply()
+            })
         }
 
         onLoad() {
@@ -50,6 +81,7 @@
                 self.userInfo = res
                 self.$apply()
             })
+            this.init()
         }
     }
 </script>
@@ -63,6 +95,7 @@
         justify-content: center;
         flex-direction: row;
         border-bottom: 1px solid #efefef;
+        text-align: center;
     }
     .nav navigator{
         flex: 1;

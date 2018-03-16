@@ -2,7 +2,7 @@
     <view class="mine-container {{userTheme}}">
         <view class="user-block">
             <image class="userinfo-avatar" src="{{ wxUserInfo.avatarUrl }}" background-size="cover"/>
-            <view class="userinfo-nickname">{{ userName }}<text hidden="{{!isTeacher}}">&nbsp;老师</text></view>
+            <view class="userinfo-nickname">{{ userName }}<text hidden="{{!isTeacher}}" style="margin-left: 20rpx;">老师</text></view>
             <view class="userinfo-class">{{ userClass }}</view>
             <image src="../images/bolang.png" class="bolang"></image>
         </view>
@@ -11,7 +11,7 @@
                 <personal-task1 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="runningTask"
                                 @continue.user="continueTask" @restart.user="restartTask"></personal-task1>
             </view>
-            <view class="task-block task-common">
+            <view class="task-block task-common" hidden="{{!commonTasks || commonTasks.length === 0}}">
                 <repeat for="{{commonTasks}}" item="item" index="index">
                     <personal-task2 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="item"
                                     @continue.user="continueTask" @restart.user="restartTask"></personal-task2>
@@ -86,13 +86,17 @@
 
         methods = {
             continueTask(task) {
+                let activeTaskInfo = {CourseFID: task.CourseFID, GroupFID: task.FlnkID}
+                wepy.setStorageSync('activeTaskInfo', activeTaskInfo)
                 wepy.switchTab({
                     url: '/pages/practice'
                 })
             },
             restartTask(task) {
                 let groupTaskId = task.FlnkID
+                let activeTaskInfo = {CourseFID: task.CourseFID, GroupFID: groupTaskId}
                 activateGroupTask(this.$parent.globalData.userInfo.FlnkID, task.FlnkID, task.CourseFID).then(res => {
+                    wepy.setStorageSync('activeTaskInfo', activeTaskInfo)
                     this.myTaskList.forEach(item => {
                         item.IsActivationGroup = item.FlnkID === groupTaskId
                     })
@@ -110,6 +114,7 @@
                 this.$apply()
             })
             getMyCourseTasks(this.$parent.globalData.userInfo.SchoolFID, id).then(res => {
+                console.log(res)
                 this.myTaskList = res || []
                 this.myTaskList.forEach(item => {
                     if (item.Status === 0) {
@@ -119,7 +124,7 @@
             })
         }
 
-        onLoad() {
+        onShow() {
             this.wxUserInfo = this.$parent.globalData.wxUserInfo
             if (this.wxUserInfo.gender === 1) {
                 wepy.setNavigationBarColor({

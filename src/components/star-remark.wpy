@@ -1,0 +1,36 @@
+<template>
+    <view class="star-remark">
+        <repeat for="{{current}}" itme="item" index="index">
+            <image src="../../images/xing.png"></image>
+        </repeat>
+        <repeat for="{{max}}" itme="item" index="index">
+            <image src="../../images/xing2.png"></image>
+        </repeat>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class Panel extends wepy.component {
+        props = {
+            max: {
+                default: 5
+            },
+            current: {
+                default: 0
+            }
+        }
+    }
+</script>
+<style>
+    .star-remark {
+        display: inline-block;
+    }
+    .star-remark view {
+        display: inline-block;
+    }
+    .star-remark view image {
+        width: 60rpx;
+        height: 60rpx;
+    }
+</style>

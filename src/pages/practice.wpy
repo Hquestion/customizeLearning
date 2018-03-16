@@ -1,77 +1,84 @@
 <template>
     <view class="home-container">
-        <view class="nav">
-            <navigator url="/practice/pages/prevKnow">早知道</navigator>
-            <navigator url="/practice/pages/arrange">会安排</navigator>
-            <navigator url="/pages/practice" open-type="switchTab" class="active">能落实</navigator>
-            <navigator url="/practice/pages/think">有反思</navigator>
-        </view>
-        <view @tap="hideChatMsgMore">
-            <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper">
-                <repeat for="{{messages}}" index="index" item="item" key="index">
-                    <chat-message :id="'message_' + index" :userInfo="item.userInfo" :msgData.sync="item"
-                                  :message="item.message" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
-                    </chat-message>
-                </repeat>
-            </scroll-view>
-            <view class="chat-input">
-                <!--功能按钮-->
-                <view class="picker-view">
-                    <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}">
-                        <view class="picker">
-                            <view class="step-tip" wx:if="{{arrangeIndex < 0}}">如需提交作业，请先选择会安排步骤</view>
-                            <view wx:else>
-                                {{arrangeList[arrangeIndex]}}
-                            </view>
-                        </view>
-                        <image src="../images/xia.png"></image>
-                    </picker>
-                    <view class="filter">
-                        <image src="../images/man.png"></image>
-                    </view>
-                </view>
-                <view id="btn-tools">
-                    <view class="record-text-toggle">
-                        <view hidden="{{inputMode === 'TEXT'}}" class="btn-radius btn-audio-input" @tap="setInputMode">
-                            <image src="../images/jianpan.png"></image>
-                        </view>
-                        <view hidden="{{inputMode === 'AUDIO'}}" class="btn-radius btn-text-input" @tap="setInputMode">
-                            <image src="../images/yuyin.png"></image>
-                        </view>
-                    </view>
-                    <view class="input-area">
-                        <view hidden="{{inputMode === 'AUDIO'}}" style="width:100%;height:100%;">
-                            <view class="text-input-widget">
-                                <view class="textarea-container">
-                                <textarea auto-height fixed="{{true}}" show-confirm-bar="{{false}}" cursor-spacing="{{10}}"
-                                          @focus="onFocus" value="{{userTextInput}}" @input="onInputText"></textarea>
+        <view class="content-main" hidden="{{!haveActiveGroupTask}}">
+            <view class="nav">
+                <navigator url="/practice/pages/prevKnow">早知道</navigator>
+                <navigator url="/practice/pages/arrange">会安排</navigator>
+                <navigator url="/pages/practice" open-type="switchTab" class="active">能落实</navigator>
+                <navigator url="/practice/pages/think">有反思</navigator>
+            </view>
+            <view @tap="hideChatMsgMore">
+                <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper">
+                    <repeat for="{{messages}}" index="index" item="item" key="index">
+                        <chat-message :id="'message_' + index" :userInfo="item.userInfo" :msgData.sync="item"
+                                      :message="item.message" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
+                        </chat-message>
+                    </repeat>
+                </scroll-view>
+                <view class="chat-input">
+                    <!--功能按钮-->
+                    <view class="picker-view">
+                        <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}">
+                            <view class="picker">
+                                <view class="step-tip" wx:if="{{arrangeIndex < 0}}">如需提交作业，请先选择会安排步骤</view>
+                                <view wx:else>
+                                    {{arrangeList[arrangeIndex]}}
                                 </view>
                             </view>
-                        </view>
-                        <view hidden="{{inputMode === 'TEXT'}}" class="audio-input-widget">
-                            <button size="mini" type="default" @touchstart="startRecordAudio" @touchend="stopRecordAudio" @touchcancel="stopRecordAudio">按住讲话</button>
+                            <image src="../images/xia.png"></image>
+                        </picker>
+                        <view class="filter">
+                            <image src="../images/man.png"></image>
                         </view>
                     </view>
-                    <view class="more-area">
-                        <image class="chat-icon" src="../images/liaotian.png" hidden="{{userTextInput !== ''}}" @tap="showMoreActions"></image>
-                        <button size="mini" type="primary" hidden="{{userTextInput === ''}}" @tap="sendTextMsg">发送</button>
-                    </view>
-                </view>
-                <view id="btn-tools-more" hidden="{{!moreActionShown}}">
-                    <view class="upload-btn photo-btn" @tap="uploadPic">
-                        <view class="image-box">
-                            <image src="../images/pic.png"></image>
+                    <view id="btn-tools">
+                        <view class="record-text-toggle">
+                            <view hidden="{{inputMode === 'TEXT'}}" class="btn-radius btn-audio-input" @tap="setInputMode">
+                                <image src="../images/jianpan.png"></image>
+                            </view>
+                            <view hidden="{{inputMode === 'AUDIO'}}" class="btn-radius btn-text-input" @tap="setInputMode">
+                                <image src="../images/yuyin.png"></image>
+                            </view>
                         </view>
-                        <view class="indicator">相册</view>
-                    </view>
-                    <view class="upload-btn take-btn" @tap="takePhoto">
-                        <view class="image-box">
-                            <image src="../images/video.png"></image>
+                        <view class="input-area">
+                            <view hidden="{{inputMode === 'AUDIO'}}" style="width:100%;height:100%;">
+                                <view class="text-input-widget">
+                                    <view class="textarea-container">
+                                <textarea auto-height fixed="{{true}}" show-confirm-bar="{{false}}" cursor-spacing="{{10}}"
+                                          @focus="onFocus" value="{{userTextInput}}" @input="onInputText"></textarea>
+                                    </view>
+                                </view>
+                            </view>
+                            <view hidden="{{inputMode === 'TEXT'}}" class="audio-input-widget">
+                                <button size="mini" type="default" @touchstart="startRecordAudio" @touchend="stopRecordAudio" @touchcancel="stopRecordAudio">按住讲话</button>
+                            </view>
                         </view>
-                        <view class="indicator">视频</view>
+                        <view class="more-area">
+                            <image class="chat-icon" src="../images/liaotian.png" hidden="{{userTextInput !== ''}}" @tap="showMoreActions"></image>
+                            <button size="mini" type="primary" hidden="{{userTextInput === ''}}" @tap="sendTextMsg">发送</button>
+                        </view>
+                    </view>
+                    <view id="btn-tools-more" hidden="{{!moreActionShown}}">
+                        <view class="upload-btn photo-btn" @tap="uploadPic">
+                            <view class="image-box">
+                                <image src="../images/pic.png"></image>
+                            </view>
+                            <view class="indicator">相册</view>
+                        </view>
+                        <view class="upload-btn take-btn" @tap="takePhoto">
+                            <view class="image-box">
+                                <image src="../images/video.png"></image>
+                            </view>
+                            <view class="indicator">视频</view>
+                        </view>
                     </view>
                 </view>
             </view>
+        </view>
+        <view class="no-active-task" hidden="{{haveActiveGroupTask}}">
+            <view>您暂时没有进行中的项目</view>
+            <view>您可以<navigator url="/pages/index" class="success" open-type="switchTab">创建小组</navigator>，</view>
+            <view>如果您已经加入小组，您可以<navigator url="/pages/mine" class="success" open-type="switchTab">启动课程</navigator></view>
         </view>
     </view>
 </template>
@@ -87,6 +94,7 @@
         }
 
         data = {
+            haveActiveGroupTask: true,
             userInfo: null,
             arrangeList: ['第一步', '第二部', '第三部'],
             arrangeIndex: -1,
@@ -292,12 +300,18 @@
             this.messageId = 'message_' + (this.messages.length - 1)
         }
 
+        init() {
+            let activeTaskInfo = wepy.getStorageSync('activeTaskInfo')
+            this.haveActiveGroupTask = !!activeTaskInfo
+        }
+
         onLoad() {
             let self = this
             this.$parent.getUserInfo().then((res) => {
                 self.userInfo = res
             })
             wepy.showTabBarRedDot({index: 2})
+            this.init()
         }
     }
 </script>
@@ -464,5 +478,14 @@
         width: 50rpx;
         height: 50rpx;
         margin-top: 10rpx;
+    }
+    .no-active-task {
+        padding: 80rpx 20rpx;
+    }
+    .no-active-task view {
+        padding: 15rpx 0;
+    }
+    .no-active-task view  navigator {
+        padding: 0;
     }
 </style>

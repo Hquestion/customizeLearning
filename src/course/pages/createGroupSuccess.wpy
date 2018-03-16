@@ -51,6 +51,8 @@
             startCourse() {
                 // 校验该学生是否在该课程的某一个任务中，如果在任务中则无法创建
                 activateGroupTask(this.$parent.globalData.userInfo.FlnkID, this.groupId, this.courseId).then(res => {
+                    let activeTaskInfo = {CourseFID: this.courseId, GroupFID: this.groupId}
+                    wepy.setStorageSync('activeTaskInfo', activeTaskInfo)
                     wepy.switchTab({
                         url: '/pages/practice'
                     })
