@@ -4,25 +4,25 @@
             <navigator url="/practice/pages/prevKnow">早知道</navigator>
             <navigator url="/practice/pages/arrange" class="active">会安排</navigator>
             <navigator url="/pages/practice" open-type="switchTab">能落实</navigator>
-            <navigator url="/practice/pages/think">有反思</navigator>
+            <navigator url="/practice/pages/think" hidden="{{isTeacher}}">有反思</navigator>
         </view>
         <scroll-view scroll-y="{{scrollable}}">
-            <step-list :list="datalist"></step-list>
+            <step-list :list.sync="datalist" :editable.sync="isUserLeader"></step-list>
         </scroll-view>
-        <view class="button-block flex-box">
+        <view class="button-block flex-box" hidden="{{!isUserLeader}}">
             <view class="btn btn-add">
                 <rich-button1 text="添加步骤" theme="grey" @tap.user="addStep" width="90%"></rich-button1>
             </view>
             <view class="btn btn-save">
-                <rich-button2 text="保存" theme="green" @tap.user="saveChange" width="90%"></rich-button2>
+                <rich-button2 text="保存" :theme.sync="saveBtnTheme" @tap.user="saveChange" width="90%"></rich-button2>
             </view>
         </view>
         <dialog class="add-step-dialog" :visible.sync="addStepDialogVisible">
             <view slot="title">{{addStepTitle}}</view>
             <view slot="main">
                 <view class="content">
-                    <input type="text" placeholder="请输入步骤名称" confirm-type="确定" value="{{stepName}}"/>
-                    <textarea fixed value="{{stepDesc}}" placeholder="请输入步骤详情"></textarea>
+                    <input type="text" placeholder="请输入步骤名称" confirm-type="确定" value="{{stepName}}" @input="onNameInput"/>
+                    <textarea maxlength="-1" fixed value="{{stepDesc}}" placeholder="请输入步骤详情" @input="onDescInput"></textarea>
                 </view>
                 <view class="dialog-btn">
                     <rich-button3 text="提交" theme="green" width="100%;" @tap.user="onSubmitAddStep"></rich-button3>
@@ -38,124 +38,27 @@
     import richButton from '../../components/rich-button'
     import dialog from '../../components/dialog'
 
+    import {getGroupDetail, getCourseArrangeList, saveGroupArrangeList, deleteArrange} from '../../api'
+    import {Step} from '../../model/Step'
+
     export default class Arrange extends wepy.page {
         config = {
             navigationBarTitleText: '会安排'
         }
 
         data = {
+            isTeacher: false,
             userInfo: null,
+            isUserLeader: false,
+            isChanged: false,
             scrollable: true,
             addStepDialogVisible: false,
             stepName: '',
             stepDesc: '',
             addStepTitle: '添加步骤',
             toEditStep: null,
-            datalist: [{
-                id: 1,
-                stepName: '绘画工具',
-                isObjective: true,
-                options: [{
-                    content: '速写本',
-                    id: 'o1',
-                    isChecked: true
-                }, {
-                    content: '水彩笔',
-                    id: 'o2',
-                    isChecked: true
-                }, {
-                    content: '铅笔',
-                    id: 'o3',
-                    isChecked: true
-                }, {
-                    content: '毛笔',
-                    id: 'o4',
-                    isChecked: true
-                }, {
-                    content: '橡皮擦',
-                    id: 'o5',
-                    isChecked: true
-                }, {
-                    content: '16K宣纸',
-                    id: 'o6',
-                    isChecked: true
-                }],
-                detail: ''
-            }, {
-                id: 2,
-                stepName: '记录过程',
-                isObjective: false,
-                options: [],
-                detail: '使用手机拍摄过程照片上传'
-            }, {
-                id: 3,
-                stepName: '绘画工具',
-                isObjective: true,
-                options: [{
-                    content: '速写本',
-                    id: 'o1',
-                    isChecked: true
-                }, {
-                    content: '水彩笔',
-                    id: 'o2',
-                    isChecked: true
-                }, {
-                    content: '铅笔',
-                    id: 'o3',
-                    isChecked: true
-                }, {
-                    content: '毛笔',
-                    id: 'o4',
-                    isChecked: true
-                }],
-                detail: ''
-            }, {
-                id: 4,
-                stepName: '记录过程',
-                isObjective: false,
-                options: [],
-                detail: '使用手机拍摄过程照片上传'
-            }, {
-                id: 5,
-                stepName: '绘画工具',
-                isObjective: true,
-                options: [{
-                    content: '速写本',
-                    id: 'o1',
-                    isChecked: true
-                }, {
-                    content: '水彩笔',
-                    id: 'o2',
-                    isChecked: true
-                }, {
-                    content: '铅笔',
-                    id: 'o3',
-                    isChecked: true
-                }, {
-                    content: '毛笔',
-                    id: 'o4',
-                    isChecked: true
-                }],
-                detail: ''
-            }, {
-                id: 6,
-                stepName: '记录过程',
-                isObjective: false,
-                options: [],
-                detail: '使用手机拍摄过程照片上传'
-            }, {
-                id: 7,
-                stepName: '记录过程',
-                isObjective: false,
-                options: [],
-                detail: '使用手机拍摄过程照片上传'
-            }, {
-                id: 8,
-                stepName: '记录过程',
-                isObjective: false,
-                options: [],
-                detail: '使用手机拍摄过程照片上传'
-            }]
+            datalist: [],
+            currentGroupInfo: null
         }
 
         components = {
@@ -166,6 +69,12 @@
             'dialog': dialog
         }
 
+        computed = {
+            saveBtnTheme() {
+                return this.isChanged ? 'green' : 'grey'
+            }
+        }
+
         methods = {
             addStep() {
                 this.addStepTitle = '添加步骤'
@@ -174,15 +83,50 @@
                 this.$apply()
             },
             onSubmitAddStep() {
-                console.log(this.stepName)
-                console.log(this.stepDesc)
                 if (this.toEditStep) {
                     // 编辑步骤处理
+                    this.toEditStep.ArrangeName = this.stepName
+                    this.toEditStep.modelList[0].ArrangeContent = this.stepDesc
+                    this.$apply()
                 } else {
                     // 添加步骤处理
+                    let stepItem = new Step({
+                        ArrangeName: this.stepName,
+                        CourseFID: this.currentGroupInfo.CourseFID,
+                        GroupFID: this.currentGroupInfo.GroupFID,
+                        Creater: this.$parent.globalData.userInfo.FlnkID,
+                        SortCode: this.datalist.length + 1,
+                        ArrangeContent: this.stepDesc
+                    })
+                    this.datalist.push(stepItem)
+                    this.$apply()
                 }
+                this.stepName = ''
+                this.stepDesc = ''
+                this.isChanged = true
                 this.addStepDialogVisible = false
                 this.$apply()
+            },
+            saveChange() {
+                this.datalist.forEach((item, index) => {
+                    item.SortCode = index + 1
+                })
+                saveGroupArrangeList(this.datalist).then(res => {
+                    getCourseArrangeList(this.currentGroupInfo.CourseFID, this.currentGroupInfo.GroupFID).then(res => {
+                        this.datalist = res
+                        this.isChaned = false
+                        this.$apply()
+                        wepy.showToast({
+                            title: '保存成功'
+                        })
+                    })
+                })
+            },
+            onNameInput(e) {
+                this.stepName = e.detail.value
+            },
+            onDescInput(e) {
+                this.stepDesc = e.detail.value
             }
         }
 
@@ -193,13 +137,14 @@
             },
             'enable-scroll': function() {
                 this.scrollable = true
+                this.isChanged = true
                 this.$apply()
             },
             'edit-step': function(e) {
                 this.addStepTitle = '编辑步骤'
                 this.toEditStep = e
-                this.stepName = e.stepName
-                this.stepDesc = e.detail
+                this.stepName = e.ArrangeName
+                this.stepDesc = (e.modelList[0] && e.modelList[0].ArrangeContent) || ''
                 this.addStepDialogVisible = true
                 this.$apply()
             },
@@ -210,22 +155,39 @@
                     content: '删除步骤之后将无法恢复，确定删除该步骤？',
                     success: function(res) {
                         if (res.confirm) {
-                            let index = self.datalist.findIndex(item => item.id === e.id)
-                            self.datalist.splice(index, 1)
-                            self.$apply()
-                            self.$com['step-list'].$apply()
+                            deleteArrange(e.FlnkID).then(res => {
+                                let index = self.datalist.findIndex(item => item.FlnkID === e.FlnkID)
+                                self.datalist.splice(index, 1)
+                                this.isChanged = true
+                                self.$apply()
+                                self.$com['step-list'].$apply()
+                            })
                         }
                     }
                 })
+            },
+            'check-change': function() {
+                this.isChanged = true
             }
         }
 
-        onLoad() {
-            let self = this
-            this.$parent.getUserInfo(function (res) {
-                self.userInfo = res
-                self.$apply()
+        init() {
+            let activeGroupInfo = wepy.getStorageSync('activeTaskInfo')
+            this.currentGroupInfo = activeGroupInfo
+            getGroupDetail(activeGroupInfo.GroupFID).then(res => {
+                let leaderId = res.GroupLeader
+                this.isUserLeader = leaderId === this.$parent.globalData.userInfo.FlnkID
+                this.$apply()
             })
+            getCourseArrangeList(activeGroupInfo.CourseFID, activeGroupInfo.GroupFID).then(res => {
+                this.datalist = res
+                this.$apply()
+            })
+        }
+
+        onLoad() {
+            this.isTeacher = (this.$parent.globalData.userInfo.RoleNum + '') === '2'
+            this.init()
         }
     }
 </script>

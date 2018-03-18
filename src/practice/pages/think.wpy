@@ -8,7 +8,10 @@
         </view>
         <view class="think-content">
             <view class="submit-steps">
-                <view class="step-list-container"></view>
+                <view class="step-list-container">
+                    <step-list :list.sync="submitedStepList" editable="{{false}}"></step-list>
+                </view>
+                <empty-content hidden="{{submitedStepList.length > 0}}" text="您还没有提交任何步骤"></empty-content>
             </view>
             <view class="my-think">
                 <panel>
@@ -26,7 +29,7 @@
             <view slot="title">填写反思</view>
             <view slot="main">
                 <view class="content">
-                    <textarea fixed value="{{myThinkContent}}" placeholder="请填写反思内容" @input="onThinkInput"></textarea>
+                    <textarea maxlength="-1" fixed value="{{inputThinkContent}}" placeholder="请填写反思内容" @input="onThinkInput"></textarea>
                 </view>
                 <view class="dialog-btn">
                     <rich-button2 text="提交" theme="green" width="100%;" @tap.user="onSubmitThink"></rich-button2>
@@ -41,6 +44,10 @@
     import panel from '../../components/panel'
     import richButton from '../../components/rich-button'
     import dialog from '../../components/dialog'
+    import stepList from '../../components/step-list'
+    import emptyContent from '../../components/empty-content'
+
+    import {getThinkContent, saveThinkContent, getUserSubmitSteps} from '../../api'
 
     export default class Think extends wepy.page {
         config = {
@@ -51,29 +58,73 @@
             panel: panel,
             'rich-button': richButton,
             'rich-button2': richButton,
-            dialog: dialog
+            dialog: dialog,
+            'step-list': stepList,
+            'empty-content': emptyContent
         }
 
         data = {
-            userInfo: null,
             editThinkDialogVisible: false,
-            myThinkContent: ''
+            myThinkContent: '',
+            myThinkID: '',
+            currentGroupInfo: null,
+            inputThinkContent: '',
+            submitedStepList: []
         }
 
         methods = {
             onEditThink() {
+                this.inputThinkContent = this.myThinkContent
                 this.editThinkDialogVisible = true
             },
             onSubmitThink() {
-
+                saveThinkContent({
+                    FlnkID: this.myThinkID || '',
+                    StudentFID: this.$parent.globalData.userInfo.FlnkID,
+                    StudentName: this.$parent.globalData.userInfo.XM,
+                    ReflectContent: this.inputThinkContent,
+                    GroupFID: this.currentGroupInfo.GroupFID,
+                    CourseFID: this.currentGroupInfo.CourseFID
+                }).then(res => {
+                    this.myThinkContent = this.inputThinkContent
+                    this.myThinkID = res
+                    this.editThinkDialogVisible = false
+                    this.$apply()
+                }, () => {
+                    this.editThinkDialogVisible = false
+                    this.$apply()
+                })
             },
             onThinkInput(e) {
-                this.myThinkContent = e.detail.value
+                this.inputThinkContent = e.detail.value
             }
         }
 
-        onLoad() {
+        init() {
+            this.currentGroupInfo = wepy.getStorageSync('activeTaskInfo')
+            getThinkContent(this.$parent.globalData.userInfo.FlnkID, this.currentGroupInfo.GroupFID).then(res => {
+                if (res.Code === '4000') {
+                    this.myThinkContent = res.ResultObj.ReflectContent
+                    this.myThinkID = res.ResultObj.FlnkID
+                } else {
+                    this.myThinkContent = ''
+                }
+                this.$apply()
+            }, () => {
+                this.myThinkContent = ''
+                this.$apply()
+            })
+            getUserSubmitSteps(this.$parent.globalData.userInfo.FlnkID, this.currentGroupInfo.GroupFID).then(res => {
+                this.submitedStepList = res
+                this.$apply()
+            }, () => {
+                this.submitedStepList = []
+                this.$apply()
+            })
+        }
 
+        onLoad() {
+            this.init()
         }
     }
 </script>

@@ -20,7 +20,7 @@
                                 <course-task class="course-task-item" :taskInfo.sync="item" @toggle-praise.user="onTogglePraise"></course-task>
                             </view>
                         </repeat>
-                        <view hidden="{{schoolCourseTasks.length > 0}}">
+                        <view hidden="{{schoolCourseTasks.length > 0}}" class="empty-container">
                             <empty-content></empty-content>
                         </view>
                     </scroll-view>
@@ -32,7 +32,7 @@
                                 <course-task class="course-task-item" :taskInfo.sync="item" @toggle-praise.user="onTogglePraise"></course-task>
                             </view>
                         </repeat>
-                        <view hidden="{{classCourseTasks.length > 0}}">
+                        <view hidden="{{classCourseTasks.length > 0}}" class="empty-container">
                             <empty-content></empty-content>
                         </view>
                     </scroll-view>
@@ -53,7 +53,7 @@
                                         </view>
                                     </repeat>
                                 </view>
-                                <view hidden="{{cateCourseList.length > 0}}">
+                                <view hidden="{{cateCourseList.length > 0}}" class="empty-container">
                                     <empty-content></empty-content>
                                 </view>
                             </scroll-view>
@@ -338,5 +338,9 @@
         background: #fff;
         color: #1abcb0;
         border-left: 2px solid #1abcb0;
+    }
+    .empty-container {
+        height: calc(100vh - 82rpx);
+        background: #fff;
     }
 </style>

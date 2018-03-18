@@ -1,11 +1,11 @@
 <template>
-    <view class="star-remark">
+    <view class="star-remark-tpl">
         <view class="remark-title">{{remarkInfo.ReflectName}}</view>
         <repeat for="{{remarkInfo.modelList}}" item="item" index="index">
             <view class="remark-detail">
                 <view class="detail-title">{{item.ReflectItemName}}</view>
                 <view class="detail-star">
-                    <star :max.sync="remarkInfo.StarValue" :current.sync="0"></star>
+                    <star :max.sync="item.StarValue" :current.sync="0"></star>
                 </view>
             </view>
         </repeat>
@@ -15,7 +15,7 @@
     import wepy from 'wepy'
     import starRemark from './star-remark'
 
-    export default class Panel extends wepy.component {
+    export default class RemarkTpl extends wepy.component {
         props = {
             remarkInfo: {}
         }
@@ -26,14 +26,21 @@
     }
 </script>
 <style>
-    .star-remark {
-        display: inline-block;
+    .star-remark-tpl {
+        margin-top: 10rpx;
+        text-indent: 0;
     }
-    .star-remark view {
-        display: inline-block;
+    .remark-title {
+        padding: 10rpx 0;
+        font-size: 40rpx;
     }
-    .star-remark view image {
-        width: 60rpx;
-        height: 60rpx;
+    .remark-detail {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 5rpx 0;
+    }
+    .remark-detail .detail-star {
+        margin-left: 20rpx;
     }
 </style>

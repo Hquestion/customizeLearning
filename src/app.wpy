@@ -38,7 +38,6 @@
 <script>
     import wepy from 'wepy'
     import 'wepy-async-function'
-    import {login} from './api'
     import {interceptor} from './util/httpInterceptor'
 
     export default class extends wepy.app {

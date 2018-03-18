@@ -331,10 +331,114 @@ export function getGroupDetail(groupFID) {
     })
 }
 
+/**
+ * 获取课程评分标准
+ * @param courseFID
+ * @returns {Promise<any>}
+ */
 export function getRemarkStandard(courseFID) {
     return new Promise((resolve, reject) => {
         httpService.get('api/CourseManage/GetListCourseReflectConfigDetails', {
             courseFID: courseFID
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+/**
+ * 获取会安排步骤列表
+ * @param courseFID
+ * @param groupFID
+ * @returns {Promise<any>}
+ */
+export function getCourseArrangeList(courseFID, groupFID) {
+    return new Promise((resolve, reject) => {
+        httpService.get('api/CourseGroup/GetListCourseGroupArrangeInfo', {
+            courseFID: courseFID,
+            groupFID: groupFID
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+/**
+ * 删除会安排某一步骤
+ * @param arrangeId
+ * @returns {Promise<any>}
+ */
+export function deleteArrange(arrangeId) {
+    return new Promise((resolve, reject) => {
+        httpService.post('api/CourseGroup/DeleteCourseArrangeInfo', {
+            FLnkID: arrangeId
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+/**
+ * 保存会安排修改
+ * @param data   StepList
+ * @returns {Promise<any>}
+ */
+export function saveGroupArrangeList(data) {
+    return new Promise((resolve, reject) => {
+        httpService.post('api/CourseGroup/SaveCourseArrangeInfo', data).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+/**
+ * 获取用户会反思内容
+ * @param userFID
+ * @param groupFID
+ * @returns {Promise<any>}
+ */
+export function getThinkContent(userFID, groupFID) {
+    return new Promise((resolve, reject) => {
+        httpService.get('api/CourseGroup/GetCrouseGroupReflectInfo', {
+            userFID: userFID,
+            groupFID: groupFID
+        }).then(res => {
+            resolve(res)
+        }, reject)
+    })
+}
+
+/**
+ * 保存用户会反思内容
+ * @param data
+ * @returns {Promise<any>}
+ */
+export function saveThinkContent(data) {
+    return new Promise((resolve, reject) => {
+        httpService.post('api/CourseGroup/SaveCrouseGroupReflectInfo', {
+            FlnkID: data.FlnkID || '',
+            StudentFID: data.StudentFID,
+            StudentName: data.StudentName,
+            ReflectContent: data.ReflectContent,
+            GroupFID: data.GroupFID,
+            CourseFID: data.CourseFID
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+/**
+ * 获取用户提交的步骤明细
+ * @param userFID
+ * @param groupFID
+ * @returns {Promise<any>}
+ */
+export function getUserSubmitSteps(userFID, groupFID) {
+    return new Promise((resolve, reject) => {
+        httpService.get('api/CourseGroup/GetCourseGroupWorkArrangeInfoByStudent', {
+            userFID: userFID,
+            groupFID: groupFID
         }).then(res => {
             resolve(res.ResultObj)
         }, reject)

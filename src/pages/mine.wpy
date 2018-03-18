@@ -3,10 +3,10 @@
         <view class="user-block">
             <image class="userinfo-avatar" src="{{ wxUserInfo.avatarUrl }}" background-size="cover"/>
             <view class="userinfo-nickname">{{ userName }}<text hidden="{{!isTeacher}}" style="margin-left: 20rpx;">老师</text></view>
-            <view class="userinfo-class">{{ userClass }}</view>
+            <view class="userinfo-class" hidden="{{isTeacher}}">{{ userClass }}</view>
             <image src="../images/bolang.png" class="bolang"></image>
         </view>
-        <view class="my-task-block">
+        <view class="my-task-block" wx:if="{{!isTeacher}}">
             <view class="task-block task-running" wx:if="{{!!runningTask}}">
                 <personal-task1 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="runningTask"
                                 @continue.user="continueTask" @restart.user="restartTask"></personal-task1>
@@ -18,12 +18,36 @@
                 </repeat>
             </view>
         </view>
+        <view class="teacher-task-block" wx:if="{{isTeacher}}">
+            <view class="task-block t-task-running" hidden="{{!tRunningTasks || tRunningTasks.length === 0}}">
+                <panel>
+                    <view slot="title">进行中的课程</view>
+                    <view slot="content" class='panel-content'>
+                        <repeat for="{{tRunningTasks}}" item="item" index="index">
+                            <t-course-task1 class="t-task-comp" :taskInfo.sync="item" @teacher-check-course.user="checkCourse"></t-course-task1>
+                        </repeat>
+                    </view>
+                </panel>
+            </view>
+            <view class="task-block t-task-complete" hidden="{{!tCompleteTasks || tCompleteTasks.length === 0}}">
+                <panel>
+                    <view slot="title">已完成的课程</view>
+                    <view slot="content" class="panel-content">
+                        <repeat for="{{tCompleteTasks}}" item="item" index="index">
+                            <t-course-task1 class="t-task-comp" :taskInfo.sync="item"></t-course-task1>
+                        </repeat>
+                    </view>
+                </panel>
+            </view>
+        </view>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
     import PersonalTask from '../components/personal-task'
+    import TeacherCourseTask from '../components/teacher-course-task'
+    import panel from '../components/panel'
 
     import {getStuDetailInfo, getMyCourseTasks, activateGroupTask} from '../api'
     import {getLastDays} from '../util'
@@ -40,12 +64,17 @@
             userClass: '',
             isTeacher: false,
             userTheme: 'male',
-            myTaskList: []
+            myTaskList: [],
+            tRunningTasks: [],
+            tCompleteTasks: []
         }
 
         components = {
             'personal-task1': PersonalTask,
-            'personal-task2': PersonalTask
+            'personal-task2': PersonalTask,
+            't-course-task1': TeacherCourseTask,
+            't-course-task2': TeacherCourseTask,
+            panel: panel
         }
 
         watch = {
@@ -102,6 +131,16 @@
                     })
                     this.$apply()
                 })
+            },
+            checkCourse(task) {
+                let groupTaskId = task.FlnkID
+                let activeTaskInfo = {CourseFID: task.CourseFID, GroupFID: groupTaskId}
+                activateGroupTask(this.$parent.globalData.userInfo.FlnkID, task.FlnkID, task.CourseFID).then(res => {
+                    wepy.setStorageSync('activeTaskInfo', activeTaskInfo)
+                    wepy.switchTab({
+                        url: '/pages/practice'
+                    })
+                })
             }
         }
 
@@ -109,18 +148,40 @@
             let id = this.$parent.globalData.userInfo.FlnkID
             this.userName = this.$parent.globalData.userInfo.XM
             this.isTeacher = (this.$parent.globalData.userInfo.RoleNum + '') === '2'
-            getStuDetailInfo(id).then(res => {
-                this.userClass = res.NJ + '年级（' + res.BJBH + '）班'
-                this.$apply()
-            })
-            getMyCourseTasks(this.$parent.globalData.userInfo.SchoolFID, id).then(res => {
-                console.log(res)
-                this.myTaskList = res || []
-                this.myTaskList.forEach(item => {
+            if (this.isTeacher) {
+                this.initTeacherTasks(this.$parent.globalData.userInfo)
+            } else {
+                getStuDetailInfo(id).then(res => {
+                    this.userClass = res.NJ + '年级（' + res.BJBH + '）班'
+                    this.$apply()
+                })
+                getMyCourseTasks(this.$parent.globalData.userInfo.SchoolFID, id).then(res => {
+                    this.myTaskList = res || []
+                    this.myTaskList.forEach(item => {
+                        if (item.Status === 0) {
+                            item.lastDays = getLastDays(item.CreateTime)
+                        }
+                    })
+                    this.$apply()
+                })
+            }
+        }
+
+        initTeacherTasks(userInfo) {
+            getMyCourseTasks(userInfo.SchoolFID, userInfo.FlnkID).then(res => {
+                let allTasks = res || []
+                allTasks.forEach(item => {
                     if (item.Status === 0) {
                         item.lastDays = getLastDays(item.CreateTime)
                     }
                 })
+                this.tCompleteTasks = allTasks.filter(item => {
+                    return item.Status !== 0
+                })
+                this.tRunningTasks = allTasks.filter(item => {
+                    return item.Status === 0
+                })
+                this.$apply()
             })
         }
 
@@ -194,5 +255,25 @@
     }
     .task-block.task-common {
         background: #f2f2f2;
+    }
+    .teacher-task-block {
+        padding: 20rpx;
+        box-sizing: border-box;
+    }
+    .teacher-task-block .task-block {
+        border: 1px solid #dedede;
+        box-sizing: border-box;
+        border-radius: 10rpx;
+        margin-top: 20rpx;
+    }
+    .teacher-task-block .task-block .panel {
+        border-radius: 10rpx;
+    }
+    .teacher-task-block .task-block .panel-content {
+        background: #f2f2f2;
+        text-indent: 0;
+    }
+    .teacher-task-block .task-block .panel-content .t-task-comp {
+        margin-top: 20rpx;
     }
 </style>

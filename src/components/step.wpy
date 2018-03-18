@@ -1,28 +1,26 @@
 <template>
     <view class="step">
         <view class="step-title">
-            <text class="step-index">步骤{{index}}</text>
-            <text class="step-name">{{stepData.stepName}}</text>
-            <view class="step-btns">
-                <text class="step-btn grey" @tap="editStep" wx:if="{{!stepData.isObjective}}">编辑</text>
+            <text class="step-index">步骤{{index + 1}}</text>
+            <text class="step-name">{{stepData.ArrangeName}}</text>
+            <view class="step-btns" hidden="{{!editable}}">
+                <text class="step-btn grey" @tap="editStep" wx:if="{{stepData.modelList[0].ArrangeType !== 1}}">编辑</text>
                 <text class="step-btn grey" @tap="deleteStep">删除</text>
             </view>
         </view>
         <view class="step-detail">
-            <block wx:if="{{stepData.isObjective}}">
-                <view class="option-group flex-box">
-                    <repeat for="{{stepData.options}}" item="item" index="index2">
-                        <view class="option-item {{item.isChecked ? 'checked': ''}}" data-opt-index="{{index2}}" @tap="toggle">
-                            {{item.content}}
+            <view>
+                <repeat for="{{stepData.modelList}}" item="item" index="index3">
+                    <block wx:if="{{item.ArrangeType === 1}}">
+                        <view class="option-item {{item.IsCheck ? 'checked': ''}}" data-opt-index="{{index3}}" @tap="toggle">
+                            {{item.ArrangeContent}}
                         </view>
-                    </repeat>
-                </view>
-            </block>
-            <block wx:else>
-                <view>
-                    <text>{{stepData.detail}}</text>
-                </view>
-            </block>
+                    </block>
+                    <block wx:else>
+                        <text class="arrange-text">{{item.ArrangeContent}}</text>
+                    </block>
+                </repeat>
+            </view>
         </view>
     </view>
 </template>
@@ -32,7 +30,8 @@
     export default class Step extends wepy.component {
         props = {
             index: {},
-            stepData: {}
+            stepData: {},
+            editable: {}
         }
 
         components = {
@@ -51,10 +50,21 @@
         methods = {
             toggle(e) {
                 let toggleIndex = e.currentTarget.dataset.optIndex
-                let index = this.stepData.options.findIndex((item, index) => {
+                let index = this.stepData.modelList.findIndex((item, index) => {
                     return toggleIndex === index
                 })
-                this.stepData.options[index].isChecked = !this.stepData.options[index].isChecked
+                let data = this.stepData.modelList[index]
+                if (data.IsSingle) {
+                    this.stepData.modelList.forEach((item, index2) => {
+                        if (index !== index2) {
+                            item.IsCheck = false
+                        }
+                    })
+                    this.stepData.modelList[index].IsCheck = !this.stepData.modelList[index].IsCheck
+                } else {
+                    this.stepData.modelList[index].IsCheck = !this.stepData.modelList[index].IsCheck
+                }
+                this.$emit('check-change')
             },
             editStep() {
                 this.$emit('edit-step', this.stepData)
@@ -74,7 +84,7 @@
         padding: 10rpx;
     }
     .step .step-title {
-        padding: 10rpx;
+        padding:10rpx 10rpx 10rpx 20rpx;
         position: relative;
     }
     .step .step-title .step-index {
@@ -137,5 +147,8 @@
     }
     .step-btns .step-btn {
         padding: 5rpx 10rpx;
+    }
+    .arrange-text {
+        margin-left: 10rpx;
     }
 </style>

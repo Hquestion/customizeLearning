@@ -11,7 +11,7 @@
 <script>
     import wepy from 'wepy'
 
-    export default class Panel extends wepy.component {
+    export default class StarRemark extends wepy.component {
         props = {
             max: {
                 default: 5
@@ -23,14 +23,8 @@
     }
 </script>
 <style>
-    .star-remark {
-        display: inline-block;
-    }
-    .star-remark view {
-        display: inline-block;
-    }
-    .star-remark view image {
-        width: 60rpx;
-        height: 60rpx;
+    .star-remark image {
+        width: 50rpx;
+        height: 50rpx;
     }
 </style>
