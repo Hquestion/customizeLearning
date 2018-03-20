@@ -1,34 +1,52 @@
 <template>
-    <view class="chat-message {{isSelf ? 'is-self': ''}}" id="{{id}}">
+    <view class="chat-message {{msgData.isSelf ? 'is-self': ''}}" id="{{id}}">
         <view class="user-name">
-            <image src="{{ userInfo.avatarUrl }}"></image>
+            <image src="{{ msgData.AvatarUrl }}"></image>
         </view>
-        <view class="message-info" @longpress="moreActions">
-            <view class="nick-name">{{userInfo.nickName}}</view>
+        <view class="message-info" @longpress="moreActions({{msgData}})">
+            <view class="nick-name">{{msgData.UserName}}</view>
             <view class="message-box">
-                <block wx:if="{{message.type === 'TEXT'}}">
-                    <view class="padding-box text-message-box">{{message.content}}</view>
+                <block wx:if="{{msgData.MessageBody.msgtype === '1'}}">
+                    <view class="padding-box text-message-box">
+                        <view class="success" hidden="{{!msgData.MessageBody.stepkey}}">
+                            步骤{{msgData.MessageBody.stepcode}}:{{msgData.MessageBody.stepname}}
+                        </view>
+                        <view>{{msgData.MessageBody.msgcontent}}</view>
+                    </view>
                 </block>
-                <block wx:if="{{message.type === 'AUDIO'}}">
+                <block wx:if="{{msgData.MessageBody.msgtype === '4'}}">
                     <view class="padding-box audio-message-box">
-                        <audio src="{{message.content}}" @tap="playAudio({{ message }})">
+                        <view class="success" hidden="{{!msgData.MessageBody.stepkey}}">
+                            步骤{{msgData.MessageBody.stepcode}}:{{msgData.MessageBody.stepname}}
+                        </view>
+                        <audio src="{{msgData.MessageBody.msgcontent}}" @tap="playAudio({{ msgData }})">
                             <image src="../images/yuyin2.png"></image>
                         </audio>
                     </view>
                 </block>
-                <block wx:if="{{message.type === 'VIDEO'}}">
+                <block wx:if="{{msgData.MessageBody.msgtype === '3'}}">
                     <view class="vidio-message-box">
-                        <image class="chat-img" lazy-load src="../images/vid.png" @tap="playVideo({{message}})"></image>
+                        <view class="success" hidden="{{!msgData.MessageBody.stepkey}}">
+                            步骤{{msgData.MessageBody.stepcode}}:{{msgData.MessageBody.stepname}}
+                        </view>
+                        <view>
+                            <image class="chat-img" lazy-load src="../images/vid.png" @tap="playVideo({{msgData}})"></image>
+                        </view>
                     </view>
                 </block>
-                <block wx:if="{{message.type === 'IMAGE'}}">
+                <block wx:if="{{msgData.MessageBody.msgtype === '2'}}">
                     <view class="image-message-box">
-                        <image class="chat-img" lazy-load src="{{message.content}}" @tap="previewImage({{ message }})"></image>
+                        <view class="success" hidden="{{!msgData.MessageBody.stepkey}}">
+                            步骤{{msgData.MessageBody.stepcode}}:{{msgData.MessageBody.stepname}}
+                        </view>
+                        <view>
+                            <image class="chat-img" lazy-load src="{{msgData.MessageBody.msgcontent}}" @tap="previewImage({{ msgData }})"></image>
+                        </view>
                     </view>
                 </block>
-                <image class="box-arrow left" src="../images/lt.png" wx:if="{{!isSelf}}" hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
-                <image class="box-arrow right" src="../images/liaotian-you.png" wx:else hidden="{{message.type === 'VIDEO' || message.type === 'IMAGE'}}"></image>
-                <view class="more-action-btn" hidden="{{!isShowMore}}">
+                <image class="box-arrow left" src="../images/lt.png" wx:if="{{!isSelf}}" hidden="{{msgData.MessageBody.msgtype === '3' || msgData.MessageBody.msgtype === '2'}}"></image>
+                <image class="box-arrow right" src="../images/liaotian-you.png" wx:else hidden="{{msgData.MessageBody.msgtype === '3' || msgData.MessageBody.msgtype === '2'}}"></image>
+                <view class="more-action-btn" hidden="{{!msgData.isShowMore}}">
                     <view @tap="copy">复制</view>
                     <view @tap="deleteMsg">删除</view>
                 </view>
@@ -43,9 +61,7 @@
         props = {
             id: {},
             msgData: {},
-            userInfo: {},
             isSelf: {},
-            message: {},
             isShowMore: {
                 twoWay: true
             }
@@ -60,35 +76,42 @@
         }
         methods = {
             playAudio(message) {
-                wepy.playVoice({
-                    filePath: message.content,
-                    complete(res) {
-                        wepy.stopPlayVoice()
-                    }
+                const innerAudioContext = wepy.createInnerAudioContext()
+                innerAudioContext.autoplay = false
+                innerAudioContext.src = message.MessageBody.msgcontent
+                innerAudioContext.onEnded(() => {
+                    innerAudioContext.stop()
                 })
+                innerAudioContext.onError((res) => {
+                    console.log(res.errMsg)
+                    console.log(res.errCode)
+                    innerAudioContext.stop()
+                })
+                innerAudioContext.play()
             },
             playVideo(message) {
                 wepy.navigateTo({
-                    url: '/practice/pages/playVideo?url=' + message.content
+                    url: '/practice/pages/playVideo?url=' + message.MessageBody.msgcontent
                 })
             },
             previewImage(message) {
                 wepy.previewImage({
-                    urls: [message.content]
+                    urls: [message.MessageBody.msgcontent]
                 })
             },
-            moreActions() {
-                this.$emit('hide-other-actions', this.msgData)
+            moreActions(msgData) {
+                this.$emit('hide-other-actions', msgData)
                 this.$nextTick(() => {
-                    this.msgData.isShowMore = true
+                    msgData.isShowMore = true
                 })
-                this.msgData.isShowMore = true
-                console.log(this.msgData)
+                msgData.isShowMore = true
+                console.log(msgData)
+                this.$apply()
             },
             copy() {
-                if (this.msgData.message.type === 'TEXT') {
+                if (this.msgData.MessageBody.msgtype === '1') {
                     wepy.setClipboardData({
-                        data: this.msgData.message.content
+                        data: this.msgData.MessageBody.msgcontent
                     })
                 }
             },
@@ -102,9 +125,7 @@
 
         }
 
-        onLoad() {
-            console.log(this.message)
-        }
+        onLoad() {}
     }
 </script>
 <style>
@@ -195,7 +216,6 @@
         width: 18rpx;
         height: 29rpx;
         min-width: 0;
-        z-index: 10;
     }
     .box-arrow.left {
         left: -14rpx;

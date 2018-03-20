@@ -5,7 +5,7 @@
                   data-index="{{index}}" style="top: {{offsetTop}}px;"
                   @touchstart="onStartTouch" @touchmove="onTouchMove"
                   @touchend="onTouchEnd" @touchcancel="onTouchEnd" @longpress="onLongPress">
-                <step :stepData.sync="item" :index.sync="index" :editable.sync="editable"></step>
+                <step :stepData.sync="item" :index.sync="index + 1" :editable.sync="editable"></step>
             </view>
         </repeat>
     </view>

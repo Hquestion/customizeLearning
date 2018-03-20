@@ -10,25 +10,29 @@
             <view @tap="hideChatMsgMore">
                 <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper">
                     <repeat for="{{messages}}" index="index" item="item" key="index">
-                        <chat-message :id="'message_' + index" :userInfo="item.userInfo" :msgData.sync="item"
-                                      :message="item.message" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
+                        <chat-message :id="'message_' + item.MessageID" :msgData.sync="item" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
                         </chat-message>
                     </repeat>
                 </scroll-view>
                 <view class="chat-input">
                     <!--功能按钮-->
                     <view class="picker-view">
-                        <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}">
+                        <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}" range-key="ArrangeName">
                             <view class="picker">
-                                <view class="step-tip" wx:if="{{arrangeIndex < 0}}">如需提交作业，请先选择会安排步骤</view>
+                                <view class="step-tip" wx:if="{{arrangeIndex === 0}}">如需提交作业，请先选择会安排步骤</view>
                                 <view wx:else>
-                                    {{arrangeList[arrangeIndex]}}
+                                    步骤{{arrangeList[arrangeIndex].SortCode}}：{{arrangeList[arrangeIndex].ArrangeName}}
                                 </view>
                             </view>
                             <image src="../images/xia.png"></image>
                         </picker>
                         <view class="filter">
-                            <image src="../images/man.png"></image>
+                            <image src="../images/man.png" @tap="toggleFilterCondition"></image>
+                            <view class="ul" hidden="{{!filterConditionVisible}}">
+                                <view class="li" @tap="filtChatHistory(1)">仅显示我的内容</view>
+                                <view class="li" @tap="filtChatHistory(2)">仅显示老师的内容</view>
+                                <view class="li" @tap="filtChatHistory(0)">显示全部内容</view>
+                            </view>
                         </view>
                     </view>
                     <view id="btn-tools">
@@ -87,6 +91,9 @@
     import wepy from 'wepy'
     import chatMessage from '../components/chatMessage'
     import { Message } from '../model/Message'
+    import config from '../config'
+
+    import {getCourseArrangeList, uploadFile, getChatMsgByPage, deleteChatMsg} from '../api'
 
     export default class Practice extends wepy.page {
         config = {
@@ -94,105 +101,30 @@
         }
 
         data = {
+            filterConditionVisible: false,
+            filterType: 0,    // 1:仅显示我的  2：显示老师内容  0: 显示全部
             isTeacher: false,
             haveActiveGroupTask: true,
             userInfo: null,
-            arrangeList: ['第一步', '第二部', '第三部'],
-            arrangeIndex: -1,
+            arrangeList: [],
+            arrangeIndex: 0,
             inputMode: 'TEXT',
             userTextInput: '',
             chatHistoryHeight: 'calc(100vh - 250rpx)',
             moreActionShown: false,
             messageId: '',
-            messages: [{
-                userInfo: {
-                    nickName: '张三',
-                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
-                },
-                message: {
-                    type: 'TEXT',
-                    content: 'nihao'
-                },
-                isSelf: true,
-                isShowMore: false,
-                id: 1
-            }, {
-                userInfo: {
-                    nickName: '赵四',
-                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
-                },
-                message: {
-                    type: 'TEXT',
-                    content: 'nihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihaonihao '
-                },
-                isSelf: false,
-                isShowMore: false,
-                id: 2
-            }, {
-                userInfo: {
-                    nickName: 'zhangsan',
-                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
-                },
-                message: {
-                    type: 'IMAGE',
-                    content: 'http://192.168.0.116:8083/1.jpg'
-                },
-                isSelf: false,
-                isShowMore: false,
-                id: 3
-            }, {
-                userInfo: {
-                    nickName: 'zhangsan',
-                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
-                },
-                message: {
-                    type: 'AUDIO',
-                    content: 'http://www.baidu.com'
-                },
-                isSelf: false,
-                isShowMore: false,
-                id: 4
-            }, {
-                userInfo: {
-                    nickName: 'zhangsan',
-                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
-                },
-                message: {
-                    type: 'VIDEO',
-                    content: 'http://www.baidu.com'
-                },
-                isSelf: false,
-                isShowMore: false,
-                id: 5
-            }, {
-                userInfo: {
-                    nickName: 'zhangsan',
-                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
-                },
-                message: {
-                    type: 'VIDEO',
-                    content: 'http://www.baidu.com'
-                },
-                isSelf: true,
-                isShowMore: false,
-                id: 6
-            }, {
-                userInfo: {
-                    nickName: 'zhangsan',
-                    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLVHdyvFd7g8nbCn2YYlIM2VhF8muu7l5C5YJcJhYbY7Wiczj9WPhWBEsk9uCB4uXotyddd1AoMlIQ/0'
-                },
-                message: {
-                    type: 'AUDIO',
-                    content: 'http://www.baidu.com'
-                },
-                isSelf: true,
-                isShowMore: false,
-                id: 7
-            }]
+            userInfoForMsg: {},
+            messages: [],
+            currentMsgsPageIndex: 1,
+            haveMoreChatMsgs: true
         }
 
         components = {
             'chat-message': chatMessage
+        }
+
+        computed = {
+
         }
 
         methods = {
@@ -205,6 +137,24 @@
             onInputText(e) {
                 this.userTextInput = e.detail.value
             },
+            toggleFilterCondition() {
+                this.filterConditionVisible = !this.filterConditionVisible
+                this.$apply()
+            },
+            filtChatHistory(param) {
+                if (param === '1') {
+                    // 过滤自己的聊天记录
+                    this.filterType = 1
+                } else if (param === '2') {
+                    // 过滤老师的聊天记录
+                    this.filterType = 2
+                } else {
+                    // 显示全部内容
+                    this.filterType = 0
+                }
+                this.filterConditionVisible = false
+                this.initChatHistory()
+            },
             setInputMode() {
                 if (this.inputMode === 'TEXT') {
                     this.inputMode = 'AUDIO'
@@ -214,10 +164,10 @@
             },
             sendTextMsg() {
                 // 发送文字消息
-                let msg = new Message(this.userInfo, this.userTextInput, 'TEXT', true)
-                this.messages.push(msg)
-                this.scrollToCurrentMsg()
-                this.userTextInput = ''
+                this.sendCommonMsg('1', this.userTextInput).then(res => {
+                    this.userTextInput = ''
+                    this.$apply()
+                })
             },
             showMoreActions() {
                 // 显示更多操作
@@ -230,14 +180,17 @@
                     count: 1,
                     success(res) {
                         let path = res.tempFilePaths[0]
-                        wepy.showModal({
-                            title: 'tip',
-                            content: path
+                        uploadFile(path, {
+                            FileType: 2,
+                            userFID: that.$parent.globalData.userInfo.FlnkID
+                        }).then(res => {
+                            that.sendCommonMsg('2', res.FileLink, res.FileId)
+                        }, (res) => {
+                            wepy.showToast({
+                                title: '发送失败',
+                                icon: 'none'
+                            })
                         })
-                        let msg = new Message(that.userInfo, path, 'IMAGE', true)
-                        that.messages.push(msg)
-                        that.scrollToCurrentMsg()
-                        that.$apply()
                     }
                 })
             },
@@ -246,33 +199,55 @@
                 wepy.chooseVideo({
                     success(res) {
                         let path = res.tempFilePath
-                        let msg = new Message(that.userInfo, path, 'VIDEO', true)
-                        that.messages.push(msg)
-                        that.scrollToCurrentMsg()
-                        that.$apply()
+                        uploadFile(path, {
+                            FileType: 3,
+                            userFID: that.$parent.globalData.userInfo.FlnkID
+                        }).then(res => {
+                            that.sendCommonMsg('3', res.FileLink, res.FileId)
+                        }, (res) => {
+                            wepy.showToast({
+                                title: '发送失败',
+                                icon: 'none'
+                            })
+                        })
                     }
-                })
-            },
-            uploadFile() {
-                wepy.makePhoneCall({
-                    phoneNumber: '15851879527'
                 })
             },
             startRecordAudio() {
                 let that = this
-                wepy.startRecord({
-                    success(res) {
-                        let path = res.tempFilePath
-                        let msg = new Message(that.userInfo, path, 'AUDIO', true)
-                        that.messages.push(msg)
-                        that.scrollToCurrentMsg()
-                        that.$apply()
-                    },
-                    compete(res) {}
+                const recorderManager = wepy.getRecorderManager()
+                recorderManager.onStop((res) => {
+                    let path = res.tempFilePath
+                    uploadFile(path, {
+                        FileType: 4,
+                        userFID: that.$parent.globalData.userInfo.FlnkID
+                    }).then(res => {
+                        that.sendCommonMsg('4', res.FileLink, res.FileId)
+                    }, (res) => {
+                        wepy.showToast({
+                            title: '发送失败',
+                            icon: 'none'
+                        })
+                    })
                 })
+                recorderManager.onError(res => {
+                    wepy.showToast({
+                        title: '发送失败',
+                        icon: 'none'
+                    })
+                })
+                const options = {
+                    duration: 600000,
+                    sampleRate: 44100,
+                    numberOfChannels: 1,
+                    encodeBitRate: 192000,
+                    format: 'mp3'
+                }
+                recorderManager.start(options)
             },
             stopRecordAudio() {
-                wepy.stopRecord()
+                const recorderManager = wepy.getRecorderManager()
+                recorderManager.stop()
             },
             hideChatMsgMore() {
                 this.messages.forEach(item => {
@@ -282,28 +257,181 @@
             },
             onScrollUpper(e) {
                 // 向上滚动，加载更多数据
+                if (this.haveMoreChatMsgs) {
+                    this.currentMsgsPageIndex++
+                    this.loadChatMsgByPage(this.currentMsgsPageIndex).then(res => {
+                        let lastMessageId = this.messages[0].MessageID
+                        this.messages = res.concat(this.messages)
+                        this.messageId = 'message_' + lastMessageId
+                        this.$apply()
+                    })
+                }
+            },
+            onDeleteMsg(data) {
+                console.log(data)
             }
         }
 
         events = {
             'hide-other-actions': function(e) {
-                let msgs = this.messages.filter(item => {
-                    return item.id !== e.id
-                })
-                msgs.forEach(item => {
-                    item.isShowMore = false
+                console.log(e)
+                this.messages.forEach(item => {
+                    item.isShowMore = item.MessageID === e.MessageID
                 })
                 this.$apply()
+            },
+            'delete-msg': function(e) {
+                if (e.FromUser === this.$parent.globalData.userInfo.FlnkID) {
+                    deleteChatMsg(e.MessageID, e.FromUser).then(res => {
+                        let index = this.messages.findIndex(item => {
+                            return item.MessageID === e.MessageID
+                        })
+                        this.messages.splice(index, 1)
+                        this.$apply()
+                    })
+                } else {
+                    wepy.showToast({
+                        title: '不可删除',
+                        icon: 'none'
+                    })
+                }
             }
         }
 
+        sendCommonMsg(msgtype, msgcontent, fileId) {
+            let stepInfo = {}
+            let self = this
+            if (this.arrangeIndex > 0) {
+                // 如果选择了步骤，需要提交步骤信息
+                stepInfo = this.arrangeList[this.arrangeIndex]
+            }
+            let msg = new Message(this.userInfoForMsg, {
+                msgtype: msgtype || '1',
+                msgcontent: msgcontent,
+                msgkey: fileId || '',
+                stepkey: stepInfo.FlnkID || '',
+                stepcode: stepInfo.SortCode || '',
+                stepname: stepInfo.ArrangeName || ''
+            })
+            return new Promise((resolve, reject) => {
+                wepy.sendSocketMessage({
+                    data: JSON.stringify(msg),
+                    success(res) {
+                        self.arrangeIndex = 0
+                        self.$apply()
+                        resolve(res)
+                    },
+                    fail(res) {
+                        reject(res)
+                    }
+                })
+            })
+        }
+
         scrollToCurrentMsg() {
-            this.messageId = 'message_' + (this.messages.length - 1)
+            this.messageId = 'message_' + this.messages[(this.messages.length - 1)].MessageID
+            this.$apply()
         }
 
         init() {
             let activeTaskInfo = wepy.getStorageSync('activeTaskInfo')
             this.haveActiveGroupTask = !!activeTaskInfo
+            if (this.haveActiveGroupTask) {
+                // 如果有激活的小组任务，则连接WebSocket
+                this.initSteps(activeTaskInfo)
+                this.initChatHistory()
+                this.userInfoForMsg = {
+                    userId: this.$parent.globalData.userInfo.FlnkID,
+                    userName: this.$parent.globalData.userInfo.XM,
+                    RoleNum: this.$parent.globalData.userInfo.RoleNum,
+                    AvatarUrl: this.$parent.globalData.wxUserInfo.avatarUrl,
+                    groupId: activeTaskInfo.GroupFID
+                }
+                this.startSocket(activeTaskInfo)
+            }
+        }
+
+        initSteps(activeTaskInfo) {
+            getCourseArrangeList(activeTaskInfo.CourseFID, activeTaskInfo.GroupFID).then(res => {
+                this.arrangeList = res
+                this.arrangeList.unshift({
+                    ArrangeName: '不提交步骤',
+                    FlnkID: ''
+                })
+                this.$apply()
+            })
+        }
+
+        initChatHistory() {
+            this.loadChatMsgByPage(1).then(res => {
+                this.messages = [].concat(res)
+                this.$apply()
+                this.scrollToCurrentMsg()
+            })
+        }
+
+        loadChatMsgByPage(pageIndex = 1) {
+            let activeTaskInfo = wepy.getStorageSync('activeTaskInfo')
+            return new Promise((resolve, reject) => {
+                let userId = ''
+                let RoleNum = null
+                if (this.filterType === 1) {
+                    userId = this.$parent.globalData.userInfo.FlnkID
+                } else if (this.filterType === 2) {
+                    RoleNum = 2
+                }
+                getChatMsgByPage(activeTaskInfo.GroupFID, userId, RoleNum, pageIndex).then(res => {
+                    if (res.PageCount <= this.currentMsgsPageIndex) {
+                        this.haveMoreChatMsgs = false
+                    } else {
+                        this.haveMoreChatMsgs = true
+                    }
+                    let list = res.DataSource
+                    let data = []
+                    list.forEach(item => {
+                        let msgBody = JSON.parse(item.MessageBody)
+                        msgBody.isSelf = msgBody.FromUser === this.$parent.globalData.userInfo.FlnkID
+                        data.unshift(msgBody)
+                    })
+                    resolve(data)
+                }, res => {
+                    this.haveMoreChatMsgs = true
+                    reject(res)
+                })
+            })
+        }
+
+        startSocket(activeTaskInfo) {
+            wepy.connectSocket({
+                url: config.socketServerUrl,
+                success(res) {
+                    console.log('连接成功')
+                },
+                fail(res) {
+                    console.error('连接失败')
+                }
+            })
+            wepy.onSocketOpen((res) => {
+                // 加入群聊
+                let registerInfo = new Message(this.userInfoForMsg, {}, 0)
+                wepy.sendSocketMessage({
+                    data: JSON.stringify(registerInfo),
+                    success(res) {
+                        console.log('进入房间成功！')
+                    },
+                    fail() {
+                        console.log('进入房间失败！')
+                    }
+                })
+                wepy.onSocketMessage((res) => {
+                    let data = JSON.parse(res.data)
+                    console.log(data)
+                    data.isSelf = data.FromUser === this.$parent.globalData.userInfo.FlnkID
+                    this.messages.push(data)
+                    this.$apply()
+                    this.scrollToCurrentMsg()
+                })
+            })
         }
 
         onLoad() {
@@ -312,8 +440,16 @@
                 self.userInfo = res
             })
             this.isTeacher = (this.$parent.globalData.userInfo.RoleNum + '') === '2'
-            wepy.showTabBarRedDot({index: 2})
             this.init()
+        }
+
+        onUnload() {
+            console.log('页面卸载')
+            wepy.closeSocket({
+                success() {
+                    console.log('断开socket成功')
+                }
+            })
         }
     }
 </script>
@@ -475,11 +611,31 @@
     .picker-view .filter {
         width: 70rpx;
         height: 70rpx;
+        position: relative;
     }
     .picker-view .filter image {
         width: 50rpx;
         height: 50rpx;
         margin-top: 10rpx;
+    }
+    .picker-view .filter .ul {
+        position: absolute;
+        right: 0;
+        top:-194rpx;
+        width: 250rpx;
+        background: #fff;
+        border: 1px solid #dedede;
+        font-size: 28rpx;
+    }
+    .picker-view .filter .ul .li {
+        width: 100%;
+        height: 60rpx;
+        line-height: 60rpx;
+        text-align: center;
+        border-bottom: 1px solid #dedede;
+    }
+    .picker-view .filter .ul .li:last-child {
+        border-bottom: none;
     }
     .no-active-task {
         padding: 80rpx 20rpx;

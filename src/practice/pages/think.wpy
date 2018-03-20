@@ -9,7 +9,29 @@
         <view class="think-content">
             <view class="submit-steps">
                 <view class="step-list-container">
-                    <step-list :list.sync="submitedStepList" editable="{{false}}"></step-list>
+                    <repeat for="{{submitedStepList}}" item="item" index="index">
+                        <step :stepData.sync="item" :index.sync="item.ArrangeSortCode" :editable="false" :detailVisible="false"></step>
+                        <repeat for="{{item.WorkArrangeList}}" item="submitItem" index="index2">
+                            <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '1'}}">
+                                <view>{{submitItem.msgData.MessageBody.msgcontent}}</view>
+                            </block>
+                            <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '2'}}">
+                                <view>
+                                    <image src="{{submitItem.msgData.MessageBody.msgcontent}}"></image>
+                                </view>
+                            </block>
+                            <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '3'}}">
+                                <view>
+                                    <video src="{{submitItem.msgData.MessageBody.msgcontent}}"></video>
+                                </view>
+                            </block>
+                            <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '4'}}">
+                                <view>
+                                    <audio src="{{submitItem.msgData.MessageBody.msgcontent}}"></audio>
+                                </view>
+                            </block>
+                        </repeat>
+                    </repeat>
                 </view>
                 <empty-content hidden="{{submitedStepList.length > 0}}" text="您还没有提交任何步骤"></empty-content>
             </view>
@@ -44,7 +66,7 @@
     import panel from '../../components/panel'
     import richButton from '../../components/rich-button'
     import dialog from '../../components/dialog'
-    import stepList from '../../components/step-list'
+    import step from '../../components/step'
     import emptyContent from '../../components/empty-content'
 
     import {getThinkContent, saveThinkContent, getUserSubmitSteps} from '../../api'
@@ -59,7 +81,7 @@
             'rich-button': richButton,
             'rich-button2': richButton,
             dialog: dialog,
-            'step-list': stepList,
+            'step': step,
             'empty-content': emptyContent
         }
 
@@ -116,6 +138,12 @@
             })
             getUserSubmitSteps(this.$parent.globalData.userInfo.FlnkID, this.currentGroupInfo.GroupFID).then(res => {
                 this.submitedStepList = res
+                this.submitedStepList.forEach(item => {
+                    item.WorkArrangeList.forEach(data => {
+                        data.msgData = JSON.parse(data.MessageBody)
+                    })
+                })
+                console.log(this.submitedStepList)
                 this.$apply()
             }, () => {
                 this.submitedStepList = []

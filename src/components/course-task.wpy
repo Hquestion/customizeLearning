@@ -60,7 +60,7 @@
         }
 
         onLoad() {
-            console.log(this.taskInfo)
+
         }
     }
 </script>

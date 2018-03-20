@@ -1,6 +1,5 @@
 import wepy from 'wepy'
-
-const baseUrl = 'http://192.168.0.117:89/'
+import config from '../config'
 
 export default {
     get(url, param, headers) {
@@ -8,13 +7,30 @@ export default {
     },
     post(url, param, headers) {
         return sendRequest(url, 'POST', param, headers)
+    },
+    uploadFile(url, filePath, param) {
+        return new Promise((resolve, reject) => {
+            wepy.uploadFile({
+                url: config.httpServerUrl + url,
+                filePath: filePath,
+                name: 'file',
+                formData: param,
+                success: function(res) {
+                    res.data = JSON.parse(res.data)
+                    handleSuccess(res).then(resolve, reject)
+                },
+                fail(res) {
+                    handleFail(res).then(resolve, reject)
+                }
+            })
+        })
     }
 }
 
 function sendRequest(url, method, param, headers) {
     return new Promise((resolve, reject) => {
         wepy.request({
-            url: baseUrl + url,
+            url: config.httpServerUrl + url,
             data: param,
             header: headers,
             method: method === 'POST' ? 'POST' : 'GET',
@@ -30,7 +46,7 @@ function sendRequest(url, method, param, headers) {
 
 function handleSuccess(res) {
     return new Promise((resolve, reject) => {
-        if (res.errMsg === 'request:ok') {
+        if (res.errMsg === 'request:ok' || res.errMsg === 'uploadFile:ok') {
             if (res.data && res.data.Flag) {
                 resolve(res.data)
             } else {

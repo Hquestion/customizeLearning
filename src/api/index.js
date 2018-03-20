@@ -1,5 +1,6 @@
 import wepy from 'wepy'
 import httpService from '../util/httpService'
+import config from '../config'
 
 /**
  * 登陆接口
@@ -439,6 +440,56 @@ export function getUserSubmitSteps(userFID, groupFID) {
         httpService.get('api/CourseGroup/GetCourseGroupWorkArrangeInfoByStudent', {
             userFID: userFID,
             groupFID: groupFID
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+/**
+ * 上传图片/音频/视频等资源
+ * @param filePath
+ * @param param
+ * @returns {Promise<any>}
+ */
+export function uploadFile(filePath, param) {
+    return new Promise((resolve, reject) => {
+        httpService.uploadFile('api/File/UploadMessageFile', filePath, param).then(res => {
+            console.log(res)
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+/**
+ * 分页获取聊天记录
+ * @param GroupFID
+ * @param UserFID
+ * @param pageIndex
+ * @param RoleNum
+ * @returns {Promise<any>}
+ */
+export function getChatMsgByPage(GroupFID, UserFID, RoleNum, pageIndex) {
+    return new Promise((resolve, reject) => {
+        httpService.post('api/CourseGroup/GetPageChatMessage', {
+            GroupFID: GroupFID,
+            UserFID: UserFID || null,
+            RoleNum: RoleNum || null,
+            Page: {
+                PageIndex: pageIndex || 1,
+                PageSize: config.chatMsgPageSize || 20
+            }
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, reject)
+    })
+}
+
+export function deleteChatMsg(MessageFID, UserFID) {
+    return new Promise((resolve, reject) => {
+        httpService.post('api/CourseGroup/DeleteChatMessage', {
+            MessageFID: MessageFID,
+            UserFID: UserFID
         }).then(res => {
             resolve(res.ResultObj)
         }, reject)
