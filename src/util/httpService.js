@@ -11,7 +11,7 @@ export default {
     uploadFile(url, filePath, param) {
         return new Promise((resolve, reject) => {
             wepy.uploadFile({
-                url: config.httpServerUrl + url,
+                url: config.fileUploadServer + url,
                 filePath: filePath,
                 name: 'file',
                 formData: param,
