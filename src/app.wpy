@@ -55,7 +55,8 @@
                         'pages/arrange',
                         'pages/prevKnow',
                         'pages/think',
-                        'pages/playVideo'
+                        'pages/playVideo',
+                        'pages/reviewFinishTask'
                     ]
                 },
                 {
@@ -97,7 +98,8 @@
 
         globalData = {
             wxUserInfo: null,
-            userInfo: null
+            userInfo: null,
+            isInitSocket: false
         }
 
         constructor() {

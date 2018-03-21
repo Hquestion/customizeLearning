@@ -1,10 +1,10 @@
 <template>
     <view class="prev-know-container">
         <view class="nav">
-            <navigator url="/practice/pages/prevKnow" class="active">早知道</navigator>
-            <navigator url="/practice/pages/arrange">会安排</navigator>
-            <navigator url="/pages/practice" open-type="switchTab">能落实</navigator>
-            <navigator url="/practice/pages/think" hidden="{{isTeacher}}">有反思</navigator>
+            <navigator class="active">早知道</navigator>
+            <navigator url="{{navigateUrlMap.arrange}}" open-type="redirect">会安排</navigator>
+            <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
+            <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher}}">有反思</navigator>
         </view>
         <view class="prev-know-main">
             <course-detail :courseInfo.sync="courseInfo"></course-detail>
@@ -35,7 +35,7 @@
     import {getCourseDetailById, getGroupDetail, getPrevKnowByCourse, getRemarkStandard} from '../../api'
     import {parseTime} from '../../util'
 
-    export default class prevKonw extends wepy.page {
+    export default class prevKnow extends wepy.page {
         config = {
             navigationBarTitleText: '早知道'
         }
@@ -45,7 +45,14 @@
             userInfo: null,
             courseInfo: null,
             prevKnowContent: '',
-            remarkStandardList: []
+            remarkStandardList: [],
+            queryParam: null,
+            navigateUrlMap: {
+                arrange: '/practice/pages/arrange',
+                practice: '/pages/practice',
+                practiceOpenType: 'switchTab',
+                think: '/practice/pages/think'
+            }
         }
 
         components = {
@@ -55,7 +62,12 @@
         }
 
         init() {
-            let activeGroupTask = wepy.getStorageSync('activeTaskInfo')
+            let activeGroupTask
+            if (this.queryParam) {
+                activeGroupTask = this.queryParam
+            } else {
+                activeGroupTask = wepy.getStorageSync('activeTaskInfo')
+            }
             getCourseDetailById(activeGroupTask.CourseFID).then(res => {
                 getGroupDetail(activeGroupTask.GroupFID).then(groupRes => {
                     res.groupMembers = groupRes.AttendMembers
@@ -76,12 +88,25 @@
             })
         }
 
-        onLoad() {
+        onLoad(option) {
             let self = this
             this.$parent.getUserInfo(function(res) {
                 self.userInfo = res
                 self.$apply()
             })
+            if (option) {
+                this.queryParam = {
+                    CourseFID: option.courseId,
+                    GroupFID: option.groupId
+                }
+                this.navigateUrlMap = {
+                    arrange: '/practice/pages/arrange?courseId=' + option.courseId + '&groupId=' + option.groupId,
+                    practice: '/practice/pages/reviewFinishTask?courseId=' + option.courseId + '&groupId=' + option.groupId,
+                    practiceOpenType: 'redirect',
+                    think: '/practice/pages/think?courseId=' + option.courseId + '&groupId=' + option.groupId
+                }
+                this.$apply()
+            }
             this.isTeacher = (this.$parent.globalData.userInfo.RoleNum + '') === '2'
             this.init()
         }

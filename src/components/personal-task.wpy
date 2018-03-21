@@ -4,7 +4,7 @@
             <view class="dashed-line"></view>
             <view class="tag">进行中的课程</view>
         </view>
-        <view class="task-content">
+        <view class="task-content" @tap="reviewTask">
             <view class="row-block task-title-block">
                 <text>{{taskInfo.CourseCode}}</text>.
                 <text>{{taskInfo.CourseName}}</text>
@@ -76,6 +76,11 @@
             },
             onTapCoutinue() {
                 this.$emit('continue', this.taskInfo)
+            },
+            reviewTask() {
+                if (this.taskInfo.Status !== 0) {
+                    this.$emit('review', this.taskInfo)
+                }
             }
         }
 

@@ -46,7 +46,7 @@
                 </block>
                 <image class="box-arrow left" src="../images/lt.png" wx:if="{{!isSelf}}" hidden="{{msgData.MessageBody.msgtype === '3' || msgData.MessageBody.msgtype === '2'}}"></image>
                 <image class="box-arrow right" src="../images/liaotian-you.png" wx:else hidden="{{msgData.MessageBody.msgtype === '3' || msgData.MessageBody.msgtype === '2'}}"></image>
-                <view class="more-action-btn" hidden="{{!msgData.isShowMore}}">
+                <view class="more-action-btn" hidden="{{!msgData.isShowMore || !editable}}">
                     <view @tap="copy">复制</view>
                     <view @tap="deleteMsg">删除</view>
                 </view>
@@ -64,6 +64,9 @@
             isSelf: {},
             isShowMore: {
                 twoWay: true
+            },
+            editable: {
+                default: true
             }
         }
 
@@ -116,7 +119,6 @@
                 }
             },
             deleteMsg() {
-                console.log('删除此消息')
                 this.$emit('delete-msg', this.msgData)
             }
         }

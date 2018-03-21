@@ -402,6 +402,12 @@
         }
 
         startSocket(activeTaskInfo) {
+            if (this.$parent.globalData.isInitSocket) {
+                return
+            } else {
+                this.$parent.setGlobalData('isInitSocket', true)
+            }
+            console.log('初始化socket')
             wepy.connectSocket({
                 url: config.socketServerUrl,
                 success(res) {
@@ -434,7 +440,7 @@
             })
         }
 
-        onLoad() {
+        onShow() {
             let self = this
             this.$parent.getUserInfo().then((res) => {
                 self.userInfo = res
@@ -444,7 +450,6 @@
         }
 
         onUnload() {
-            console.log('页面卸载')
             wepy.closeSocket({
                 success() {
                     console.log('断开socket成功')

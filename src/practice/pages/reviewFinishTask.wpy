@@ -1,0 +1,320 @@
+<template>
+    <view class="home-container">
+        <view class="content-main">
+            <view class="nav">
+                <navigator url="/practice/pages/prevKnow?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">早知道</navigator>
+                <navigator url="/practice/pages/arrange?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">会安排</navigator>
+                <navigator class="active">能落实</navigator>
+                <navigator url="/practice/pages/think?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect" hidden="{{isTeacher}}">有反思</navigator>
+            </view>
+            <view>
+                <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper">
+                    <repeat for="{{messages}}" index="index" item="item" key="index">
+                        <chat-message :id="'message_' + item.MessageID" :msgData.sync="item" :isSelf="item.isSelf" :isShowMore="item.isShowMore" editable="{{false}}">
+                        </chat-message>
+                    </repeat>
+                </scroll-view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import chatMessage from '../../components/chatMessage'
+
+    import {getChatMsgByPage} from '../../api'
+
+    export default class ReviewPractice extends wepy.page {
+        config = {
+            navigationBarTitleText: '个性化学习中心'
+        }
+
+        data = {
+            isTeacher: false,
+            userInfo: null,
+            chatHistoryHeight: 'calc(100vh - 88rpx)',
+            moreActionShown: false,
+            messageId: '',
+            userInfoForMsg: {},
+            messages: [],
+            currentMsgsPageIndex: 1,
+            haveMoreChatMsgs: true,
+            CourseFID: '',
+            GroupFID: ''
+        }
+
+        components = {
+            'chat-message': chatMessage
+        }
+
+        computed = {
+
+        }
+
+        methods = {
+            onScrollUpper(e) {
+                // 向上滚动，加载更多数据
+                if (this.haveMoreChatMsgs) {
+                    this.currentMsgsPageIndex++
+                    this.loadChatMsgByPage(this.currentMsgsPageIndex).then(res => {
+                        let lastMessageId = this.messages[0].MessageID
+                        this.messages = res.concat(this.messages)
+                        this.messageId = 'message_' + lastMessageId
+                        this.$apply()
+                    })
+                }
+            }
+        }
+
+        events = {
+            'hide-other-actions': function(e) {},
+            'delete-msg': function(e) {}
+        }
+
+        scrollToCurrentMsg() {
+            this.messageId = 'message_' + this.messages[(this.messages.length - 1)].MessageID
+            this.$apply()
+        }
+
+        init() {
+            this.initChatHistory()
+        }
+
+        initChatHistory() {
+            this.loadChatMsgByPage(1).then(res => {
+                this.messages = [].concat(res)
+                this.$apply()
+                this.scrollToCurrentMsg()
+            })
+        }
+
+        loadChatMsgByPage(pageIndex = 1) {
+            return new Promise((resolve, reject) => {
+                let userId = ''
+                let RoleNum = null
+                getChatMsgByPage(this.GroupFID, userId, RoleNum, pageIndex).then(res => {
+                    if (res.PageCount <= this.currentMsgsPageIndex) {
+                        this.haveMoreChatMsgs = false
+                    } else {
+                        this.haveMoreChatMsgs = true
+                    }
+                    let list = res.DataSource
+                    let data = []
+                    list.forEach(item => {
+                        let msgBody = JSON.parse(item.MessageBody)
+                        msgBody.isSelf = msgBody.FromUser === this.$parent.globalData.userInfo.FlnkID
+                        data.unshift(msgBody)
+                    })
+                    resolve(data)
+                }, res => {
+                    this.haveMoreChatMsgs = true
+                    reject(res)
+                })
+            })
+        }
+
+        onLoad(option) {
+            this.isTeacher = (this.$parent.globalData.userInfo.RoleNum + '') === '2'
+            this.CourseFID = option.courseId
+            this.GroupFID = option.groupId
+            this.init()
+        }
+
+        onUnload() {}
+    }
+</script>
+
+<style>
+    .home-container {
+        text-align: center;
+    }
+    .userinfo-avatar {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 80rpx;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        border-bottom: 1px solid #efefef;
+    }
+    .nav navigator{
+        flex: 1;
+    }
+    .step-tip {
+        color: #ccc;
+    }
+    .chat-history {
+        width:100%;
+        height: calc(100vh - 250rpx);
+        border-bottom: 1px solid #ccc;
+    }
+    .picker {
+        height:70rpx;
+        line-height:70rpx;
+        text-align:left;
+        font-size:0.8rem;
+        padding-left:20rpx;
+        border-bottom: 1px solid #ccc;
+    }
+    #btn-tools {
+        height: 88rpx;
+        display: flex;
+        justify-content:space-between;
+        align-items:flex-start;
+    }
+    .record-text-toggle {
+        width: 88rpx;
+    }
+    .record-text-toggle .btn-radius {
+        width: 60rpx;
+        height: 60rpx;
+        margin-left: 14rpx;
+        margin-top: 14rpx;
+        text-align: center;
+        line-height: 60rpx;
+        font-size: 0.5em;
+    }
+    .record-text-toggle image {
+        width: 100%;
+        height: 100%;
+    }
+    .input-area {
+        width: calc(100% - 250rpx);
+        height: 100%;
+        overflow:hidden;
+    }
+    .input-area .text-input-widget, .input-area .audio-input-widget {
+        width: 100%;
+        height: 100%;
+    }
+    textarea {
+        width:100%;
+        text-align:left;
+        position: absolute;
+        bottom: 0;
+        max-height: 80rpx;
+        overflow: auto;
+    }
+    .chat-input {
+        position:fixed;
+        bottom:0;
+        left:0;
+        width:100%;
+    }
+    .input-area .text-input-widget {
+        display: flex;
+        align-items: center;
+    }
+    .input-area .text-input-widget .textarea-container {
+        width: 100%;
+        height: 80%;
+        overflow: auto;
+        border-bottom: 1px solid #bbb;
+        position: relative;
+    }
+    .audio-input-widget button {
+        margin-top:15rpx;
+        width:80%;
+    }
+    .more-area {
+        width: 150rpx;
+    }
+    .more-area .chat-icon {
+        margin-top: 23rpx;
+        width: 50rpx;
+        height: 50rpx;
+    }
+    .more-area button {
+        margin-top: 15rpx;
+    }
+    #btn-tools-more {
+        height: 200rpx;
+        width: 100%;
+        background: #f8f8f8;
+        text-align: left;
+    }
+    #btn-tools-more .image-box {
+        width: 100%;
+        height: 100%;
+    }
+    #btn-tools-more .upload-btn {
+        width: 120rpx;
+        height: 120rpx;
+        text-align: center;
+        border: 1px solid #ccc;
+        display: inline-block;
+        margin-left:30rpx;
+        margin-top:15rpx;
+        background:#fff;
+        color:#666;
+        border-radius:15rpx;
+    }
+    #btn-tools-more  .upload-btn.photo-btn image {
+        width: 89rpx;
+        height: 72rpx;
+        margin-top: 24rpx;
+    }
+    #btn-tools-more  .upload-btn.take-btn image {
+        width: 98rpx;
+        height: 60rpx;
+        margin-top: 30rpx;
+    }
+    #btn-tools-more  .upload-btn .indicator {
+        margin-top: 10rpx;
+    }
+    .picker-view {
+        display: flex;
+    }
+    .picker-view picker {
+        flex: 1;
+        position: relative;
+    }
+    .picker-view picker image {
+        width:20rpx;
+        height:20rpx;
+        position:absolute;
+        right:10rpx;
+        top:25rpx;
+    }
+    .picker-view .filter {
+        width: 70rpx;
+        height: 70rpx;
+        position: relative;
+    }
+    .picker-view .filter image {
+        width: 50rpx;
+        height: 50rpx;
+        margin-top: 10rpx;
+    }
+    .picker-view .filter .ul {
+        position: absolute;
+        right: 0;
+        top:-194rpx;
+        width: 250rpx;
+        background: #fff;
+        border: 1px solid #dedede;
+        font-size: 28rpx;
+    }
+    .picker-view .filter .ul .li {
+        width: 100%;
+        height: 60rpx;
+        line-height: 60rpx;
+        text-align: center;
+        border-bottom: 1px solid #dedede;
+    }
+    .picker-view .filter .ul .li:last-child {
+        border-bottom: none;
+    }
+    .no-active-task {
+        padding: 80rpx 20rpx;
+    }
+    .no-active-task view {
+        padding: 15rpx 0;
+    }
+    .no-active-task view  navigator {
+        padding: 0;
+    }
+</style>

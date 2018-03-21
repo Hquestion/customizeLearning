@@ -1,10 +1,10 @@
 <template>
     <view class="home-container">
         <view class="nav">
-            <navigator url="/practice/pages/prevKnow">早知道</navigator>
-            <navigator url="/practice/pages/arrange">会安排</navigator>
-            <navigator url="/pages/practice" open-type="switchTab">能落实</navigator>
-            <navigator url="/practice/pages/think" class="active">有反思</navigator>
+            <navigator url="{{navigateUrlMap.prevKnow}}" open-type="redirect">早知道</navigator>
+            <navigator url="{{navigateUrlMap.arrange}}" open-type="redirect">会安排</navigator>
+            <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
+            <navigator class="active">有反思</navigator>
         </view>
         <view class="think-content">
             <view class="submit-steps">
@@ -47,7 +47,7 @@
                     </view>
                 </panel>
             </view>
-            <view class="btn-area">
+            <view class="btn-area" hidden="{{!!queryParam}}">
                 <rich-button theme="green" text="填写反思" size="big" iconSrc="../../images/yfs.png" @tap.user="onEditThink"></rich-button>
             </view>
         </view>
@@ -95,7 +95,14 @@
             myThinkID: '',
             currentGroupInfo: null,
             inputThinkContent: '',
-            submitedStepList: []
+            submitedStepList: [],
+            queryParam: null,
+            navigateUrlMap: {
+                prevKnow: '/practice/pages/prevKnow',
+                practice: '/pages/practice',
+                practiceOpenType: 'switchTab',
+                arrange: '/practice/pages/arrange'
+            }
         }
 
         methods = {
@@ -144,7 +151,11 @@
         }
 
         init() {
-            this.currentGroupInfo = wepy.getStorageSync('activeTaskInfo')
+            if (this.queryParam) {
+                this.currentGroupInfo = this.queryParam
+            } else {
+                this.currentGroupInfo = wepy.getStorageSync('activeTaskInfo')
+            }
             getThinkContent(this.$parent.globalData.userInfo.FlnkID, this.currentGroupInfo.GroupFID).then(res => {
                 if (res.Code === '4000') {
                     this.myThinkContent = res.ResultObj.ReflectContent
@@ -172,7 +183,20 @@
             })
         }
 
-        onLoad() {
+        onLoad(option) {
+            if (option) {
+                this.queryParam = {
+                    CourseFID: option.courseId,
+                    GroupFID: option.groupId
+                }
+                this.navigateUrlMap = {
+                    prevKnow: '/practice/pages/prevKnow?courseId=' + option.courseId + '&groupId=' + option.groupId,
+                    practice: '/practice/pages/reviewFinishTask?courseId=' + option.courseId + '&groupId=' + option.groupId,
+                    practiceOpenType: 'redirect',
+                    arrange: '/practice/pages/arrange?courseId=' + option.courseId + '&groupId=' + option.groupId
+                }
+                this.$apply()
+            }
             this.init()
         }
     }

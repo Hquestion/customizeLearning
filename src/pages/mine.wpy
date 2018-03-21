@@ -9,12 +9,12 @@
         <view class="my-task-block" wx:if="{{!isTeacher}}">
             <view class="task-block task-running" wx:if="{{!!runningTask}}">
                 <personal-task1 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="runningTask"
-                                @continue.user="continueTask" @restart.user="restartTask"></personal-task1>
+                                @continue.user="continueTask" @restart.user="restartTask" @review.user="reviewTask"></personal-task1>
             </view>
             <view class="task-block task-common" hidden="{{!commonTasks || commonTasks.length === 0}}">
                 <repeat for="{{commonTasks}}" item="item" index="index">
                     <personal-task2 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="item"
-                                    @continue.user="continueTask" @restart.user="restartTask"></personal-task2>
+                                    @continue.user="continueTask" @restart.user="restartTask" @review.user="reviewTask"></personal-task2>
                 </repeat>
             </view>
         </view>
@@ -34,7 +34,7 @@
                     <view slot="title">已完成的课程</view>
                     <view slot="content" class="panel-content">
                         <repeat for="{{tCompleteTasks}}" item="item" index="index">
-                            <t-course-task1 class="t-task-comp" :taskInfo.sync="item"></t-course-task1>
+                            <t-course-task1 class="t-task-comp" :taskInfo.sync="item" @teacher-check-course.user="reviewCourseGroup"></t-course-task1>
                         </repeat>
                     </view>
                 </panel>
@@ -140,6 +140,16 @@
                     wepy.switchTab({
                         url: '/pages/practice'
                     })
+                })
+            },
+            reviewCourseGroup(task) {
+                wepy.navigateTo({
+                    url: '/practice/pages/reviewFinishTask?courseId=' + task.CourseFID + '&groupId=' + task.FlnkID
+                })
+            },
+            reviewTask(task) {
+                wepy.navigateTo({
+                    url: '/practice/pages/reviewFinishTask?courseId=' + task.CourseFID + '&groupId=' + task.FlnkID
                 })
             }
         }
