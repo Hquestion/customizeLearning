@@ -5,7 +5,7 @@
             <view class="remark-detail">
                 <view class="detail-title">{{item.ReflectItemName}}</view>
                 <view class="detail-star">
-                    <star :max.sync="item.StarValue" :current.sync="0"></star>
+                    <star :max.sync="item.StarValue" :current.sync="item.stuStarValue || 0"></star>
                 </view>
             </view>
         </repeat>

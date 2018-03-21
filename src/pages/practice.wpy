@@ -484,6 +484,7 @@
         width:100%;
         height: calc(100vh - 250rpx);
         border-bottom: 1px solid #ccc;
+        background: #f2f2f2;
     }
     .picker {
         height:70rpx;

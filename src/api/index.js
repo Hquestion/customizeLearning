@@ -485,6 +485,12 @@ export function getChatMsgByPage(GroupFID, UserFID, RoleNum, pageIndex) {
     })
 }
 
+/**
+ * 删除聊天消息
+ * @param MessageFID
+ * @param UserFID
+ * @returns {Promise<any>}
+ */
 export function deleteChatMsg(MessageFID, UserFID) {
     return new Promise((resolve, reject) => {
         httpService.post('api/CourseGroup/DeleteChatMessage', {
@@ -493,5 +499,22 @@ export function deleteChatMsg(MessageFID, UserFID) {
         }).then(res => {
             resolve(res.ResultObj)
         }, reject)
+    })
+}
+
+/**
+ * 获取小组老师评分详情
+ * @param groupFID
+ * @returns {Promise<any>}
+ */
+export function getTeacherRemarkByGroup(groupFID) {
+    return new Promise((resolve, reject) => {
+        httpService.get('api/CourseGroup/GetListCrouseGroupReflectScoreView', {
+            groupFID: groupFID
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, (res) => {
+            reject(res)
+        })
     })
 }

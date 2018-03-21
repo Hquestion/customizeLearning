@@ -1,0 +1,40 @@
+<template>
+    <view class="remark-record-container">
+        <panel class="remark-panel">
+            <view slot="title">{{groupMember.StudentName ? groupMember.StudentName : '整体'}}评分</view>
+            <view slot="content">
+                <repeat for="{{groupMember.modelList}}" item="item" index="index">
+                    <remark-tpl :remarkInfo.sync="item"></remark-tpl>
+                </repeat>
+            </view>
+        </panel>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import remarkTpl from './remark-tpl'
+    import panel from './panel'
+
+    export default class RemarkTpl extends wepy.component {
+        props = {
+            groupMember: {}
+        }
+
+        components = {
+            'remark-tpl': remarkTpl,
+            panel: panel
+        }
+    }
+</script>
+<style>
+    .remark-panel {
+        width: 100%;
+        margin : 40rpx auto 0;
+        border: 1px solid #dedede;
+        text-align: left;
+        border-radius: 20rpx;
+    }
+    .remark-panel .content {
+        text-indent: 0;
+    }
+</style>

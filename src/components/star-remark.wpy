@@ -1,9 +1,9 @@
 <template>
     <view class="star-remark">
-        <repeat for="{{current}}" itme="item" index="index">
+        <repeat for="{{current}}" item="item" index="index">
             <image src="../../images/xing.png"></image>
         </repeat>
-        <repeat for="{{max}}" itme="item" index="index">
+        <repeat for="{{max}}" item="item" index="index">
             <image src="../../images/xing2.png"></image>
         </repeat>
     </view>
@@ -20,11 +20,17 @@
                 default: 0
             }
         }
+
+        computed = {
+            dest() {
+                return this.max - this.current
+            }
+        }
     }
 </script>
 <style>
     .star-remark image {
-        width: 50rpx;
-        height: 50rpx;
+        width: 45rpx;
+        height: 45rpx;
     }
 </style>
