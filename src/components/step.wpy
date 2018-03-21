@@ -8,7 +8,7 @@
                 <text class="step-btn grey" @tap="deleteStep">删除</text>
             </view>
         </view>
-        <view class="step-detail">
+        <view class="step-detail" hidden="{{!detailVisible}}">
             <view>
                 <repeat for="{{stepData.modelList}}" item="item" index="index3">
                     <block wx:if="{{item.ArrangeType === 1}}">

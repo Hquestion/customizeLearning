@@ -5,7 +5,7 @@
             <view class="task-status">
                 <view class="grey task-brief">
                     成功完成<text class="warning">{{courseInfo.SuccessNum || 0}}</text>次，
-                    总参与人数<text class="warning">{{courseInfo.stuCount || 0}}</text>人
+                    总参与人数<text class="warning">{{courseInfo.ParterNum || 0}}</text>人
                 </view>
                 <view class="finish-detail">
                     <repeat for="{{stuFinishList}}" item="item" index="index">
