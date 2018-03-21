@@ -94,7 +94,7 @@
                 self.userInfo = res
                 self.$apply()
             })
-            if (option) {
+            if (option && option.courseId) {
                 this.queryParam = {
                     CourseFID: option.courseId,
                     GroupFID: option.groupId

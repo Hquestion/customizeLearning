@@ -184,7 +184,7 @@
         }
 
         onLoad(option) {
-            if (option) {
+            if (option && option.courseId) {
                 this.queryParam = {
                     CourseFID: option.courseId,
                     GroupFID: option.groupId

@@ -2,10 +2,10 @@
     <view class="home-container">
         <view class="content-main" hidden="{{!haveActiveGroupTask}}">
             <view class="nav">
-                <navigator url="/practice/pages/prevKnow">早知道</navigator>
-                <navigator url="/practice/pages/arrange">会安排</navigator>
+                <navigator url="/practice/pages/prevKnow" open-type="navigate">早知道</navigator>
+                <navigator url="/practice/pages/arrange" open-type="navigate">会安排</navigator>
                 <navigator url="/pages/practice" open-type="switchTab" class="active">能落实</navigator>
-                <navigator url="/practice/pages/think" hidden="{{isTeacher}}">有反思</navigator>
+                <navigator url="/practice/pages/think" open-type="navigate" hidden="{{isTeacher}}">有反思</navigator>
             </view>
             <view @tap="hideChatMsgMore">
                 <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper">
