@@ -112,6 +112,7 @@
         width: 100%;
         padding: 20rpx;
         margin: 0 auto;
+        box-sizing: border-box;
     }
     .avatar-box image {
         width:300rpx;
@@ -140,5 +141,6 @@
     .info {
         font-size:36rpx;
         padding: 10rpx;
+        box-sizing: border-box;
     }
 </style>

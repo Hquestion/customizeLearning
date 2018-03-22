@@ -52,6 +52,9 @@
 
         methods = {
             toggle(e) {
+                if (!this.editable) {
+                    return
+                }
                 let toggleIndex = e.currentTarget.dataset.optIndex
                 let index = this.stepData.modelList.findIndex((item, index) => {
                     return toggleIndex === index

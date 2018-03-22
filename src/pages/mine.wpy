@@ -34,7 +34,7 @@
                     <view slot="title">已完成的课程</view>
                     <view slot="content" class="panel-content">
                         <repeat for="{{tCompleteTasks}}" item="item" index="index">
-                            <t-course-task1 class="t-task-comp" :taskInfo.sync="item" @teacher-check-course.user="reviewCourseGroup"></t-course-task1>
+                            <t-course-task2 class="t-task-comp" :taskInfo.sync="item" @teacher-check-course.user="reviewCourseGroup"></t-course-task2>
                         </repeat>
                     </view>
                 </panel>

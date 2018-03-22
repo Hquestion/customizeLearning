@@ -187,6 +187,7 @@
         padding: 15rpx 20rpx;
         border: 1px solid #dedede;
         border-radius: 15rpx;
+        background: #fff;
     }
     .chat-message.is-self  .message-box .padding-box {
         background: #A9CBF5;

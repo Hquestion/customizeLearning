@@ -1,5 +1,5 @@
 <template>
-    <view class="arrange-container">
+    <view class="arrange-container {{(!isUserLeader || !!queryParam) ? 'disable-edit': ''}}">
         <view class="nav">
             <navigator url="{{navigateUrlMap.prevKnow}}" open-type="redirect">早知道</navigator>
             <navigator class="active">会安排</navigator>
@@ -7,7 +7,7 @@
             <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher}}">有反思</navigator>
         </view>
         <scroll-view scroll-y="{{scrollable}}">
-            <step-list :list.sync="datalist" :editable.sync="isUserLeader || !queryParam"></step-list>
+            <step-list :list.sync="datalist" :editable.sync="stepEditable"></step-list>
         </scroll-view>
         <view class="button-block flex-box" hidden="{{!isUserLeader || !!queryParam}}">
             <view class="btn btn-add">
@@ -65,7 +65,8 @@
                 practice: '/pages/practice',
                 practiceOpenType: 'switchTab',
                 think: '/practice/pages/think'
-            }
+            },
+            stepEditable: false
         }
 
         components = {
@@ -178,6 +179,23 @@
             }
         }
 
+        watch = {
+            'isUserLeader': function(val) {
+                if (val && !this.queryParam) {
+                    this.stepEditable = true
+                } else {
+                    this.stepEditable = false
+                }
+            },
+            'queryParam': function(val) {
+                if (!val && this.isUserLeader) {
+                    this.stepEditable = true
+                } else {
+                    this.stepEditable = false
+                }
+            }
+        }
+
         init() {
             let activeGroupInfo
             if (this.queryParam) {
@@ -247,6 +265,9 @@
     scroll-view {
         width: 100%;
         height: calc(100vh - 240rpx);
+    }
+    .disable-edit scroll-view {
+        height: calc(100vh - 80rpx);
     }
     .add-step-dialog .dialog-btn {
         margin-top: 20rpx;
