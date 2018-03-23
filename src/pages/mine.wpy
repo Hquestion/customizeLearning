@@ -246,7 +246,7 @@
     }
     .my-task-block {
         padding: 20rpx;
-        background: #fff;
+        background: #EDFBFF;
         box-sizing: border-box;
     }
     .my-task-block .task-block {

@@ -19,6 +19,7 @@
                             <view class="course-box" @tap.native="navigateToDetail({{item}})">
                                 <course-task class="course-task-item" :taskInfo.sync="item" @toggle-praise.user="onTogglePraise"></course-task>
                             </view>
+                            <view class="grey-gap" wx:if="{{index !== classCourseTasks.length - 1}}"></view>
                         </repeat>
                         <view hidden="{{schoolCourseTasks.length > 0}}" class="empty-container">
                             <empty-content></empty-content>
@@ -31,6 +32,7 @@
                             <view class="course-box" @tap="navigateToDetail({{item}})">
                                 <course-task class="course-task-item" :taskInfo.sync="item" @toggle-praise.user="onTogglePraise"></course-task>
                             </view>
+                            <view class="grey-gap" wx:if="{{index !== classCourseTasks.length - 1}}"></view>
                         </repeat>
                         <view hidden="{{classCourseTasks.length > 0}}" class="empty-container">
                             <empty-content></empty-content>
@@ -51,6 +53,7 @@
                                         <view class="course-box" @tap.native="navigateToDetail({{item}})">
                                             <course class="course-item" :course="item"></course>
                                         </view>
+                                        <view class="grey-gap" wx:if="{{index !== cateCourseList.length - 1}}"></view>
                                     </repeat>
                                 </view>
                                 <view hidden="{{cateCourseList.length > 0}}" class="empty-container">
@@ -300,7 +303,7 @@
     .content-container {
         width: 100%;
         height: calc(100vh - 82rpx);
-        background: #f2f2f2;
+        background: #fff;
     }
 
     swiper {
@@ -309,12 +312,6 @@
 
     swiper-item {
         height: 100%;
-    }
-    .course-box {
-        margin-top: 10rpx;
-    }
-    .course-box:first-child {
-        margin-top: 0;
     }
     scroll-view {
         height: 100%;
@@ -329,6 +326,7 @@
         width: 120rpx;
         height: 100%;
         text-align: center;
+        background: #f2f2f2;
     }
     .course-cate-box .cate {
         padding: 30rpx 10rpx;
