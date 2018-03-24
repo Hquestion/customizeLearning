@@ -16,7 +16,7 @@
             </view>
             <view class="star-count">
                 <view class="block star-block">
-                    <image class="icon star" src="../images/xing.png"></image><text>{{taskInfo.StarNum || 0}}</text>
+                    <image class="icon star" src="../images/baoshi.png"></image><text>{{taskInfo.StarNum || 0}}</text>
                 </view>
                 <view class="block fav-block" @tap.stop="toggleFav({{taskInfo}})">
                     <image class="icon fav" src="../images/zan.png" wx:if="{{!taskInfo.IsPraise}}"></image>

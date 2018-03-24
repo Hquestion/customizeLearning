@@ -13,7 +13,7 @@
                             <view class="group-name">{{item.GroupName}}</view>
                             <view class="finish-date grey">{{item.showCompleteDate}}</view>
                             <view class="task-star">
-                                <image class="icon star" src="../../images/xing.png"></image>
+                                <image class="icon star" src="../../images/baoshi.png"></image>
                                 <text class="warning">{{item.StarNum || 0}}</text>
                             </view>
                         </view>
