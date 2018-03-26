@@ -94,6 +94,7 @@
     import config from '../config'
 
     import {getCourseArrangeList, uploadFile, getChatMsgByPage, deleteChatMsg} from '../api'
+    import {getMessageSendTime} from '../util'
 
     export default class Practice extends wepy.page {
         config = {
@@ -201,17 +202,32 @@
                 wepy.chooseVideo({
                     success(res) {
                         let path = res.tempFilePath
-                        uploadFile(path, {
-                            FileType: 3,
-                            userFID: that.$parent.globalData.userInfo.FlnkID
-                        }).then(res => {
-                            that.sendCommonMsg('3', res.FileLink, res.FileId)
-                        }, (res) => {
-                            wepy.showToast({
-                                title: '发送失败',
-                                icon: 'none'
-                            })
+                        wepy.saveFile({
+                            tempFilePath: path,
+                            success(res) {
+                                uploadFile(res.savedFilePath, {
+                                    FileType: 3,
+                                    userFID: that.$parent.globalData.userInfo.FlnkID
+                                }).then(res => {
+                                    that.sendCommonMsg('3', res.FileLink, res.FileId)
+                                }, (res) => {
+                                    wepy.showToast({
+                                        title: '发送失败',
+                                        icon: 'none'
+                                    })
+                                })
+                            },
+                            fail(res) {
+                                console.error(res)
+                                wepy.showToast({
+                                    title: '发送失败',
+                                    icon: 'none'
+                                })
+                            }
                         })
+                    },
+                    fail(res) {
+                        console.error(res)
                     }
                 })
             },
@@ -413,6 +429,7 @@
                     list.forEach(item => {
                         let msgBody = JSON.parse(item.MessageBody)
                         msgBody.isSelf = msgBody.FromUser === this.$parent.globalData.userInfo.FlnkID
+                        msgBody.showSendTime = getMessageSendTime(item.SendTime)
                         data.unshift(msgBody)
                     })
                     resolve(data)
@@ -465,6 +482,7 @@
                 wepy.onSocketMessage((res) => {
                     let data = JSON.parse(res.data)
                     data.isSelf = data.FromUser === this.$parent.globalData.userInfo.FlnkID
+                    data.showSendTime = getMessageSendTime(data.SendTime)
                     this.messages.push(data)
                     this.$apply()
                     this.scrollToCurrentMsg()

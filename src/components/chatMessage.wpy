@@ -4,7 +4,11 @@
             <image src="{{ msgData.AvatarUrl }}"></image>
         </view>
         <view class="message-info" @longpress="moreActions({{msgData}})">
-            <view class="nick-name">{{msgData.UserName}}</view>
+            <view class="nick-name">
+                <text wx:if="{{msgData.isSelf}}" style="margin-right: 10rpx;">{{msgData.showSendTime}}</text>
+                {{msgData.UserName}}
+                <text wx:if="{{!msgData.isSelf}}" style="margin-left: 10rpx;">{{msgData.showSendTime}}</text>
+            </view>
             <view class="message-box">
                 <block wx:if="{{msgData.MessageBody.msgtype === '1'}}">
                     <view class="padding-box text-message-box">
@@ -70,13 +74,6 @@
             }
         }
 
-        data = {
-
-        }
-
-        components = {
-
-        }
         methods = {
             playAudio(message) {
                 const innerAudioContext = wepy.createInnerAudioContext()

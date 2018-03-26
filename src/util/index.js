@@ -21,3 +21,25 @@ export function getLastDays(createTime) {
     return `${days}`
     // }
 }
+
+export function getMessageSendTime(timeStr) {
+    let date = new Date(timeStr)
+    let year = date.getFullYear()
+    let month = date.getMonth() + 1
+    let day = date.getDay()
+    let hour = date.getHours()
+    let minute = date.getMinutes()
+    let now = new Date()
+    let nowYear = now.getFullYear()
+    let nowMonth = now.getMonth() + 1
+    let nowDay = now.getDay()
+    let resultStr = ''
+    if (nowYear === year && nowMonth === month && nowDay === day) {
+        resultStr = `${hour}:${minute}`
+    } else if (nowYear !== year) {
+        resultStr = `${year}年${month}月${day}日 ${hour}:${minute}`
+    } else {
+        resultStr = `${month}月${day}日 ${hour}:${minute}`
+    }
+    return resultStr
+}

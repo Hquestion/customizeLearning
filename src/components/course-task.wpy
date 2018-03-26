@@ -74,7 +74,7 @@
         box-sizing: border-box;
         background: #fff;
         /*border-top: 1px solid #ccc;*/
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #efefef;
     }
     .course-task .order {
         width: 100rpx;

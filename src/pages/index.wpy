@@ -330,7 +330,7 @@
     }
     .course-cate-box .cate {
         padding: 30rpx 10rpx;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #dedede;
     }
     .course-cate-box .cate.active {
         background: #fff;
