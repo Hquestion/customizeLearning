@@ -401,6 +401,8 @@
         }
 
         initChatHistory() {
+            this.currentMsgsPageIndex = 1
+            this.haveMoreChatMsgs = true
             this.loadChatMsgByPage(1).then(res => {
                 this.messages = [].concat(res)
                 this.$apply()
@@ -429,7 +431,7 @@
                     list.forEach(item => {
                         let msgBody = JSON.parse(item.MessageBody)
                         msgBody.isSelf = msgBody.FromUser === this.$parent.globalData.userInfo.FlnkID
-                        msgBody.showSendTime = getMessageSendTime(item.SendTime)
+                        msgBody.showSendTime = getMessageSendTime(item.SendTime + '+0800')
                         data.unshift(msgBody)
                     })
                     resolve(data)
@@ -482,7 +484,7 @@
                 wepy.onSocketMessage((res) => {
                     let data = JSON.parse(res.data)
                     data.isSelf = data.FromUser === this.$parent.globalData.userInfo.FlnkID
-                    data.showSendTime = getMessageSendTime(data.SendTime)
+                    data.showSendTime = getMessageSendTime(data.MessageTime)
                     this.messages.push(data)
                     this.$apply()
                     this.scrollToCurrentMsg()

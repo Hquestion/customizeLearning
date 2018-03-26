@@ -6,8 +6,8 @@
             <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
             <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher}}">有反思</navigator>
         </view>
-        <scroll-view scroll-y="{{scrollable}}">
-            <step-list :list.sync="datalist" :editable.sync="stepEditable"></step-list>
+        <scroll-view scroll-y="{{scrollable}}" @scroll="onScroll">
+            <step-list :list.sync="datalist" :editable.sync="stepEditable" :parentOffset.sync="parentScrollTop"></step-list>
         </scroll-view>
         <view class="button-block flex-box" hidden="{{!isUserLeader || !!queryParam}}">
             <view class="btn btn-add">
@@ -47,6 +47,7 @@
         }
 
         data = {
+            parentScrollTop: 0,
             isTeacher: false,
             userInfo: null,
             isUserLeader: false,
@@ -135,6 +136,10 @@
             },
             onDescInput(e) {
                 this.stepDesc = e.detail.value
+            },
+            onScroll(e) {
+                this.parentScrollTop = e.detail.scrollTop
+                this.$apply()
             }
         }
 

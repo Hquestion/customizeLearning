@@ -14,7 +14,7 @@
                         <view class="step-content-container">
                             <repeat for="{{item.WorkArrangeList}}" item="submitItem" index="index2">
                                 <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '1'}}">
-                                    <view>{{submitItem.msgData.MessageBody.msgcontent}}</view>
+                                    <view class="msg-text">{{submitItem.msgData.MessageBody.msgcontent}}</view>
                                 </block>
                                 <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '2'}}">
                                     <view>
@@ -229,11 +229,12 @@
         background: #f2f2f2;
     }
     .step-list-container {
-        padding: 20rpx;
+        padding: 20rpx 0;
         background: #fff;
     }
     .step-content-container {
-        padding-left: 20rpx;
+        padding: 20rpx 0 20rpx 30rpx;
+        box-sizing: border-box;
     }
     .edit-think-dialog .content {
         text-align: left;
@@ -269,5 +270,13 @@
     .think-content .submit-image {
         width: 70vw;
         height: 300rpx;
+    }
+    .msg-text {
+        padding:15rpx 25rpx;
+        background:#f2f2f2;
+        display:inline-block;
+        border:1px solid #dedede;
+        box-sizing:border-box;
+        border-radius:10rpx;
     }
 </style>

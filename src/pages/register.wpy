@@ -122,7 +122,7 @@
         width: 90%;
         text-align: left;
         margin: 40rpx auto 0;
-        padding:20rpx;
+        padding:25rpx;
         box-sizing:border-box;
         border: 1px solid #1abcb0;
         border-radius: 10rpx;

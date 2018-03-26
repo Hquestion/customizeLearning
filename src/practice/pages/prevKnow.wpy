@@ -11,7 +11,7 @@
             <panel class="prev-know-panel">
                 <view slot="title">早知道</view>
                 <view slot="content">
-                    {{prevKnowContent}}
+                    <rich-text>{{prevKnowContent}}</rich-text>
                 </view>
             </panel>
             <panel class="remark-standard-panel">
@@ -70,7 +70,7 @@
             }
             getCourseDetailById(activeGroupTask.CourseFID).then(res => {
                 getGroupDetail(activeGroupTask.GroupFID).then(groupRes => {
-                    res.groupMembers = groupRes.AttendMembers
+                    res.groupMembers = groupRes.AttendMembers ? (groupRes.GroupLeaderName + ',' + groupRes.AttendMembers) : groupRes.GroupLeaderName
                     res.showCreateTime = parseTime(res.CreateTime)
                     res.showOpenStartTime = parseTime(res.OpenStartTime)
                     res.showOpenEndTime = parseTime(res.OpenEndTime)

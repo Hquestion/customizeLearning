@@ -70,10 +70,9 @@
         height: 240rpx;
         display: flex;
         justify-content: flex-start;
-        padding: 15rpx;
+        padding: 25rpx 15rpx 30rpx;
         box-sizing: border-box;
         background: #fff;
-        /*border-top: 1px solid #ccc;*/
         border-bottom: 1px solid #efefef;
     }
     .course-task .order {
@@ -116,7 +115,7 @@
         text-overflow: ellipsis;
     }
     .task-class-block {
-        font-size: 28rpx;
+        font-size: 32rpx;
         height: 85rpx;
         width: 100%;
         display: flex;
@@ -144,8 +143,8 @@
     }
     .star-count .icon {
         display: inline-block;
-        width: 50rpx;
-        height: 50rpx;
+        width: 40rpx;
+        height: 40rpx;
     }
     .star-count .block {
         width: 33.3%;

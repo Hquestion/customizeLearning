@@ -22,7 +22,10 @@
             list: {
                 twoWay: true
             },
-            editable: {}
+            editable: {},
+            parentScrollTop: {
+                twoWay: true
+            }
         }
 
         components = {
@@ -76,13 +79,14 @@
         }
 
         getOffsetTopList() {
+            let self = this
             let offsets = []
             let selectQuery = wepy.createSelectorQuery()
             let $nodeRefs = selectQuery.selectAll('.step-item')
             $nodeRefs.boundingClientRect()
             selectQuery.exec(function(res) {
                 res[0].forEach(item => {
-                    offsets.push(item.top)
+                    offsets.push(item.top + (self.$parent.parentScrollTop || 0))
                 })
             })
             this.offsetTopList = offsets
@@ -102,11 +106,16 @@
                     break
                 }
             }
+            console.log('offset:', offset)
+            console.log(this.offsetTopList)
+            console.log('index:', index)
             index = index < 0 ? 0 : index
             return index
         }
 
         rebuildList(oldIndex, newIndex) {
+            console.log(oldIndex)
+            console.log('newIndex', newIndex)
             if (oldIndex !== newIndex) {
                 if (oldIndex > newIndex) {
                     let data = this.list[oldIndex]

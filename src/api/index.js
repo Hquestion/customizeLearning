@@ -518,3 +518,20 @@ export function getTeacherRemarkByGroup(groupFID) {
         })
     })
 }
+
+/**
+ * 解除绑定
+ * @param userId
+ * @returns {Promise<any>}
+ */
+export function cancelBind(userId) {
+    return new Promise((resolve, reject) => {
+        httpService.post('api/UserBaseInfo/CancleBindWeChat', {
+            FLnkID: userId
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, (res) => {
+            reject(res)
+        })
+    })
+}

@@ -147,6 +147,7 @@
     .task-star text {
         display: inline-block;
         vertical-align: top;
+        margin-left:10rpx;
     }
     .detail-block {
         height: calc(100vh - 140rpx);

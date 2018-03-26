@@ -40,6 +40,9 @@
                 </panel>
             </view>
         </view>
+        <view style="padding: 30rpx 0;">
+            <rich-button theme="grey" text="解除绑定" @tap.user="onCancelRegister"></rich-button>
+        </view>
     </view>
 </template>
 
@@ -48,8 +51,9 @@
     import PersonalTask from '../components/personal-task'
     import TeacherCourseTask from '../components/teacher-course-task'
     import panel from '../components/panel'
+    import richButton from '../components/rich-button'
 
-    import {getStuDetailInfo, getMyCourseTasks, activateGroupTask} from '../api'
+    import {getStuDetailInfo, getMyCourseTasks, activateGroupTask, cancelBind} from '../api'
     import {getLastDays} from '../util'
 
     export default class Mine extends wepy.page {
@@ -74,7 +78,8 @@
             'personal-task2': PersonalTask,
             't-course-task1': TeacherCourseTask,
             't-course-task2': TeacherCourseTask,
-            panel: panel
+            panel: panel,
+            'rich-button': richButton
         }
 
         watch = {
@@ -151,6 +156,22 @@
                 wepy.navigateTo({
                     url: '/practice/pages/reviewFinishTask?courseId=' + task.CourseFID + '&groupId=' + task.FlnkID
                 })
+            },
+            onCancelRegister() {
+                let that = this
+                wepy.showModal({
+                    title: '提示',
+                    content: '确定要解除绑定吗？解除绑定后，您需要重新绑定才能继续学习哦~',
+                    success(res) {
+                        if (res.confirm) {
+                            cancelBind(that.$parent.globalData.userInfo.FlnkID).then(res => {
+                                wepy.redirectTo({
+                                    url: '/pages/register'
+                                })
+                            })
+                        }
+                    }
+                })
             }
         }
 
@@ -216,10 +237,10 @@
 <style>
     .mine-container {
         text-align: center;
-        background: #fff;
+        background: #E3FAFF;
     }
     .user-block {
-        padding: 50rpx 0 150rpx;
+        padding: 50rpx 0 100rpx;
         background: #02CDF9;
         color: #fff;
         font-size: 36rpx;
@@ -246,11 +267,11 @@
     }
     .my-task-block {
         padding: 20rpx;
-        background: #EDFBFF;
+        background: #E3FAFF;
         box-sizing: border-box;
     }
     .my-task-block .task-block {
-        border: 1rpx solid #02CDF9;
+        border: 1rpx solid #62CDF9;
         margin-top: 20rpx;
         border-radius: 20rpx;
     }

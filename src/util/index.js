@@ -34,12 +34,13 @@ export function getMessageSendTime(timeStr) {
     let nowMonth = now.getMonth() + 1
     let nowDay = now.getDay()
     let resultStr = ''
+    let minuteStr = minute < 10 ? ('0' + minute) : minute
     if (nowYear === year && nowMonth === month && nowDay === day) {
-        resultStr = `${hour}:${minute}`
+        resultStr = `${hour}:${minuteStr}`
     } else if (nowYear !== year) {
-        resultStr = `${year}年${month}月${day}日 ${hour}:${minute}`
+        resultStr = `${year}年${month}月${day}日 ${hour}:${minuteStr}`
     } else {
-        resultStr = `${month}月${day}日 ${hour}:${minute}`
+        resultStr = `${month}月${day}日 ${hour}:${minuteStr}`
     }
     return resultStr
 }
