@@ -271,7 +271,7 @@
         box-sizing: border-box;
     }
     .my-task-block .task-block {
-        border: 1rpx solid #62CDF9;
+        border: 1rpx solid #82cDF9;
         margin-top: 20rpx;
         border-radius: 20rpx;
     }

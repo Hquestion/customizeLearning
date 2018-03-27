@@ -1,8 +1,14 @@
 export function parseTime(time) {
+    if (!time) {
+        return ''
+    }
+    time = time.replace(/T/g, ' ')
+    time = time.replace(/-/g, '/')
+    time = time.slice(0, 19)
     let date = new Date(time)
     let year = date.getFullYear()
     let month = date.getMonth() + 1
-    let day = date.getDay()
+    let day = date.getDate()
     return `${year}年${month}月${day}日`
 }
 
@@ -23,16 +29,22 @@ export function getLastDays(createTime) {
 }
 
 export function getMessageSendTime(timeStr) {
+    if (!timeStr) {
+        return ''
+    }
+    timeStr = timeStr.replace(/T/g, ' ')
+    timeStr = timeStr.replace(/-/g, '/')
+    timeStr = timeStr.slice(0, 19)
     let date = new Date(timeStr)
     let year = date.getFullYear()
     let month = date.getMonth() + 1
-    let day = date.getDay()
+    let day = date.getDate()
     let hour = date.getHours()
     let minute = date.getMinutes()
     let now = new Date()
     let nowYear = now.getFullYear()
     let nowMonth = now.getMonth() + 1
-    let nowDay = now.getDay()
+    let nowDay = now.getDate()
     let resultStr = ''
     let minuteStr = minute < 10 ? ('0' + minute) : minute
     if (nowYear === year && nowMonth === month && nowDay === day) {

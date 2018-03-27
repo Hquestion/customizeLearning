@@ -145,14 +145,18 @@
         display: inline-block;
         width: 40rpx;
         height: 40rpx;
+        vertical-align: middle;
     }
     .star-count .block {
         width: 33.3%;
+        line-height: 1;
+        font-size: 0;
     }
     .star-count .block text {
-        vertical-align:top;
+        vertical-align:middle;
         display:inline-block;
         margin-left:10rpx;
+        font-size: 32rpx;
     }
     .star-count .block text.faved {
         color: #1abcb0;

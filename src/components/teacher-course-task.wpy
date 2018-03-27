@@ -94,12 +94,14 @@
         display: inline-block;
         width: 50rpx;
         height: 50rpx;
+        vertical-align: middle;
     }
     .star-count .block {
         width: 33.3%;
+        line-height: 1;
     }
     .star-count .block text {
-        vertical-align:top;
+        vertical-align:middle;
         display:inline-block;
         margin-left:10rpx;
     }

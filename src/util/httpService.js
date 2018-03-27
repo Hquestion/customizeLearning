@@ -16,6 +16,8 @@ export default {
                 name: 'file',
                 formData: param,
                 success: function(res) {
+                    console.log('上传成功')
+                    console.log(res)
                     res.data = JSON.parse(res.data)
                     handleSuccess(res).then(resolve, reject)
                 },

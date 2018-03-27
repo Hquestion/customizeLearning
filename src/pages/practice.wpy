@@ -200,33 +200,36 @@
             takePhoto() {
                 let that = this
                 wepy.chooseVideo({
+                    sourceType: ['album', 'camera'],
+                    maxDuration: 60,
+                    camera: 'back',
                     success(res) {
+                        console.log('success:', res)
+                        if (res.duration > 60) {
+                            wepy.showToast({
+                                title: '视频不能超过1分钟',
+                                icon: 'none'
+                            })
+                            return
+                        }
                         let path = res.tempFilePath
-                        wepy.saveFile({
-                            tempFilePath: path,
-                            success(res) {
-                                uploadFile(res.savedFilePath, {
-                                    FileType: 3,
-                                    userFID: that.$parent.globalData.userInfo.FlnkID
-                                }).then(res => {
-                                    that.sendCommonMsg('3', res.FileLink, res.FileId)
-                                }, (res) => {
-                                    wepy.showToast({
-                                        title: '发送失败',
-                                        icon: 'none'
-                                    })
-                                })
-                            },
-                            fail(res) {
-                                console.error(res)
-                                wepy.showToast({
-                                    title: '发送失败',
-                                    icon: 'none'
-                                })
-                            }
+                        wepy.showLoading({title: '正在上传'})
+                        uploadFile(path, {
+                            FileType: 3,
+                            userFID: that.$parent.globalData.userInfo.FlnkID
+                        }).then(res => {
+                            wepy.hideLoading()
+                            that.sendCommonMsg('3', res.FileLink, res.FileId)
+                        }, (res) => {
+                            wepy.hideLoading()
+                            wepy.showToast({
+                                title: '发送失败',
+                                icon: 'none'
+                            })
                         })
                     },
                     fail(res) {
+                        console.log('fail:', res)
                         console.error(res)
                     }
                 })
@@ -475,6 +478,8 @@
                                     self.$apply()
                                 })
                             })
+                            self.unsendMessages = []
+                            self.$apply()
                         }
                     },
                     fail() {
@@ -503,6 +508,7 @@
 
         onUnload() {
             this.$parent.setGlobalData('isInitSocket', false)
+            console.log('页面卸载')
             wepy.closeSocket({
                 success() {
                     console.log('断开socket成功')
