@@ -129,7 +129,7 @@ export function getSuccessTasksByCourseId(courseId) {
  */
 export function getClassmateList(studentFID, courseFID) {
     return new Promise((resolve, reject) => {
-        httpService.get('api/CourseGroup/GetGroupSelectMembersViewByStudentCourse?studentFID={studentFID}&courseFID={courseFID}', {
+        httpService.get('api/CourseGroup/GetGroupSelectMembersViewByStudentCourse', {
             studentFID: studentFID,
             courseFID: courseFID
         }).then(res => {
@@ -144,9 +144,9 @@ export function getClassmateList(studentFID, courseFID) {
  * @param courseFID
  * @returns {Promise<any>}
  */
-export function isStuInCourseGroup(studentFID, courseFID) {
+export function isStuInCourseGroup(studentFID, courseFID, groupFID) {
     return new Promise((resolve, reject) => {
-        httpService.get('api/CourseGroup/GetGroupSelectMembersViewByStudentCourse?studentFID={studentFID}&courseFID={courseFID}', {
+        httpService.get('api/CourseGroup/GetGroupSelectMembersViewByStudentCourse', {
             studentFID: studentFID,
             courseFID: courseFID
         }).then(res => {
@@ -154,7 +154,20 @@ export function isStuInCourseGroup(studentFID, courseFID) {
             let stuDetail = stuList.find(item => {
                 return item.StudentFID === studentFID
             })
-            let isIn = !!stuDetail && !!stuDetail.GroupFID
+            let isIn
+            if (stuDetail) {
+                if (stuDetail.GroupFID) {
+                    if (groupFID) {
+                        isIn = stuDetail.GroupFID === groupFID
+                    } else {
+                        isIn = true
+                    }
+                } else {
+                    isIn = false
+                }
+            } else {
+                isIn = false
+            }
             resolve(!!isIn)
         }, reject)
     })

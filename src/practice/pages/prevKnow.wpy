@@ -4,7 +4,7 @@
             <navigator class="active">早知道</navigator>
             <navigator url="{{navigateUrlMap.arrange}}" open-type="redirect">会安排</navigator>
             <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
-            <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher}}">有反思</navigator>
+            <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher || !isStuInGroup}}">有反思</navigator>
         </view>
         <view class="prev-know-main">
             <course-detail :courseInfo.sync="courseInfo"></course-detail>
@@ -32,7 +32,7 @@
     import Panel from '../../components/panel'
     import remarkTpl from '../../components/remark-tpl'
 
-    import {getCourseDetailById, getGroupDetail, getPrevKnowByCourse, getRemarkStandard} from '../../api'
+    import {getCourseDetailById, getGroupDetail, getPrevKnowByCourse, getRemarkStandard, isStuInCourseGroup} from '../../api'
     import {parseTime} from '../../util'
 
     export default class prevKnow extends wepy.page {
@@ -52,7 +52,8 @@
                 practice: '/pages/practice',
                 practiceOpenType: 'switchTab',
                 think: '/practice/pages/think'
-            }
+            },
+            isStuInGroup: false
         }
 
         components = {
@@ -84,6 +85,13 @@
             })
             getRemarkStandard(activeGroupTask.CourseFID).then(res => {
                 this.remarkStandardList = res
+                this.$apply()
+            })
+            isStuInCourseGroup(this.$parent.globalData.userInfo.FlnkID, activeGroupTask.CourseFID, activeGroupInfo.GroupFID).then((res) => {
+                this.isStuInGroup = res
+                this.$apply()
+            }, () => {
+                this.isStuInGroup = false
                 this.$apply()
             })
         }

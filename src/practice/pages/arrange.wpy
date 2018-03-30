@@ -4,7 +4,7 @@
             <navigator url="{{navigateUrlMap.prevKnow}}" open-type="redirect">早知道</navigator>
             <navigator class="active">会安排</navigator>
             <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
-            <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher}}">有反思</navigator>
+            <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher || !isStuInGroup}}">有反思</navigator>
         </view>
         <scroll-view scroll-y="{{scrollable}}" @scroll="onScroll">
             <step-list :list.sync="datalist" :editable.sync="stepEditable" :parentOffset.sync="parentScrollTop"></step-list>
@@ -38,7 +38,7 @@
     import richButton from '../../components/rich-button'
     import dialog from '../../components/dialog'
 
-    import {getGroupDetail, getCourseArrangeList, saveGroupArrangeList, deleteArrange} from '../../api'
+    import {getGroupDetail, getCourseArrangeList, saveGroupArrangeList, deleteArrange, isStuInCourseGroup} from '../../api'
     import {Step} from '../../model/Step'
 
     export default class Arrange extends wepy.page {
@@ -67,7 +67,8 @@
                 practiceOpenType: 'switchTab',
                 think: '/practice/pages/think'
             },
-            stepEditable: false
+            stepEditable: false,
+            isStuInGroup: false
         }
 
         components = {
@@ -216,6 +217,13 @@
             })
             getCourseArrangeList(activeGroupInfo.CourseFID, activeGroupInfo.GroupFID).then(res => {
                 this.datalist = res
+                this.$apply()
+            })
+            isStuInCourseGroup(this.$parent.globalData.userInfo.FlnkID, activeGroupInfo.CourseFID, activeGroupInfo.GroupFID).then((res) => {
+                this.isStuInGroup = res
+                this.$apply()
+            }, () => {
+                this.isStuInGroup = false
                 this.$apply()
             })
         }
