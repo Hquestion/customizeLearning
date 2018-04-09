@@ -32,5 +32,7 @@
     .star-remark image {
         width: 45rpx;
         height: 45rpx;
+        margin-left:10rpx;
+        vertical-align:middle;
     }
 </style>

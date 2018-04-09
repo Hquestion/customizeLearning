@@ -85,7 +85,7 @@
 </script>
 <style>
     .step {
-        padding: 10rpx;
+        padding: 20rpx 10rpx;
     }
     .step .step-title {
         padding:10rpx 10rpx 10rpx 20rpx;
@@ -125,7 +125,7 @@
         padding: 10rpx 20rpx;
         display: inline-block;
         margin-left: 10rpx;
-        margin-top: 10rpx;
+        margin-top: 20rpx;
         min-width: 20vw;
         text-align: center;
         box-sizing: border-box;
@@ -154,5 +154,6 @@
     }
     .arrange-text {
         margin-left: 10rpx;
+        line-height: 1.5;
     }
 </style>

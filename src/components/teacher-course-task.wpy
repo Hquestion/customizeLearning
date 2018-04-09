@@ -8,7 +8,7 @@
             </view>
             <view class="row-block task-group-block">
                 <text class="grey">小组组员：</text>
-                <text class="group-people">{{taskInfo.AttendMembers}}</text>
+                <text class="group-people">{{taskInfo.GroupLeaderName}}<text hidden="{{!taskInfo.AttendMembers}}">,</text>{{taskInfo.AttendMembers}}</text>
             </view>
             <view class="row-block flex-box">
                 <view class="task-teacher-block">

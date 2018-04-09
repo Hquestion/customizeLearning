@@ -87,7 +87,7 @@
                 this.remarkStandardList = res
                 this.$apply()
             })
-            isStuInCourseGroup(this.$parent.globalData.userInfo.FlnkID, activeGroupTask.CourseFID, activeGroupInfo.GroupFID).then((res) => {
+            isStuInCourseGroup(this.$parent.globalData.userInfo.FlnkID, activeGroupTask.CourseFID, activeGroupTask.GroupFID).then((res) => {
                 this.isStuInGroup = res
                 this.$apply()
             }, () => {
