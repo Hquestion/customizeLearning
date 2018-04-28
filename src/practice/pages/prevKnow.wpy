@@ -11,7 +11,7 @@
             <panel class="prev-know-panel">
                 <view slot="title">早知道</view>
                 <view slot="content">
-                    <rich-text>{{prevKnowContent}}</rich-text>
+                    <rich-text nodes="{{prevKnowContent}}" type="text"></rich-text>
                 </view>
             </panel>
             <panel class="remark-standard-panel">

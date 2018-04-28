@@ -90,16 +90,19 @@
                 innerAudioContext.play()
             },
             playVideo(message) {
+                this.$emit('preview-image', message)
                 wepy.navigateTo({
                     url: '/practice/pages/playVideo?url=' + message.MessageBody.msgcontent
                 })
             },
             previewImage(message) {
+                this.$emit('preview-image', message)
                 wepy.previewImage({
                     urls: [message.MessageBody.msgcontent]
                 })
             },
             moreActions(msgData) {
+                console.log(msgData)
                 this.$emit('hide-other-actions', msgData)
                 this.$nextTick(() => {
                     msgData.isShowMore = true
@@ -133,7 +136,7 @@
         justify-content: flex-start;
         align-items: flex-start;
         width: 100%;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         padding: 10rpx 15rpx;
         text-align: left;
         margin-top: 10rpx;

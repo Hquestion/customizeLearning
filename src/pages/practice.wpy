@@ -8,7 +8,8 @@
                 <navigator url="/practice/pages/think" open-type="navigate" hidden="{{isTeacher}}">有反思</navigator>
             </view>
             <view @tap="hideChatMsgMore">
-                <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper" @tap="hideActionBtns">
+                <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}"
+                             @scrolltoupper="onScrollUpper" @tap="hideActionBtns" @scroll="onChatScroll">
                     <repeat for="{{messages}}" index="index" item="item" key="index">
                         <chat-message :id="'message_' + item.MessageID" :msgData.sync="item" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
                         </chat-message>
@@ -35,7 +36,7 @@
                             </view>
                         </view>
                     </view>
-                    <view id="btn-tools">
+                    <view id="btn-tools" style="height: {{btnToolHeight}}">
                         <view class="record-text-toggle">
                             <view hidden="{{inputMode === 'TEXT'}}" class="btn-radius btn-audio-input" @tap="setInputMode">
                                 <image src="../images/jianpan.png"></image>
@@ -49,7 +50,8 @@
                                 <view class="text-input-widget" @tap="focusTextArea">
                                     <view class="textarea-container">
                                 <textarea fixed="{{true}}" show-confirm-bar="{{false}}" maxlength="-1" cursor-spacing="{{15}}"
-                                          @focus="onFocus" value="{{userTextInput}}" @input="onInputText" @blur="cancelFocus" focus="{{isFocus}}"></textarea>
+                                          value="{{userTextContent}}" @input="onInputText" @blur="cancelFocus"
+                                          focus="{{isFocus}}" @linechange="inputLineChange" style="height: {{textareaHeight + 'rpx'}}"></textarea>
                                     </view>
                                 </view>
                             </view>
@@ -111,7 +113,8 @@
             arrangeIndex: 0,
             inputMode: 'TEXT',
             userTextInput: '',
-            chatHistoryHeight: 'calc(100vh - 250rpx)',
+            userTextContent: '',
+            // chatHistoryHeight: 'calc(100vh - 250rpx)',
             moreActionShown: false,
             messageId: '',
             userInfoForMsg: {},
@@ -119,7 +122,9 @@
             currentMsgsPageIndex: 1,
             haveMoreChatMsgs: true,
             isFocus: false,
-            unsendMessages: []
+            unsendMessages: [],
+            textareaHeight: 40,
+            isScrollToNewEnable: true
         }
 
         components = {
@@ -127,17 +132,20 @@
         }
 
         computed = {
-
+            chatHistoryHeight() {
+                return this.moreActionShown ? `calc(100vh - 410rpx - ${this.textareaHeight}rpx)` : `calc(100vh - 210rpx - ${this.textareaHeight}rpx)`
+            },
+            btnToolHeight() {
+                return (this.textareaHeight + 48) + 'rpx'
+            }
         }
 
         methods = {
             arrangeStepChange(e) {
                 this.arrangeIndex = +e.detail.value
             },
-            onFocus(e) {
-                this.userTextInput = e.detail.value
-            },
             onInputText(e) {
+                console.log('input', e.detail.value)
                 this.userTextInput = e.detail.value
             },
             toggleFilterCondition() {
@@ -169,13 +177,18 @@
                 // 发送文字消息
                 this.sendCommonMsg('1', this.userTextInput).then(res => {
                     this.userTextInput = ''
+                    this.userTextContent = ' '
+                    this.textareaHeight = 40
+                    setTimeout(() => {
+                        this.userTextContent = ''
+                    }, 0)
                     this.$apply()
                 })
             },
             showMoreActions() {
                 // 显示更多操作
                 this.moreActionShown = !this.moreActionShown
-                this.chatHistoryHeight = this.moreActionShown ? 'calc(100vh - 450rpx)' : 'calc(100vh - 250rpx)'
+                // this.chatHistoryHeight = this.moreActionShown ? 'calc(100vh - 450rpx)' : 'calc(100vh - 250rpx)'
             },
             uploadPic() {
                 let that = this
@@ -294,6 +307,13 @@
                     })
                 }
             },
+            onChatScroll(e) {
+                if (e.detail.scrollHeight - e.detail.scrollTop > 800) {
+                    this.isScrollToNewEnable = false
+                } else {
+                    this.isScrollToNewEnable = true
+                }
+            },
             onDeleteMsg(data) {
                 console.log(data)
             },
@@ -301,9 +321,15 @@
                 this.isFocus = true
                 this.$apply()
             },
-            cancelFocus() {
+            cancelFocus(e) {
                 this.isFocus = false
                 this.$apply()
+            },
+            inputLineChange(e) {
+                if (e.detail.lineCount <= 5) {
+                    this.textareaHeight = e.detail.heightRpx
+                    this.$apply()
+                }
             }
         }
 
@@ -330,6 +356,9 @@
                         icon: 'none'
                     })
                 }
+            },
+            'preview-image': function(e) {
+                this.$parent.setGlobalData('isPreviewImg', true)
             }
         }
 
@@ -475,6 +504,8 @@
                             self.unsendMessages.forEach(item => {
                                 self.sendCommonMsg(item.msgtype, item.msgcontent, item.msgkey).then(res => {
                                     self.userTextInput = ''
+                                    self.userTextContent = ''
+                                    self.textareaHeight = 40
                                     self.$apply()
                                 })
                             })
@@ -492,17 +523,32 @@
                     data.showSendTime = getMessageSendTime(data.MessageTime)
                     this.messages.push(data)
                     this.$apply()
-                    this.scrollToCurrentMsg()
+                    if (data.isSelf || this.isScrollToNewEnable) {
+                        this.scrollToCurrentMsg()
+                    }
+                    let pageStack = getCurrentPages()
+                    if (pageStack[pageStack.length - 1].route !== 'pages/practice') {
+                        wepy.showTabBarRedDot({
+                            index: 1
+                        })
+                    }
                 })
             })
         }
 
         onShow() {
             let self = this
+            wepy.hideTabBarRedDot({
+                index: 1
+            })
             this.$parent.getUserInfo().then((res) => {
                 self.userInfo = res
             })
             this.isTeacher = (this.$parent.globalData.userInfo.RoleNum + '') === '2'
+            if (this.$parent.globalData.isPreviewImg) {
+                this.$parent.setGlobalData('isPreviewImg', false)
+                return
+            }
             this.init()
         }
 
@@ -589,8 +635,7 @@
         text-align:left;
         position: absolute;
         bottom: 10rpx;
-        height: 40rpx;
-        max-height: 80rpx;
+        min-height: 40rpx;
         overflow: auto;
     }
     .chat-input {
