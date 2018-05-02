@@ -4,7 +4,7 @@
             <navigator class="active">早知道</navigator>
             <navigator url="{{navigateUrlMap.arrange}}" open-type="redirect">会安排</navigator>
             <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
-            <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher || !isStuInGroup}}">有反思</navigator>
+            <navigator url="{{navigateUrlMap.think}}" open-type="redirect">有反思</navigator>
         </view>
         <view class="prev-know-main">
             <course-detail :courseInfo.sync="courseInfo"></course-detail>

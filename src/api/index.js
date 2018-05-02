@@ -492,7 +492,7 @@ export function getChatMsgByPage(GroupFID, UserFID, RoleNum, pageIndex) {
                 PageIndex: pageIndex || 1,
                 PageSize: config.chatMsgPageSize || 20
             }
-        }).then(res => {
+        }, {ignoreLoading: true}).then(res => {
             resolve(res.ResultObj)
         }, reject)
     })
@@ -541,6 +541,23 @@ export function cancelBind(userId) {
     return new Promise((resolve, reject) => {
         httpService.post('api/UserBaseInfo/CancleBindWeChat', {
             FLnkID: userId
+        }).then(res => {
+            resolve(res.ResultObj)
+        }, (res) => {
+            reject(res)
+        })
+    })
+}
+
+/**
+ * 获取小组所有成员
+ * @param groupId
+ * @returns {Promise<any>}
+ */
+export function getGroupMembers(groupId) {
+    return new Promise((resolve, reject) => {
+        httpService.get('api/CourseGroup/GetListGroupMembersByGroup', {
+            groupFID: groupId
         }).then(res => {
             resolve(res.ResultObj)
         }, (res) => {

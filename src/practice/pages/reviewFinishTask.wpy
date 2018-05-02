@@ -5,7 +5,7 @@
                 <navigator url="/practice/pages/prevKnow?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">早知道</navigator>
                 <navigator url="/practice/pages/arrange?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">会安排</navigator>
                 <navigator class="active">能落实</navigator>
-                <navigator url="/practice/pages/think?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect" hidden="{{isTeacher || !isStuInGroup}}">有反思</navigator>
+                <navigator url="/practice/pages/think?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">有反思</navigator>
             </view>
             <view>
                 <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" @scrolltoupper="onScrollUpper">

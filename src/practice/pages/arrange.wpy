@@ -4,7 +4,7 @@
             <navigator url="{{navigateUrlMap.prevKnow}}" open-type="redirect">早知道</navigator>
             <navigator class="active">会安排</navigator>
             <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
-            <navigator url="{{navigateUrlMap.think}}" open-type="redirect" hidden="{{isTeacher || !isStuInGroup}}">有反思</navigator>
+            <navigator url="{{navigateUrlMap.think}}" open-type="redirect">有反思</navigator>
         </view>
         <scroll-view scroll-y="{{scrollable}}" @scroll="onScroll">
             <step-list :list.sync="datalist" :editable.sync="stepEditable" :parentOffset.sync="parentScrollTop"></step-list>

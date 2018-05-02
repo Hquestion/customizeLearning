@@ -5,7 +5,7 @@
                 <navigator url="/practice/pages/prevKnow" open-type="navigate">早知道</navigator>
                 <navigator url="/practice/pages/arrange" open-type="navigate">会安排</navigator>
                 <navigator url="/pages/practice" open-type="switchTab" class="active">能落实</navigator>
-                <navigator url="/practice/pages/think" open-type="navigate" hidden="{{isTeacher}}">有反思</navigator>
+                <navigator url="/practice/pages/think" open-type="navigate">有反思</navigator>
             </view>
             <view @tap="hideChatMsgMore">
                 <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}"
@@ -193,18 +193,19 @@
             uploadPic() {
                 let that = this
                 wepy.chooseImage({
-                    count: 1,
+                    count: 4,
                     success(res) {
-                        let path = res.tempFilePaths[0]
-                        uploadFile(path, {
-                            FileType: 2,
-                            userFID: that.$parent.globalData.userInfo.FlnkID
-                        }).then(res => {
-                            that.sendCommonMsg('2', res.FileLink, res.FileId)
-                        }, (res) => {
-                            wepy.showToast({
-                                title: '发送失败',
-                                icon: 'none'
+                        res.tempFilePaths.forEach(item => {
+                            uploadFile(item, {
+                                FileType: 2,
+                                userFID: that.$parent.globalData.userInfo.FlnkID
+                            }).then(res => {
+                                that.sendCommonMsg('2', res.FileLink, res.FileId)
+                            }, (res) => {
+                                wepy.showToast({
+                                    title: '发送失败',
+                                    icon: 'none'
+                                })
                             })
                         })
                     }
