@@ -16,31 +16,34 @@
                 <view class="submit-steps">
                     <view class="step-list-container">
                         <repeat for="{{submitedStepList}}" item="item" index="index">
-                            <step :stepData.sync="item" :index.sync="item.ArrangeSortCode" :editable="false" :detailVisible="false"></step>
-                            <view class="step-content-container">
-                                <repeat for="{{item.WorkArrangeList}}" item="submitItem" index="index2">
-                                    <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '1'}}">
-                                        <view class="msg-text">{{submitItem.msgData.MessageBody.msgcontent}}</view>
-                                    </block>
-                                    <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '2'}}">
-                                        <view>
-                                            <image class="submit-image" src="{{submitItem.msgData.MessageBody.msgcontent}}" @tap="previewImg({{submitItem.msgData.MessageBody.msgcontent}})"></image>
-                                        </view>
-                                    </block>
-                                    <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '3'}}">
-                                        <view>
-                                            <video src="{{submitItem.msgData.MessageBody.msgcontent}}"></video>
-                                        </view>
-                                    </block>
-                                    <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '4'}}">
-                                        <view>
-                                            <audio src="{{submitItem.msgData.MessageBody.msgcontent}}" @tap="playVoice({{submitItem.msgData.MessageBody.msgcontent}})">
-                                                <image src="../../images/yuyin2.png"></image>
-                                            </audio>
-                                        </view>
-                                    </block>
-                                </repeat>
-                            </view>
+                            <step :stepData.sync="item" :index.sync="item.SortCode" :editable="false" :detailVisible="false"></step>
+                            <repeat for="{{item.modelList}}" item="model" index="index4">
+                                <view class="sub-step-name">{{model.GroupArrangeItemContent}}</view>
+                                <view class="step-content-container">
+                                    <repeat for="{{model.WorkArrangeList}}" item="submitItem" index="index2">
+                                        <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '1'}}">
+                                            <view class="msg-text">{{submitItem.msgData.MessageBody.msgcontent}}</view>
+                                        </block>
+                                        <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '2'}}">
+                                            <view>
+                                                <image class="submit-image" src="{{submitItem.msgData.MessageBody.msgcontent}}" @tap="previewImg({{submitItem.msgData.MessageBody.msgcontent}})"></image>
+                                            </view>
+                                        </block>
+                                        <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '3'}}">
+                                            <view>
+                                                <video src="{{submitItem.msgData.MessageBody.msgcontent}}"></video>
+                                            </view>
+                                        </block>
+                                        <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '4'}}">
+                                            <view>
+                                                <audio src="{{submitItem.msgData.MessageBody.msgcontent}}" @tap="playVoice({{submitItem.msgData.MessageBody.msgcontent}})">
+                                                    <image src="../../images/yuyin2.png"></image>
+                                                </audio>
+                                            </view>
+                                        </block>
+                                    </repeat>
+                                </view>
+                            </repeat>
                         </repeat>
                     </view>
                     <empty-content hidden="{{submitedStepList.length > 0}}" text="TA还没有提交任何步骤"></empty-content>
@@ -187,8 +190,10 @@
             getUserSubmitSteps(member.MemberFID, this.currentGroupInfo.GroupFID).then(res => {
                 this.submitedStepList = res
                 this.submitedStepList.forEach(item => {
-                    item.WorkArrangeList.forEach(data => {
-                        data.msgData = JSON.parse(data.MessageBody)
+                    item.modelList.forEach(model => {
+                        model.WorkArrangeList.forEach(data => {
+                            data.msgData = JSON.parse(data.MessageBody)
+                        })
                     })
                 })
                 this.$apply()
@@ -292,7 +297,7 @@
         background: #f2f2f2;
     }
     .step-list-container {
-        padding: 20rpx 0;
+        padding: 20rpx 20rpx 20rpx 0;
         background: #fff;
     }
     .step-content-container {
@@ -331,7 +336,7 @@
         height: 50rpx;
     }
     .think-content .submit-image {
-        width: 70vw;
+        width: 60vw;
         height: 300rpx;
     }
     .msg-text {
@@ -341,5 +346,9 @@
         border:1px solid #dedede;
         box-sizing:border-box;
         border-radius:10rpx;
+        word-break: break-all;
+    }
+    .sub-step-name {
+        padding-left: 30rpx;
     }
 </style>

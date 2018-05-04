@@ -6,7 +6,7 @@
 <script>
     import wepy from 'wepy'
 
-    export default class CourseTask extends wepy.component {
+    export default class EmptyContent extends wepy.component {
         props = {
             text: {
                 default: '暂无数据'

@@ -10,6 +10,7 @@
             <view @tap="hideChatMsgMore">
                 <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}"
                              @scrolltoupper="onScrollUpper" @tap="hideActionBtns" @scroll="onChatScroll">
+                    <loading hidden="{{!isLoadingMsg || !haveMoreChatMsgs}}"></loading>
                     <repeat for="{{messages}}" index="index" item="item" key="index">
                         <chat-message :id="'message_' + item.MessageID" :msgData.sync="item" :isSelf="item.isSelf" :isShowMore="item.isShowMore">
                         </chat-message>
@@ -18,11 +19,11 @@
                 <view class="chat-input">
                     <!--功能按钮-->
                     <view class="picker-view">
-                        <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}" range-key="ArrangeName">
+                        <picker @change="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}" range-key="showArrangeName">
                             <view class="picker">
                                 <view class="step-tip" wx:if="{{arrangeIndex === 0}}">如需提交作业，请先选择会安排步骤</view>
                                 <view wx:else>
-                                    步骤{{arrangeList[arrangeIndex].SortCode}}：{{arrangeList[arrangeIndex].ArrangeName}}
+                                    {{arrangeList[arrangeIndex].showArrangeName}}
                                 </view>
                             </view>
                             <image src="../images/xia.png"></image>
@@ -92,6 +93,7 @@
 <script>
     import wepy from 'wepy'
     import chatMessage from '../components/chatMessage'
+    import loading from '../components/loading'
     import { Message } from '../model/Message'
     import config from '../config'
 
@@ -122,13 +124,15 @@
             currentMsgsPageIndex: 1,
             haveMoreChatMsgs: true,
             isFocus: false,
+            isLoadingMsg: false,
             unsendMessages: [],
             textareaHeight: 40,
             isScrollToNewEnable: true
         }
 
         components = {
-            'chat-message': chatMessage
+            'chat-message': chatMessage,
+            'loading': loading
         }
 
         computed = {
@@ -424,11 +428,40 @@
 
         initSteps(activeTaskInfo) {
             getCourseArrangeList(activeTaskInfo.CourseFID, activeTaskInfo.GroupFID).then(res => {
-                this.arrangeList = res
-                this.arrangeList.unshift({
-                    ArrangeName: '不提交步骤',
-                    FlnkID: ''
+                // 需求修改：如果是客观型的内容则展示子步骤名称，否则展示父步骤
+                let list = res
+                let result = [{
+                    showArrangeName: '不提交步骤',
+                    FlnkID: '',
+                    pFlnkID: '',
+                    pSortCode: ''
+                }]
+                list.forEach(item => {
+                    if (item.modelList[0] && item.modelList[0].ArrangeType === 1) {
+                        item.modelList.forEach(model => {
+                            if (model.ArrangeType === 1 && model.IsCheck) {
+                                result.push({
+                                    showArrangeName: `步骤${item.SortCode}.${model.SortCode} : ${model.ArrangeContent}`,
+                                    ArrangeName: model.ArrangeContent,
+                                    FlnkID: model.FlnkID,
+                                    pFlnkID: item.FlnkID,
+                                    pSortCode: item.SortCode,
+                                    SortCode: `${item.SortCode}.${model.SortCode}`
+                                })
+                            }
+                        })
+                    } else {
+                        result.push({
+                            showArrangeName: `步骤${item.SortCode}:${item.ArrangeName}`,
+                            ArrangeName: item.ArrangeName,
+                            FlnkID: item.modelList[0].FlnkID,
+                            pFlnkID: item.FlnkID,
+                            pSortCode: item.SortCode,
+                            SortCode: item.SortCode
+                        })
+                    }
                 })
+                this.arrangeList = result
                 this.$apply()
             })
         }
@@ -444,6 +477,7 @@
         }
 
         loadChatMsgByPage(pageIndex = 1) {
+            this.isLoadingMsg = true
             let activeTaskInfo = wepy.getStorageSync('activeTaskInfo')
             return new Promise((resolve, reject) => {
                 let userId = ''
@@ -467,8 +501,10 @@
                         msgBody.showSendTime = getMessageSendTime(item.SendTime + '+0800')
                         data.unshift(msgBody)
                     })
+                    this.isLoadingMsg = false
                     resolve(data)
                 }, res => {
+                    this.isLoadingMsg = false
                     this.haveMoreChatMsgs = true
                     reject(res)
                 })

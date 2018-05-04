@@ -123,6 +123,12 @@
                 })
                 saveGroupArrangeList(this.datalist).then(res => {
                     getCourseArrangeList(this.currentGroupInfo.CourseFID, this.currentGroupInfo.GroupFID).then(res => {
+                        res.forEach(item => {
+                            let data = item.modelList && item.modelList[0]
+                            if (data && data.ArrangeType !== 1) {
+                                item.modelList = item.modelList.slice(0, 1)
+                            }
+                        })
                         this.datalist = res
                         this.isChaned = false
                         this.$apply()
@@ -216,6 +222,12 @@
                 this.$apply()
             })
             getCourseArrangeList(activeGroupInfo.CourseFID, activeGroupInfo.GroupFID).then(res => {
+                res.forEach(item => {
+                    let data = item.modelList && item.modelList[0]
+                    if (data && data.ArrangeType !== 1) {
+                        item.modelList = item.modelList.slice(0, 1)
+                    }
+                })
                 this.datalist = res
                 this.$apply()
             })
