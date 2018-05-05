@@ -130,7 +130,7 @@
                             }
                         })
                         this.datalist = res
-                        this.isChaned = false
+                        this.isChanged = false
                         this.$apply()
                         wepy.showToast({
                             title: '保存成功'
