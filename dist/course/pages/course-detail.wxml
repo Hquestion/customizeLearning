@@ -1,0 +1,72 @@
+
+    <view class="course-detail-container">
+        <scroll-view scroll-y class="detail-block">
+            
+    <view class="course-detail-comp">
+        <view class="course-name">
+            {{$courseDetail$courseInfo.CourseCode}}.{{$courseDetail$courseInfo.CourseName}}
+        </view>
+        <view class="block flex-box">
+            <view class="grey">创建日期：</view>
+            <view class="block-meta">{{$courseDetail$courseInfo.showCreateTime}}</view>
+        </view>
+        <view class="block flex-box">
+            <view class="grey">负责老师：</view>
+            <view class="block-meta">{{$courseDetail$courseInfo.HeadTeacherName}}</view>
+        </view>
+        <view class="block flex-box">
+            <view class="grey">协作老师：</view>
+            <view class="block-meta">{{$courseDetail$courseInfo.CoordTeachers}}</view>
+        </view>
+        <view class="block-group flex-box" style="width: 80%">
+            <view class="block flex-box">
+                <view class="grey">小组人数：</view>
+                <view>{{$courseDetail$courseInfo.GroupNum || '不限'}}人</view>
+            </view>
+            <view class="block flex-box">
+                <view class="grey">课程时长：</view>
+                <view>{{$courseDetail$courseInfo.CourseDuration || '不限'}}天</view>
+            </view>
+        </view>
+        <view class="block flex-box">
+            <view class="grey">开放时间：</view>
+            <view class="block-meta">
+                <text>{{$courseDetail$courseInfo.showOpenStartTime}}</text>至<text>{{$courseDetail$courseInfo.showOpenEndTime}}</text>
+            </view>
+        </view>
+        <view class="block flex-box" hidden="{{!$courseDetail$courseInfo.groupMembers}}">
+            <view class="grey">小组成员：</view>
+            <view class="block-meta">
+                <text>{{$courseDetail$courseInfo.groupMembers}}</text>
+            </view>
+        </view>
+    </view>
+
+            <view class="task-status">
+                <view class="grey task-brief">
+                    成功完成<text class="warning">{{courseInfo.SuccessNum || 0}}</text>次，
+                    总参与人数<text class="warning">{{courseInfo.ParterNum || 0}}</text>人
+                </view>
+                <view class="finish-detail">
+                    <block wx:for="{{stuFinishList}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                        <view class="finish-item">
+                            <view class="group-name">{{item.GroupName}}</view>
+                            <view class="finish-date grey">{{item.showCompleteDate}}</view>
+                            <view class="task-star">
+                                <image class="icon star" src="../../images/baoshi.png"/>
+                                <text class="warning">{{item.StarNum || 0}}</text>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+            </view>
+        </scroll-view>
+        <view class="button-block">
+            
+    <view class="rich-button {{$richButton$size}} {{$richButton$theme}}" bindtap="$richButton$onTap" style="{{$richButton$width ? ('width:' + $richButton$width) : ''}}">
+        <image src="{{$richButton$iconSrc}}"  wx:if="{{$richButton$iconSrc}}"/>
+        {{$richButton$text}}
+    </view>
+
+        </view>
+    </view>

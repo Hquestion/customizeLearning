@@ -1,0 +1,149 @@
+
+    <view class="home-container">
+        <view class="content-main" hidden="{{!haveActiveGroupTask}}">
+            <view class="nav">
+                <navigator url="/practice/pages/prevKnow" open-type="navigate">早知道</navigator>
+                <navigator url="/practice/pages/arrange" open-type="navigate">会安排</navigator>
+                <navigator url="/pages/practice" open-type="switchTab" class="active">能落实</navigator>
+                <navigator url="/practice/pages/think" open-type="navigate">有反思</navigator>
+            </view>
+            <view bindtap="hideChatMsgMore">
+                <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" bindscrolltoupper="onScrollUpper" bindtap="hideActionBtns" bindscroll="onChatScroll">
+                    
+    <view class="load1" hidden="{{!isLoadingMsg || !haveMoreChatMsgs}}">
+        <view class="loader"/>
+    </view>
+
+                    <block wx:for="{{messages}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+                        
+    <view class="chat-message {{item.isSelf ? 'is-self': ''}}" id="{{'message_' + item.MessageID}}">
+        <view class="user-name">
+            <image src="{{ item.AvatarUrl }}"/>
+        </view>
+        <view class="message-info" bindlongpress="$chatMessage$moreActions" data-com-index="{{index}}" data-wpymoreactions-a="{{item}}">
+            <view class="nick-name">
+                <text  wx:if="{{item.isSelf}}" style="margin-right: 10rpx;">{{item.showSendTime}}</text>
+                {{item.UserName}}
+                <text  wx:if="{{!item.isSelf}}" style="margin-left: 10rpx;">{{item.showSendTime}}</text>
+            </view>
+            <view class="message-box">
+                <block wx:if="{{item.MessageBody.msgtype === '1'}}">
+                    <view class="padding-box text-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <view>{{item.MessageBody.msgcontent}}</view>
+                    </view>
+                </block>
+                <block wx:if="{{item.MessageBody.msgtype === '4'}}">
+                    <view class="padding-box audio-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <audio src="{{item.MessageBody.msgcontent}}" bindtap="$chatMessage$playAudio" data-com-index="{{index}}" data-wpyplayaudio-a="{{ item }}">
+                            <image src="../images/yuyin2.png"/>
+                        </audio>
+                    </view>
+                </block>
+                <block wx:if="{{item.MessageBody.msgtype === '3'}}">
+                    <view class="vidio-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <view>
+                            <image class="chat-img" lazy-load="lazy-load" src="../images/vid.png" bindtap="$chatMessage$playVideo" data-com-index="{{index}}" data-wpyplayvideo-a="{{item}}"/>
+                        </view>
+                    </view>
+                </block>
+                <block wx:if="{{item.MessageBody.msgtype === '2'}}">
+                    <view class="image-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <view>
+                            <image class="chat-img" lazy-load="lazy-load" src="{{item.MessageBody.msgcontent}}" bindtap="$chatMessage$previewImage" data-com-index="{{index}}" data-wpypreviewimage-a="{{ item }}"/>
+                        </view>
+                    </view>
+                </block>
+                <image class="box-arrow left" src="../images/lt.png" wx:if="{{!item.isSelf}}" hidden="{{item.MessageBody.msgtype === '3' || item.MessageBody.msgtype === '2'}}"/>
+                <image class="box-arrow right" src="../images/liaotian-you.png" wx:else hidden="{{item.MessageBody.msgtype === '3' || item.MessageBody.msgtype === '2'}}"/>
+                <view class="more-action-btn" hidden="{{!item.isShowMore || !$chatMessage$editable}}">
+                    <view bindtap="$chatMessage$copy" data-com-index="{{index}}">复制</view>
+                    <view bindtap="$chatMessage$deleteMsg" data-com-index="{{index}}">删除</view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+                    </block>
+                </scroll-view>
+                <view class="chat-input">
+                    <!--功能按钮-->
+                    <view class="picker-view">
+                        <picker bindchange="arrangeStepChange" value="{{arrangeIndex}}" range="{{arrangeList}}" range-key="showArrangeName">
+                            <view class="picker">
+                                <view class="step-tip"  wx:if="{{arrangeIndex === 0}}">如需提交作业，请先选择会安排步骤</view>
+                                <view  wx:else>
+                                    {{arrangeList[arrangeIndex].showArrangeName}}
+                                </view>
+                            </view>
+                            <image src="../images/xia.png"/>
+                        </picker>
+                        <view class="filter">
+                            <image src="../images/man.png" bindtap="toggleFilterCondition"/>
+                            <view class="ul" hidden="{{!filterConditionVisible}}">
+                                <view class="li" bindtap="filtChatHistory" data-wpyfiltchathistory-a="1">仅显示我的内容</view>
+                                <view class="li" bindtap="filtChatHistory" data-wpyfiltchathistory-a="2">仅显示老师的内容</view>
+                                <view class="li" bindtap="filtChatHistory" data-wpyfiltchathistory-a="0">显示全部内容</view>
+                            </view>
+                        </view>
+                    </view>
+                    <view id="btn-tools" style="height: {{btnToolHeight}}">
+                        <view class="record-text-toggle">
+                            <view hidden="{{inputMode === 'TEXT'}}" class="btn-radius btn-audio-input" bindtap="setInputMode">
+                                <image src="../images/jianpan.png"/>
+                            </view>
+                            <view hidden="{{inputMode === 'AUDIO'}}" class="btn-radius btn-text-input" bindtap="setInputMode">
+                                <image src="../images/yuyin.png"/>
+                            </view>
+                        </view>
+                        <view class="input-area">
+                            <view hidden="{{inputMode === 'AUDIO'}}" style="width:100%;height:100%;">
+                                <view class="text-input-widget" bindtap="focusTextArea">
+                                    <view class="textarea-container">
+                                <textarea fixed="{{true}}" show-confirm-bar="{{false}}" maxlength="-1" cursor-spacing="{{15}}" value="{{userTextContent}}" bindinput="onInputText" bindblur="cancelFocus" focus="{{isFocus}}" bindlinechange="inputLineChange" style="height: {{textareaHeight + 'rpx'}}"/>
+                                    </view>
+                                </view>
+                            </view>
+                            <view hidden="{{inputMode === 'TEXT'}}" class="audio-input-widget">
+                                <button size="mini" type="default" bindtouchstart="startRecordAudio" bindtouchend="stopRecordAudio" bindtouchcancel="stopRecordAudio">按住讲话</button>
+                            </view>
+                        </view>
+                        <view class="more-area">
+                            <image class="chat-icon" src="../images/liaotian.png" hidden="{{userTextInput !== ''}}" bindtap="showMoreActions"/>
+                            <button size="mini" type="primary" hidden="{{userTextInput === ''}}" bindtap="sendTextMsg">发送</button>
+                        </view>
+                    </view>
+                    <view id="btn-tools-more" hidden="{{!moreActionShown}}">
+                        <view class="upload-btn photo-btn" bindtap="uploadPic">
+                            <view class="image-box">
+                                <image src="../images/pic.png"/>
+                            </view>
+                            <view class="indicator">相册</view>
+                        </view>
+                        <view class="upload-btn take-btn" bindtap="takePhoto">
+                            <view class="image-box">
+                                <image src="../images/video.png"/>
+                            </view>
+                            <view class="indicator">视频</view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="no-active-task" hidden="{{haveActiveGroupTask}}">
+            <view>您暂时没有进行中的项目</view>
+            <view>您可以<navigator url="/pages/index" class="success" open-type="switchTab">创建小组</navigator>，</view>
+            <view>如果您已经加入小组，您可以<navigator url="/pages/mine" class="success" open-type="switchTab">启动课程</navigator></view>
+        </view>
+    </view>

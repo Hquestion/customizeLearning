@@ -1,0 +1,2 @@
+@import "./step.wxss";
+.step-item.moving{position:relative;opacity:.7}

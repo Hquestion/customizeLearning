@@ -1,0 +1,23 @@
+
+    .course-detail-comp {
+        padding: 20rpx;
+        background: #fff;
+    }
+    .course-detail-comp .course-name {
+        color: #1abcb0;
+        font-size: 40rpx;
+        text-align: center;
+    }
+    .course-detail-comp .block {
+        padding: 20rpx 0;
+    }
+    .course-detail-comp .block.flex-box {
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .course-detail-comp .block .grey {
+        width: 160rpx;
+    }
+    .course-detail-comp .block .block-meta{
+        width: calc(100% - 160rpx);
+    }

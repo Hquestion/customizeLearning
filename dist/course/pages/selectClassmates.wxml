@@ -1,0 +1,40 @@
+
+    <view class="select-class-container">
+        <view class="search-block flex-box">
+            <image src="../../images/search.png"/>
+            <input type="text" placeholder="请输入姓名搜索" confirm-type="search" value="{{key}}" bindinput="onInput" bindconfirm="onSearch"/>
+        </view>
+        <scroll-view scroll-y class="detail-block">
+            <block wx:for="{{showStuList}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+                <view class="flex-box stu-block {{item.isSelected ? 'active': ''}}" bindtap="selectClassMate" data-wpyselectclassmate-a="{{item}}">
+                    <view>{{item.XM}}</view>
+                    <view class="select-box">
+                        <image src="../../images/xuanzhe.png"  wx:if="{{!item.isSelected}}"/>
+                        <image src="../../images/xuanzhe2.png"  wx:else/>
+                    </view>
+                </view>
+            </block>
+            <view hidden="{{showStuList.length > 0}}">
+                
+    <view class="empty-content">
+        <view>{{$emptyContent$text}}</view>
+    </view>
+
+            </view>
+        </scroll-view>
+        <view class="selected-block" hidden="{{selectedClassmates.length === 0}}">
+            已选择<text class="warning">{{selectedClassmates.length}}</text>人：
+            <block wx:for="{{selectedClassmates}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+                <text class="success">{{item.XM}}</text>
+                <text class="success" wx:if="{{index < selectedClassmates.length - 1}}">,</text>
+            </block>
+        </view>
+        <view class="button-block">
+            
+    <view class="rich-button {{$richButton$size}} {{$richButton$theme}}" bindtap="$richButton$onTap" style="{{$richButton$width ? ('width:' + $richButton$width) : ''}}">
+        <image src="{{$richButton$iconSrc}}"  wx:if="{{$richButton$iconSrc}}"/>
+        {{$richButton$text}}
+    </view>
+
+        </view>
+    </view>

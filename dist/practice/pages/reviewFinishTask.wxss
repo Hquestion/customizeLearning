@@ -1,0 +1,38 @@
+@import "./../../components/remark-record.wxss";
+@import "./../../components/remark-tpl.wxss";
+@import "./../../components/panel.wxss";
+@import "./../../components/chatMessage.wxss";
+
+    .home-container {
+        text-align: center;
+    }
+    .userinfo-avatar {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 80rpx;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        border-bottom: 1px solid #efefef;
+    }
+    .nav navigator{
+        flex: 1;
+    }
+    .step-tip {
+        color: #ccc;
+    }
+    .chat-history {
+        width:100%;
+        height: calc(100vh - 250rpx);
+        border-bottom: 1px solid #ccc;
+        background: #f2f2f2;
+    }
+    .teacher-remark-area {
+        padding: 30rpx;
+        background: #f2f2f2;
+    }
+    .teacher-remark-area .grey {
+        font-size: 25rpx;
+    }

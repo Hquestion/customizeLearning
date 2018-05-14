@@ -1,0 +1,13 @@
+@import "./panel.wxss";
+@import "./remark-tpl.wxss";
+
+    .remark-panel {
+        width: 100%;
+        margin : 40rpx auto 0;
+        border: 1px solid #dedede;
+        text-align: left;
+        border-radius: 20rpx;
+    }
+    .remark-panel .content {
+        text-indent: 0;
+    }

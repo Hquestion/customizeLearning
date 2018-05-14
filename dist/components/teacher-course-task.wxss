@@ -1,0 +1,59 @@
+
+    .teacher-course-task {
+        background: #fff;
+    }
+    .teacher-course-task .task-content {
+        width:calc(100% - 40rpx);
+        text-align:left;
+    }
+    .teacher-course-task .row-block {
+        padding: 15rpx 0;
+    }
+    .teacher-course-task .task-content .task-title-block{
+        color: #1abcb0;
+        font-size: 36rpx;
+    }
+    .teacher-course-task .task-content .task-title-block .normal {
+        color: #666;
+        font-size: 32rpx;
+    }
+    .teacher-course-task .task-content .flex-box {
+        width: 80%;
+    }
+    .star-count {
+        height: 60rpx;
+        line-height: 60rpx;
+        width: 90%;
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10rpx;
+    }
+    .star-count .icon {
+        display: inline-block;
+        width: 50rpx;
+        height: 50rpx;
+        vertical-align: middle;
+    }
+    .star-count .block {
+        width: 33.3%;
+        line-height: 1;
+    }
+    .star-count .block text {
+        vertical-align:middle;
+        display:inline-block;
+        margin-left:10rpx;
+    }
+    .star-count .block text.faved {
+        color: #1abcb0;
+    }
+    .star-count .block.star-block {
+        color: #f80;
+    }
+    .teacher-course-task .arrow {
+        width: 40rpx;
+        height: 80rpx;
+    }
+    .teacher-course-task .arrow image {
+        width: 100%;
+        height: 100%;
+    }

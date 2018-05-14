@@ -1,0 +1,179 @@
+
+    <view class="home-container">
+        <view class="tab-block">
+            <view class="tab-item {{currentTabIndex === 0 ? 'active' : ''}}" id="school-list" bindtap="setCurrentTab" data-wpysetcurrenttab-a="{{0}}">学校排行榜
+            </view>
+            <view class="tab-item {{currentTabIndex === 1 ? 'active' : ''}}" id="class-list" bindtap="setCurrentTab" data-wpysetcurrenttab-a="{{1}}">班级排行榜
+            </view>
+            <view class="tab-item {{currentTabIndex === 2 ? 'active' : ''}}" id="all-list" bindtap="setCurrentTab" data-wpysetcurrenttab-a="{{2}}">
+                全部
+            </view>
+        </view>
+        <view class="content-container">
+            <swiper current="{{currentTabIndex}}" duration="{{300}}" bindchange="onSwiperChange">
+                <swiper-item class="course-category">
+                    <scroll-view scroll-y>
+                        <block wx:for="{{schoolCourseTasks}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                            <view class="course-box" bindtap="navigateToTaskDetail" data-wpynavigatetotaskdetail-a="{{item}}">
+                                
+    <view class="course-task {{!!$courseTask$showStatus ? 'show-status': ''}} course-task-item">
+        <view class="order">
+            <image src="../images/no1.png"  wx:if="{{item.order === 1}}"/>
+            <image src="../images/no2.png"  wx:elif="{{item.order === 2}}"/>
+            <image src="../images/no3.png" wx:elif="{{item.order === 3}}"/>
+            <text class="order-normal" wx:else>{{item.order}}</text>
+        </view>
+        <view class="content">
+            <view class="course-name">{{item.CourseCode}}.{{item.CourseName}}</view>
+            <view class="task-class-block">
+                <view class="task-class-info">
+                    <text class="class-name">{{item.ClassName}}</text>
+                    <text class="stu-list grey">{{item.AttendMembers}}</text>
+                </view>
+            </view>
+            <view class="star-count">
+                <view class="block star-block">
+                    <image class="icon star" src="../images/baoshi.png"/><text>{{item.StarNum || 0}}</text>
+                </view>
+                <view class="block fav-block" catchtap="$courseTask$toggleFav" data-com-index="{{index}}" data-wpytogglefav-a="{{item}}">
+                    <image class="icon fav" src="../images/zan.png" wx:if="{{!item.IsPraise}}"/>
+                    <image class="icon fav" src="../images/zan2.png" wx:else/>
+                    <text class="{{!!item.IsPraise ? 'faved': ''}}">{{item.PraiseNum || 0}}</text>
+                </view>
+                <view class="block change-block">
+                    <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{item.RankChange >= 0}}"/>
+                    <image class="icon change" src="../images/jiantou-xia.png" wx:else/>
+                    <text>{{item.RankChange || 0}}</text>
+                </view>
+            </view>
+        </view>
+        <view class="link detail">
+            <image src="../images/jiantou-you.png"/>
+        </view>
+    </view>
+
+                            </view>
+                            <view class="grey-gap"  wx:if="{{index !== schoolCourseTasks.length - 1}}"/>
+                        </block>
+                        <view hidden="{{schoolCourseTasks.length > 0}}" class="empty-container">
+                            
+    <view class="empty-content">
+        <view>{{$emptyContent$text}}</view>
+    </view>
+
+                        </view>
+                    </scroll-view>
+                </swiper-item>
+                <swiper-item class="course-category">
+                    <scroll-view scroll-y>
+                        <block wx:for="{{classCourseTasks}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                            <view class="course-box" bindtap="navigateToTaskDetail" data-wpynavigatetotaskdetail-a="{{item}}">
+                                
+    <view class="course-task {{!!$courseTask$showStatus ? 'show-status': ''}} course-task-item">
+        <view class="order">
+            <image src="../images/no1.png"  wx:if="{{item.order === 1}}"/>
+            <image src="../images/no2.png"  wx:elif="{{item.order === 2}}"/>
+            <image src="../images/no3.png" wx:elif="{{item.order === 3}}"/>
+            <text class="order-normal" wx:else>{{item.order}}</text>
+        </view>
+        <view class="content">
+            <view class="course-name">{{item.CourseCode}}.{{item.CourseName}}</view>
+            <view class="task-class-block">
+                <view class="task-class-info">
+                    <text class="class-name">{{item.ClassName}}</text>
+                    <text class="stu-list grey">{{item.AttendMembers}}</text>
+                </view>
+            </view>
+            <view class="star-count">
+                <view class="block star-block">
+                    <image class="icon star" src="../images/baoshi.png"/><text>{{item.StarNum || 0}}</text>
+                </view>
+                <view class="block fav-block" catchtap="$courseTask$toggleFav" data-com-index="{{index}}" data-wpytogglefav-a="{{item}}">
+                    <image class="icon fav" src="../images/zan.png" wx:if="{{!item.IsPraise}}"/>
+                    <image class="icon fav" src="../images/zan2.png" wx:else/>
+                    <text class="{{!!item.IsPraise ? 'faved': ''}}">{{item.PraiseNum || 0}}</text>
+                </view>
+                <view class="block change-block">
+                    <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{item.RankChange >= 0}}"/>
+                    <image class="icon change" src="../images/jiantou-xia.png" wx:else/>
+                    <text>{{item.RankChange || 0}}</text>
+                </view>
+            </view>
+        </view>
+        <view class="link detail">
+            <image src="../images/jiantou-you.png"/>
+        </view>
+    </view>
+
+                            </view>
+                            <view class="grey-gap" wx:if="{{index !== classCourseTasks.length - 1}}"/>
+                        </block>
+                        <view hidden="{{classCourseTasks.length > 0}}" class="empty-container">
+                            
+    <view class="empty-content">
+        <view>{{$emptyContent$text}}</view>
+    </view>
+
+                        </view>
+                    </scroll-view>
+                </swiper-item>
+                <swiper-item class="course-category">
+                    <view class="cate-course-container">
+                        <block wx:if="{{courseCategories && courseCategories.length > 0}}">
+                            <view class="course-cate-box">
+                                <block wx:for="{{ courseCategories }}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                                    <view class="cate {{activeCateId === item.cateid ? 'active' : ''}}" bindtap="changeCategory" data-wpychangecategory-a="{{item}}">{{item.cateName}}</view>
+                                </block>
+                            </view>
+                            <scroll-view scroll-y>
+                                <view>
+                                    <block wx:for="{{ cateCourseList }}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                                        <view class="course-box" bindtap="navigateToDetail" data-wpynavigatetodetail-a="{{item}}">
+                                            
+    <view class="course course-item">
+        <view class="content">
+            <view class="course-name">{{item.CourseCode}}.{{item.CourseName}}</view>
+            <view class="course-info">
+                <view class="course-teacher-info">
+                    <text class="label grey">负责老师：</text>
+                    <text class="label-val">{{item.HeadTeacherName}}</text>
+                </view>
+                <view class="course-time-info">
+                    <text class="label grey">课程时长：</text>
+                    <text class="label-val">{{item.CourseDuration || '不限'}}天</text>
+                </view>
+            </view>
+            <view class="course-brief grey">
+                成功完成<text class="warning">{{item.SuccessNum || 0}}</text>次，总共参与人数<text class="warning">{{item.ParterNum || 0}}</text>人
+            </view>
+        </view>
+        <view class="link detail">
+            <image src="../images/jiantou-you.png"/>
+        </view>
+    </view>
+
+                                        </view>
+                                        <view class="grey-gap" wx:if="{{index !== cateCourseList.length - 1}}"/>
+                                    </block>
+                                </view>
+                                <view hidden="{{cateCourseList.length > 0}}" class="empty-container">
+                                    
+    <view class="empty-content">
+        <view>{{$emptyContent$text}}</view>
+    </view>
+
+                                </view>
+                            </scroll-view>
+                        </block>
+                        <block wx:else>
+                            
+    <view class="empty-content">
+        <view>{{$emptyContent$text}}</view>
+    </view>
+
+                        </block>
+                    </view>
+                </swiper-item>
+            </swiper>
+        </view>
+    </view>

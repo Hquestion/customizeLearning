@@ -1,0 +1,19 @@
+@import "./star-remark.wxss";
+
+    .star-remark-tpl {
+        margin-top: 10rpx;
+        text-indent: 0;
+    }
+    .remark-title {
+        padding: 10rpx 0;
+        font-size: 40rpx;
+    }
+    .remark-detail {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 5rpx 0;
+    }
+    .remark-detail .detail-star {
+        margin-left: 20rpx;
+    }

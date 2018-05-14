@@ -1,0 +1,38 @@
+
+    .panel {
+        width: 100%;
+        height: auto;
+        min-height: 200rpx;
+        box-sizing: border-box;
+        padding: 20rpx;
+        background: #fff;
+    }
+    .panel .header {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 30rpx 0;
+        position: relative;
+    }
+    .panel .header .line{
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height:1rpx;
+        border-top: 1rpx dashed #dedede;
+    }
+    .panel .header .title {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        padding: 0 40rpx;
+        color: #1abcb0;
+        font-size: 32rpx;
+        transform: translate3d(-50%, -50%, 0);
+        background: #fff;
+        z-index: 2;
+    }
+    .panel .content {
+        padding: 10rpx 0;
+        text-indent: 65rpx;
+    }

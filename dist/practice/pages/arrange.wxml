@@ -1,0 +1,90 @@
+
+    <view class="arrange-container {{(!isUserLeader || !!queryParam) ? 'disable-edit': ''}}">
+        <view class="nav">
+            <navigator url="{{navigateUrlMap.prevKnow}}" open-type="redirect">早知道</navigator>
+            <navigator class="active">会安排</navigator>
+            <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
+            <navigator url="{{navigateUrlMap.think}}" open-type="redirect">有反思</navigator>
+        </view>
+        <scroll-view scroll-y="{{scrollable}}" bindscroll="onScroll">
+            
+    <view class="step-list">
+        <block itme="item" wx:for="{{$stepList$list}}" wx:for-index="$stepList$index" wx:for-item="$stepList$item" wx:key="$stepList$key">
+            <view id="step-index-{{$stepList$index}}" class="step-item {{$stepList$movingIndex === $stepList$index ? 'moving': ''}}" data-index="{{$stepList$index}}" style="top: {{$stepList$offsetTop}}px;" bindtouchstart="$stepList$onStartTouch" bindtouchmove="$stepList$onTouchMove" bindtouchend="$stepList$onTouchEnd" bindtouchcancel="$stepList$onTouchEnd" bindlongpress="$stepList$onLongPress">
+                
+    <view class="step">
+        <view class="step-title">
+            <text class="step-index">步骤{{$stepList$index + 1}}</text>
+            <text class="step-name">{{$stepList$item.ArrangeName}}</text>
+            <view class="step-btns" hidden="{{!$stepList$editable}}">
+                <text class="step-btn grey" bindtap="$stepList$step$editStep"  wx:if="{{$stepList$item.modelList[0].ArrangeType !== 1}}" data-com-index="{{$stepList$index}}">编辑</text>
+                <text class="step-btn grey" bindtap="$stepList$step$deleteStep" data-com-index="{{$stepList$index}}">删除</text>
+            </view>
+        </view>
+        <view class="step-detail" hidden="{{!$stepList$step$detailVisible}}">
+            <view>
+                <block wx:for="{{$stepList$item.modelList}}" wx:for-index="$stepList$step$index3" wx:for-item="$stepList$step$item" wx:key="$stepList$step$key">
+                    <block  wx:if="{{$stepList$step$item.ArrangeType === 1}}">
+                        <view class="option-item {{$stepList$step$item.IsCheck ? 'checked': ''}}" data-opt-index="{{$stepList$step$index3}}" bindtap="$stepList$step$toggle" data-com-index="{{$stepList$index}}">
+                            {{$stepList$step$item.ArrangeContent}}
+                        </view>
+                    </block>
+                    <block wx:else>
+                        <text class="arrange-text">{{$stepList$step$item.ArrangeContent}}</text>
+                    </block>
+                </block>
+            </view>
+        </view>
+    </view>
+
+            </view>
+        </block>
+    </view>
+
+        </scroll-view>
+        <view class="button-block flex-box" hidden="{{!isUserLeader || !!queryParam}}">
+            <view class="btn btn-add">
+                
+    <view class="rich-button {{$richButton1$size}} {{$richButton1$theme}}" bindtap="$richButton1$onTap" style="{{$richButton1$width ? ('width:' + $richButton1$width) : ''}}">
+        <image src="{{$richButton1$iconSrc}}"  wx:if="{{$richButton1$iconSrc}}"/>
+        {{$richButton1$text}}
+    </view>
+
+            </view>
+            <view class="btn btn-save">
+                
+    <view class="rich-button {{$richButton2$size}} {{$richButton2$theme}}" bindtap="$richButton2$onTap" style="{{$richButton2$width ? ('width:' + $richButton2$width) : ''}}">
+        <image src="{{$richButton2$iconSrc}}"  wx:if="{{$richButton2$iconSrc}}"/>
+        {{$richButton2$text}}
+    </view>
+
+            </view>
+        </view>
+        
+    <view class="dialog add-step-dialog" hidden="{{!$dialog$visible}}">
+        <view class="mask"/>
+        <view class="dialog-content">
+            <view class="dialog-title">
+                <view>{{addStepTitle}}</view>
+                <icon type="cancel" color="#999" size="30" bindtap="$dialog$closeDialog"/>
+            </view>
+            <view class="content-main">
+                <view>
+                <view class="content">
+                    <input type="text" placeholder="请输入步骤名称" confirm-type="确定" value="{{stepName}}" bindinput="onNameInput"/>
+                    <textarea maxlength="-1" fixed="fixed" value="{{stepDesc}}" placeholder="请输入步骤详情" bindinput="onDescInput"/>
+                </view>
+                <view class="dialog-btn">
+                    
+    <view class="rich-button {{$richButton3$size}} {{$richButton3$theme}}" bindtap="$richButton3$onTap" style="{{$richButton3$width ? ('width:' + $richButton3$width) : ''}}">
+        <image src="{{$richButton3$iconSrc}}"  wx:if="{{$richButton3$iconSrc}}"/>
+        {{$richButton3$text}}
+    </view>
+
+                </view>
+            </view>
+            </view>
+        </view>
+    </view>
+
+    </view>

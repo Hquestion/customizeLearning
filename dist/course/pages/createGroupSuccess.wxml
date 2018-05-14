@@ -1,0 +1,29 @@
+
+    <view class="success-container">
+        <view class="header">
+            <view>
+                <image src="../../images/wancheng.png"/>
+            </view>
+            <view class="success-tip">小组创建成功！</view>
+            <view class="radius-bg"/>
+        </view>
+        <view class="success-brief">
+            <view class="grey">您参加的课程</view>
+            <view class="success">{{courseInfo.CourseCode}}.{{courseInfo.CourseName}}</view>
+            <view class="grey member-mark">小组成员</view>
+            <view class="member-view">
+                <block wx:for="{{groupMembers}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                    <text>{{item.MemberName}}</text>
+                    <text  wx:if="{{index < groupMembers.length -1}}">、</text>
+                </block>
+            </view>
+        </view>
+        <view class="button-view">
+            
+    <view class="rich-button {{$richButton$size}} {{$richButton$theme}}" bindtap="$richButton$onTap" style="{{$richButton$width ? ('width:' + $richButton$width) : ''}}">
+        <image src="{{$richButton$iconSrc}}"  wx:if="{{$richButton$iconSrc}}"/>
+        {{$richButton$text}}
+    </view>
+
+        </view>
+    </view>

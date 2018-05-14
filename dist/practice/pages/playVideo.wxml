@@ -1,0 +1,4 @@
+
+    <view class="play-container">
+        <video id="player" src="{{playUrl}}" autoplay/>
+    </view>

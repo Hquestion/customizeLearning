@@ -1,0 +1,50 @@
+@import "./../../components/rich-button.wxss";
+
+    .success-container .header{
+        padding: 20rpx 0 160rpx;
+        background: #1abcb0;
+        text-align: center;
+        font-size: 44rpx;
+        color: #fff;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+    }
+    .success-container .header image {
+        width: 16vw;
+        height:16vw;
+    }
+    .success-container .header .success-tip {
+        padding: 30rpx;
+    }
+    .success-container .header .radius-bg {
+        position: absolute;
+        width:120vw;
+        height:100vw;
+        border-radius:120vw/50vw;
+        bottom:-85vw;
+        left:-10vw;
+        background:#fff;
+    }
+    .success-brief {
+        text-align: center;
+        font-size: 30rpx;
+        position: relative;
+        top: - 20rpx;
+    }
+    .success-brief .success {
+        padding: 20rpx 0 40rpx;
+        font-size: 40rpx;
+    }
+    .success-brief  .member-mark {
+        padding: 10rpx 0 20rpx;
+    }
+    .member-view {
+        font-size: 36rpx;
+        width: 70%;
+        line-height: 45rpx;
+        margin: 0 auto;
+    }
+    .button-view {
+        margin-top: 200rpx;
+    }

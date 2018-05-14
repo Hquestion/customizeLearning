@@ -1,0 +1,124 @@
+
+    <view class="home-container">
+        <view class="content-main">
+            <view class="nav">
+                <navigator url="/practice/pages/prevKnow?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">早知道</navigator>
+                <navigator url="/practice/pages/arrange?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">会安排</navigator>
+                <navigator class="active">能落实</navigator>
+                <navigator url="/practice/pages/think?courseId={{CourseFID}}&groupId={{GroupFID}}" open-type="redirect">有反思</navigator>
+            </view>
+            <view>
+                <scroll-view class="chat-history" scroll-y scroll-into-view="{{messageId}}" style="height : {{ chatHistoryHeight }}" bindscrolltoupper="onScrollUpper">
+                    <block wx:for="{{messages}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+                        
+    <view class="chat-message {{item.isSelf ? 'is-self': ''}}" id="{{'message_' + item.MessageID}}">
+        <view class="user-name">
+            <image src="{{ item.AvatarUrl }}"/>
+        </view>
+        <view class="message-info" bindlongpress="$chatMessage$moreActions" data-com-index="{{index}}" data-wpymoreactions-a="{{item}}">
+            <view class="nick-name">
+                <text  wx:if="{{item.isSelf}}" style="margin-right: 10rpx;">{{item.showSendTime}}</text>
+                {{item.UserName}}
+                <text  wx:if="{{!item.isSelf}}" style="margin-left: 10rpx;">{{item.showSendTime}}</text>
+            </view>
+            <view class="message-box">
+                <block wx:if="{{item.MessageBody.msgtype === '1'}}">
+                    <view class="padding-box text-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <view>{{item.MessageBody.msgcontent}}</view>
+                    </view>
+                </block>
+                <block wx:if="{{item.MessageBody.msgtype === '4'}}">
+                    <view class="padding-box audio-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <audio src="{{item.MessageBody.msgcontent}}" bindtap="$chatMessage$playAudio" data-com-index="{{index}}" data-wpyplayaudio-a="{{ item }}">
+                            <image src="../../images/yuyin2.png"/>
+                        </audio>
+                    </view>
+                </block>
+                <block wx:if="{{item.MessageBody.msgtype === '3'}}">
+                    <view class="vidio-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <view>
+                            <image class="chat-img" lazy-load="lazy-load" src="../../images/vid.png" bindtap="$chatMessage$playVideo" data-com-index="{{index}}" data-wpyplayvideo-a="{{item}}"/>
+                        </view>
+                    </view>
+                </block>
+                <block wx:if="{{item.MessageBody.msgtype === '2'}}">
+                    <view class="image-message-box">
+                        <view class="success" hidden="{{!item.MessageBody.stepkey}}">
+                            步骤{{item.MessageBody.stepcode}}:{{item.MessageBody.stepname}}
+                        </view>
+                        <view>
+                            <image class="chat-img" lazy-load="lazy-load" src="{{item.MessageBody.msgcontent}}" bindtap="$chatMessage$previewImage" data-com-index="{{index}}" data-wpypreviewimage-a="{{ item }}"/>
+                        </view>
+                    </view>
+                </block>
+                <image class="box-arrow left" src="../../images/lt.png" wx:if="{{!item.isSelf}}" hidden="{{item.MessageBody.msgtype === '3' || item.MessageBody.msgtype === '2'}}"/>
+                <image class="box-arrow right" src="../../images/liaotian-you.png" wx:else hidden="{{item.MessageBody.msgtype === '3' || item.MessageBody.msgtype === '2'}}"/>
+                <view class="more-action-btn" hidden="{{!item.isShowMore || !$chatMessage$editable}}">
+                    <view bindtap="$chatMessage$copy" data-com-index="{{index}}">复制</view>
+                    <view bindtap="$chatMessage$deleteMsg" data-com-index="{{index}}">删除</view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+                    </block>
+                    <view class="teacher-remark-area" hidden="{{!remarkList || remarkList.length === 0}}">
+                        <view class="grey">恭喜同学们，课程圆满结束，接下来老师给大家评分</view>
+                        <block wx:for="{{remarkList}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                            
+    <view class="remark-record-container">
+        
+    <view class="panel remark-panel">
+        <view class="header">
+            <view class="line"/>
+            <view class="title">
+                <view>{{item.StudentName ? item.StudentName : '整体'}}评分</view>
+            </view>
+        </view>
+        <view class="content">
+            <view>
+                <block wx:for="{{item.modelList}}" wx:for-index="$remarkRecord$index" wx:for-item="$remarkRecord$item" wx:key="$remarkRecord$key">
+                    
+    <view class="star-remark-tpl">
+        <view class="remark-title">{{$remarkRecord$item.ReflectName}}</view>
+        <block wx:for="{{$remarkRecord$item.modelList}}" wx:for-index="$remarkRecord$remarkTpl$index" wx:for-item="$remarkRecord$remarkTpl$item" wx:key="$remarkRecord$remarkTpl$key">
+            <view class="remark-detail">
+                <view class="detail-title">{{$remarkRecord$remarkTpl$item.ReflectItemName}}</view>
+                <view class="detail-star">
+                    
+    <view class="star-remark">
+        <block wx:for="{{$remarkRecord$remarkTpl$item.stuStarValue || 0}}" wx:for-index="$remarkRecord$remarkTpl$star$index" wx:for-item="$remarkRecord$remarkTpl$star$item" wx:key="$remarkRecord$remarkTpl$star$key">
+            <image src="../../images/xing.png"/>
+        </block>
+        <block wx:for="{{$remarkRecord$remarkTpl$item.StarValue}}" wx:for-index="$remarkRecord$remarkTpl$star$index" wx:for-item="$remarkRecord$remarkTpl$star$item" wx:key="$remarkRecord$remarkTpl$star$key">
+            <image src="../../images/xing2.png"/>
+        </block>
+    </view>
+
+                </view>
+            </view>
+        </block>
+    </view>
+
+                </block>
+            </view>
+        </view>
+    </view>
+
+    </view>
+
+                        </block>
+                    </view>
+                </scroll-view>
+            </view>
+        </view>
+    </view>

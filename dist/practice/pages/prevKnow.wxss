@@ -1,0 +1,23 @@
+@import "./../../components/remark-tpl.wxss";
+@import "./../../components/panel.wxss";
+@import "./../../components/course-detail.wxss";
+
+    .prev-know-container {
+        text-align: left;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        border-bottom: 1px solid #efefef;
+        text-align: center;
+    }
+    .nav navigator{
+        flex: 1;
+    }
+    .prev-know-main {
+        background: #f2f2f2;
+    }
+    .prev-know-panel {
+        margin-top: 20rpx;
+    }

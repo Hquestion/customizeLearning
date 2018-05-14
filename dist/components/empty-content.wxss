@@ -1,0 +1,8 @@
+
+    .empty-content {
+        width: 100%;
+        padding: 60rpx 0;
+        text-align: center;
+        font-size: 36rpx;
+        background: #fff;
+    }

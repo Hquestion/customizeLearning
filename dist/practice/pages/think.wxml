@@ -1,0 +1,133 @@
+
+    <view class="home-container">
+        <view class="nav">
+            <navigator url="{{navigateUrlMap.prevKnow}}" open-type="redirect">早知道</navigator>
+            <navigator url="{{navigateUrlMap.arrange}}" open-type="redirect">会安排</navigator>
+            <navigator url="{{navigateUrlMap.practice}}" open-type="{{navigateUrlMap.practiceOpenType}}">能落实</navigator>
+            <navigator class="active">有反思</navigator>
+        </view>
+        <view class="think-main">
+            <view class="group-members">
+                <block wx:for="{{groupMembers}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                    <view class="group-member-item {{currentMember.MemberFID === item.MemberFID ? 'active' : ''}}" bindtap="setCurrentMember" data-wpysetcurrentmember-a="{{item}}">{{item.MemberName}}</view>
+                </block>
+            </view>
+            <view class="think-content">
+                <view class="submit-steps">
+                    <view class="step-list-container">
+                        <block wx:for="{{submitedStepList}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                            
+    <view class="step">
+        <view class="step-title">
+            <text class="step-index">步骤{{item.SortCode}}</text>
+            <text class="step-name">{{item.ArrangeName}}</text>
+            <view class="step-btns" hidden="{{!false}}">
+                <text class="step-btn grey" bindtap="$step$editStep"  wx:if="{{item.modelList[0].ArrangeType !== 1}}" data-com-index="{{index}}">编辑</text>
+                <text class="step-btn grey" bindtap="$step$deleteStep" data-com-index="{{index}}">删除</text>
+            </view>
+        </view>
+        <view class="step-detail" hidden="{{!false}}">
+            <view>
+                <block wx:for="{{item.modelList}}" wx:for-index="$step$index3" wx:for-item="$step$item" wx:key="$step$key">
+                    <block  wx:if="{{$step$item.ArrangeType === 1}}">
+                        <view class="option-item {{$step$item.IsCheck ? 'checked': ''}}" data-opt-index="{{$step$index3}}" bindtap="$step$toggle" data-com-index="{{index}}">
+                            {{$step$item.ArrangeContent}}
+                        </view>
+                    </block>
+                    <block wx:else>
+                        <text class="arrange-text">{{$step$item.ArrangeContent}}</text>
+                    </block>
+                </block>
+            </view>
+        </view>
+    </view>
+
+                            <block wx:for="{{item.modelList}}" wx:for-index="index4" wx:for-item="model" wx:key="key">
+                                <view class="sub-step-name">{{model.GroupArrangeItemContent}}</view>
+                                <view class="step-content-container">
+                                    <block wx:for="{{model.WorkArrangeList}}" wx:for-index="index2" wx:for-item="submitItem" wx:key="key">
+                                        <block  wx:if="{{submitItem.msgData.MessageBody.msgtype === '1'}}">
+                                            <view class="msg-text">{{submitItem.msgData.MessageBody.msgcontent}}</view>
+                                        </block>
+                                        <block  wx:if="{{submitItem.msgData.MessageBody.msgtype === '2'}}">
+                                            <view>
+                                                <image class="submit-image" src="{{submitItem.msgData.MessageBody.msgcontent}}" bindtap="previewImg" data-wpypreviewimg-a="{{submitItem.msgData.MessageBody.msgcontent}}"/>
+                                            </view>
+                                        </block>
+                                        <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '3'}}">
+                                            <view>
+                                                <video src="{{submitItem.msgData.MessageBody.msgcontent}}"/>
+                                            </view>
+                                        </block>
+                                        <block wx:if="{{submitItem.msgData.MessageBody.msgtype === '4'}}">
+                                            <view>
+                                                <audio src="{{submitItem.msgData.MessageBody.msgcontent}}" bindtap="playVoice" data-wpyplayvoice-a="{{submitItem.msgData.MessageBody.msgcontent}}">
+                                                    <image src="../../images/yuyin2.png"/>
+                                                </audio>
+                                            </view>
+                                        </block>
+                                    </block>
+                                </view>
+                            </block>
+                        </block>
+                    </view>
+                    
+    <view class="empty-content" hidden="{{submitedStepList.length > 0}}">
+        <view>{{$emptyContent$text}}</view>
+    </view>
+
+                </view>
+                <view class="my-think">
+                    
+    <view class="panel">
+        <view class="header">
+            <view class="line"/>
+            <view class="title">
+                <view>反思内容</view>
+            </view>
+        </view>
+        <view class="content">
+            <view class="{{!myThinkContent ? 'grey' : ''}}">
+                            {{myThinkContent || 'TA还没有填写反思内容'}}
+                        </view>
+        </view>
+    </view>
+
+                </view>
+                <view class="btn-area" wx:if="{{canEditThink}}">
+                    
+    <view class="rich-button {{$richButton$size}} {{$richButton$theme}}" bindtap="$richButton$onTap" style="{{$richButton$width ? ('width:' + $richButton$width) : ''}}">
+        <image src="{{$richButton$iconSrc}}"  wx:if="{{$richButton$iconSrc}}"/>
+        {{$richButton$text}}
+    </view>
+
+                </view>
+            </view>
+        </view>
+        
+    <view class="dialog edit-think-dialog" hidden="{{!$dialog$visible}}">
+        <view class="mask"/>
+        <view class="dialog-content">
+            <view class="dialog-title">
+                <view>填写反思</view>
+                <icon type="cancel" color="#999" size="30" bindtap="$dialog$closeDialog"/>
+            </view>
+            <view class="content-main">
+                <view>
+                <view class="content">
+                    <textarea maxlength="-1" fixed="fixed" value="{{inputThinkContent}}" placeholder="请填写反思内容" bindinput="onThinkInput"/>
+                </view>
+                <view class="dialog-btn">
+                    
+    <view class="rich-button {{$richButton2$size}} {{$richButton2$theme}}" bindtap="$richButton2$onTap" style="{{$richButton2$width ? ('width:' + $richButton2$width) : ''}}">
+        <image src="{{$richButton2$iconSrc}}"  wx:if="{{$richButton2$iconSrc}}"/>
+        {{$richButton2$text}}
+    </view>
+
+                </view>
+            </view>
+            </view>
+        </view>
+    </view>
+
+    </view>

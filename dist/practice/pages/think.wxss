@@ -1,0 +1,109 @@
+@import "./../../components/empty-content.wxss";
+@import "./../../components/step.wxss";
+@import "./../../components/dialog.wxss";
+@import "./../../components/rich-button.wxss";
+@import "./../../components/panel.wxss";
+
+    .home-container {
+        text-align: center;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        border-bottom: 1px solid #efefef;
+    }
+    .nav navigator{
+        flex: 1;
+    }
+    .think-main {
+        height: calc(100vh - 86rpx);
+        width: 100vw;
+        display: flex;
+        justify-content: flex-start;
+    }
+    .think-main .group-members {
+        width: 25vw;
+        height: 100%;
+        overflow: auto;
+        background: #f4f4f4;
+    }
+    .think-main .group-members .group-member-item {
+        padding:15rpx 0 15rpx 30rpx;
+        border-bottom:1rpx solid #dedede;
+        text-align: left;
+    }
+    .think-main .group-members .group-member-item.active {
+        background: #fff;
+        border-left: 4rpx solid #1abcb0;
+    }
+    .think-content {
+        text-align: left;
+        width: 75vw;
+        height: calc(100vh - 86rpx);
+        overflow: auto;
+        flex:1;
+    }
+    .btn-area {
+        margin-top: 40rpx;
+        padding:20rpx 0 40rpx;
+    }
+    .submit-steps {
+        padding-bottom: 20rpx;
+        background: #f2f2f2;
+    }
+    .step-list-container {
+        padding: 20rpx 20rpx 20rpx 0;
+        background: #fff;
+    }
+    .step-content-container {
+        padding: 20rpx 0 20rpx 30rpx;
+        box-sizing: border-box;
+    }
+    .edit-think-dialog .content {
+        text-align: left;
+        margin-top: 20rpx;
+    }
+    .edit-think-dialog .content textarea {
+        margin-top: 10rpx;
+        border:1px solid #dedede;
+        border-radius: 10rpx;
+        width:100%;
+        height: 450rpx;
+        padding: 10rpx 20rpx;
+        box-sizing:border-box;
+    }
+    .dialog-btn {
+        margin-top: 40rpx;
+    }
+    .think-content audio {
+        width: 50vw;
+        height: 80rpx;
+        position: relative;
+        background: #fff;
+        border: 1px solid #dedede;
+        border-radius: 20rpx;
+    }
+    .think-content audio image {
+        float: left;
+        margin-left: 20rpx;
+        margin-top: 15rpx;
+        width: 40rpx;
+        height: 50rpx;
+    }
+    .think-content .submit-image {
+        width: 60vw;
+        height: 300rpx;
+    }
+    .msg-text {
+        padding:15rpx 25rpx;
+        background:#f2f2f2;
+        display:inline-block;
+        border:1px solid #dedede;
+        box-sizing:border-box;
+        border-radius:10rpx;
+        word-break: break-all;
+    }
+    .sub-step-name {
+        padding-left: 30rpx;
+    }

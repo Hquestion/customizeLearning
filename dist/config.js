@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default={httpServerUrl:"https://xcx.lyclass.com/",fileUploadServer:"https://xcx.lyclass.com/",socketServerUrl:"wss://xcx.lyclass.com/wss",chatMsgPageSize:10};

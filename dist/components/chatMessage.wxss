@@ -1,0 +1,119 @@
+
+    .chat-message {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        font-size: 0.85rem;
+        padding: 10rpx 15rpx;
+        text-align: left;
+        margin-top: 10rpx;
+        box-sizing: border-box;
+    }
+    .chat-message.is-self {
+        flex-direction: row-reverse;
+        justify-content:flex-end;
+
+    }
+    .user-name {
+        width: 80rpx;
+        min-height: 80rpx;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 10rpx;
+    }
+    .user-name image {
+        width: 80rpx;
+        height: 80rpx;
+        border: 1px solid #efefef;
+        border-radius: 80rpx;
+    }
+    .message-info {
+        flex: 1;
+        text-align: left;
+        margin-left: 30rpx;
+        position: relative;
+    }
+    .message-info .nick-name {
+        font-size: 24rpx;
+        padding: 5rpx 0;
+    }
+    .chat-message.is-self .message-info {
+        text-align: right;
+        margin-right: 30rpx;
+        margin-left: 0;
+    }
+    .message-box {
+        max-width: 50vw;
+        word-break: break-all;
+        display: inline-block;
+        position: relative;
+        text-align: left;
+    }
+    .message-box .padding-box {
+        padding: 15rpx 20rpx;
+        border: 1px solid #dedede;
+        border-radius: 15rpx;
+        background: #fff;
+    }
+    .chat-message.is-self  .message-box .padding-box {
+        background: #A9CBF5;
+        border: 1px solid #89CBF5;
+    }
+    .message-box .chat-img {
+        max-width: 50vw;
+        min-width: 30vw;
+        height: 250rpx;
+    }
+    .message-box audio {
+        width: 30vw;
+        height: 50rpx;
+        position: relative;
+    }
+    .message-box audio image {
+        float: left;
+        margin-left: 10rpx;
+        width: 40rpx;
+        height: 50rpx;
+    }
+    .chat-message.is-self .message-box audio image {
+        float: right;
+        margin-right: 10rpx;
+    }
+    .box-arrow {
+        position: absolute;
+        top: 15rpx;
+        width: 18rpx;
+        height: 29rpx;
+        min-width: 0;
+    }
+    .box-arrow.left {
+        left: -14rpx;
+    }
+    .box-arrow.right {
+        right: -14rpx;
+    }
+    .vidio-message-box image {
+        width: 351rpx;
+        height: 181rpx;
+    }
+    .more-action-btn {
+        position: absolute;
+        top: 30rpx;
+        right: 20rpx;
+        z-index: 10;
+        background: #fff;
+        width: 180rpx;
+        height: 160rpx;
+        border: 1px solid #dedede;
+    }
+    .more-action-btn view {
+        width: 100%;
+        height: 80rpx;
+        line-height: 80rpx;
+        text-align: center;
+    }
+    .more-action-btn view:first-child {
+        border-bottom: 1px solid #dedede;
+    }
