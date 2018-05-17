@@ -1,0 +1,12 @@
+
+    <view class="home-container">
+        <view class="nav">
+            <navigator url="/pages/prevKnow">早知道</navigator>
+            <navigator url="/pages/arrange" class="active">会安排</navigator>
+            <navigator url="/pages/parctice">能落实</navigator>
+            <navigator url="/pages/think">有反思</navigator>
+        </view>
+        <view>
+            开始安排
+        </view>
+    </view>

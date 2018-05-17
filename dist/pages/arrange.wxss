@@ -1,0 +1,17 @@
+
+    .home-container {
+        text-align: center;
+    }
+    .userinfo-avatar {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 80rpx;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+    }
+    .nav navigator{
+        flex: 1;
+    }

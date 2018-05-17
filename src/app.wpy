@@ -130,7 +130,8 @@
                             resolve(res.userInfo)
                         },
                         fail() {
-                            resolve(null)
+                            that.globalData.wxUserInfo = {}
+                            resolve({})
                         }
                     })
                 }
