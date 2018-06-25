@@ -21,6 +21,5 @@ export class Message {
                 stepname: message.stepname || ''
             }
         }
-        // this.isSelf = !!isSelf
     }
 }
