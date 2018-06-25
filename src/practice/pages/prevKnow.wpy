@@ -1,4 +1,5 @@
 <template>
+    <import src="../../wxParse/wxParse.wxml"/>
     <view class="prev-know-container">
         <view class="nav">
             <navigator class="active">早知道</navigator>
@@ -10,8 +11,10 @@
             <course-detail :courseInfo.sync="courseInfo"></course-detail>
             <panel class="prev-know-panel">
                 <view slot="title">早知道</view>
-                <view slot="content">
-                    <rich-text nodes="{{prevKnowContent}}" type="text"></rich-text>
+                <view slot="content" class="rich-content">
+                    <!--<rich-text nodes="{{prevKnowContent}}" type="text"></rich-text>-->
+                    <!--<wx-parse :content="prevKnowContent"></wx-parse>-->
+                    <template is="wxParse" data="{{wxParseData: knowContent.nodes}}"/>
                 </view>
             </panel>
             <panel class="remark-standard-panel">
@@ -31,6 +34,7 @@
     import courseDetail from '../../components/course-detail'
     import Panel from '../../components/panel'
     import remarkTpl from '../../components/remark-tpl'
+    import WxParse from '../../wxParse/wxParse.js'
 
     import {getCourseDetailById, getGroupDetail, getPrevKnowByCourse, getRemarkStandard, isStuInCourseGroup} from '../../api'
     import {parseTime} from '../../util'
@@ -81,6 +85,7 @@
             })
             getPrevKnowByCourse(activeGroupTask.CourseFID).then(res => {
                 this.prevKnowContent = res.KnowContent
+                WxParse.wxParse('knowContent', 'html', res.KnowContent, this, 5)
                 this.$apply()
             })
             getRemarkStandard(activeGroupTask.CourseFID).then(res => {
@@ -122,6 +127,7 @@
 </script>
 
 <style>
+    @import "../../wxParse/wxParse.wxss";
     .prev-know-container {
         text-align: left;
     }
@@ -140,5 +146,8 @@
     }
     .prev-know-panel {
         margin-top: 20rpx;
+    }
+    .prev-know-panel .rich-content {
+        text-indent: 0;
     }
 </style>

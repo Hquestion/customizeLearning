@@ -17,6 +17,7 @@
   "author": "hexl <1035271660@qq.com>",
   "license": "MIT",
   "dependencies": {
+    "mpvue-wxparse": "^0.6.5",
     "wepy": "^1.6.0",
     "wepy-async-function": "^1.4.4",
     "wepy-com-toast": "^1.0.2"

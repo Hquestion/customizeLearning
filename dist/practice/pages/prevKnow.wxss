@@ -2,6 +2,7 @@
 @import "./../../components/panel.wxss";
 @import "./../../components/course-detail.wxss";
 
+    @import "../../wxParse/wxParse.wxss";
     .prev-know-container {
         text-align: left;
     }
@@ -20,4 +21,7 @@
     }
     .prev-know-panel {
         margin-top: 20rpx;
+    }
+    .prev-know-panel .rich-content {
+        text-indent: 0;
     }
