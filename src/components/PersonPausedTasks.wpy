@@ -1,0 +1,111 @@
+<template>
+    <view class="person-paused-tasks">
+        <repeat for="{{commonTasks}}" item="taskInfo" index="index" key="index">
+            <view class="personal-task {{theme}} {{(taskInfo.Status === 0 && !taskInfo.IsActivationGroup) ? 'paused': ''}} {{(taskInfo.Status === 1 || taskInfo.Status === 2 ) ? 'stopped': ''}}">
+                <view class="task-tag" wx:if="{{taskInfo.Status === 0 && taskInfo.IsActivationGroup}}">
+                    <view class="dashed-line"></view>
+                    <view class="tag">进行中的课程</view>
+                </view>
+                <view class="task-content" @tap="reviewTask">
+                    <view class="row-block task-title-block">
+                        <text>{{taskInfo.CourseCode}}</text>.
+                        <text>{{taskInfo.CourseName}}</text>
+                        <text class="normal" wx:if="{{taskInfo.Status === 0}}">（已进行<text class="warning">{{taskInfo.lastDays}}</text>天）</text>
+                    </view>
+                    <view class="row-block task-group-block">
+                        <text class="grey">小组组员：</text>
+                        <text class="group-people">{{taskInfo.GroupLeaderName}}<text wx:if="{{taskInfo.AttendMembers}}">,</text>{{taskInfo.AttendMembers}}</text>
+                    </view>
+                    <view class="row-block flex-box">
+                        <view class="task-teacher-block">
+                            <text class="grey">负责老师：</text>
+                            <text class="group-people">{{taskInfo.HeadTaecherName}}</text>
+                        </view>
+                        <view class="task-duration-block">
+                            <text class="grey">课程时长：</text>
+                            <text class="group-people">{{taskInfo.CourseDuration || '不限'}}天</text>
+                        </view>
+                    </view>
+                </view>
+                <view class="star-count">
+                    <view class="block star-block" wx:if="{{taskInfo.Status !== 0}}">
+                        <image class="icon star" src="../images/baoshi.png"></image><text>{{taskInfo.StarNum || 0}}</text>
+                    </view>
+                    <view class="block fav-block">
+                        <image class="icon fav" src="../images/zan.png" wx:if="{{!taskInfo.IsPraise}}"></image>
+                        <image class="icon fav" src="../images/zan2.png" wx:else></image>
+                        <text class="{{!!taskInfo.IsPraise ? 'faved': ''}}">{{taskInfo.PraiseNum || 0}}</text>
+                    </view>
+                    <view class="block change-block">
+                        <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{taskInfo.RankChange >= 0}}"></image>
+                        <image class="icon change" src="../images/jiantou-xia.png" wx:else></image>
+                        <text>{{taskInfo.RankChange || 0}}</text>
+                    </view>
+                </view>
+                <view class="button-block">
+                    <view class="running" wx:if="{{taskInfo.Status === 0 && taskInfo.IsActivationGroup}}" @tap="onTapCoutinue({{taskInfo}})">
+                        <rich-button1 size="middle" text="继续课程" :theme.sync="bTheme"></rich-button1>
+                    </view>
+                    <view class="paused" wx:if="{{taskInfo.Status === 0 && !taskInfo.IsActivationGroup}}" @tap="onTapStart({{taskInfo}})">
+                        <rich-button2 size="middle" text="已暂停，点击启动" theme="grey"></rich-button2>
+                    </view>
+                </view>
+            </view>
+        </repeat>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import richButoon from '../components/rich-button'
+
+    import {activateGroupTask} from '../api'
+
+    export default class PersonPausedTasks extends wepy.component {
+        data = {
+            bTheme: 'blue'
+        }
+
+        components = {
+            'rich-button1': richButoon,
+            'rich-button2': richButoon
+        }
+
+        props = {
+            commonTasks: {},
+            theme: {}
+        }
+
+        methods ={
+            onTapCoutinue(task) {
+                let activeTaskInfo = {CourseFID: task.CourseFID, GroupFID: task.FlnkID}
+                wepy.setStorageSync('activeTaskInfo', activeTaskInfo)
+                wepy.switchTab({
+                    url: '/pages/practice'
+                })
+            },
+            onTapStart(task) {
+                let groupTaskId = task.FlnkID
+                let activeTaskInfo = {CourseFID: task.CourseFID, GroupFID: groupTaskId}
+                activateGroupTask(this.$parent.$parent.globalData.userInfo.FlnkID, task.FlnkID, task.CourseFID).then(res => {
+                    wepy.setStorageSync('activeTaskInfo', activeTaskInfo)
+                    this.$apply()
+                    wepy.switchTab({
+                        url: '/pages/practice'
+                    })
+                })
+            }
+        }
+
+        watch = {
+            theme: function(val) {
+                this.bTheme = (val === 'male' ? 'blue' : 'red')
+                this.$apply()
+            }
+        }
+    }
+</script>
+
+<style>
+
+</style>

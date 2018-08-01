@@ -51,7 +51,7 @@
     }
 </style>
 <template>
-    <view class="rich-button {{size}} {{theme}}" @tap="onTap" style="{{width ? ('width:' + width) : ''}}">
+    <view class="rich-button {{size}} {{theme}}" @tap.default="onTap" style="{{width ? ('width:' + width) : ''}}">
         <image src="{{iconSrc}}" wx:if="{{iconSrc}}"></image>
         {{text}}
     </view>

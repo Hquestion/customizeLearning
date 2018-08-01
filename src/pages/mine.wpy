@@ -12,10 +12,7 @@
                                 @continue.user="continueTask" @restart.user="restartTask" @review.user="reviewTask"></personal-task1>
             </view>
             <view class="task-block task-common" hidden="{{!commonTasks || commonTasks.length === 0}}">
-                <repeat for="{{commonTasks}}" item="item" index="index">
-                    <personal-task2 class="task-comp" :theme.sync="userTheme" :taskInfo.sync="item"
-                                    @continue.user="continueTask" @restart.user="restartTask" @review.user="reviewTask"></personal-task2>
-                </repeat>
+                <person-paused-tasks :commonTasks.sync="commonTasks" :theme.sync="userTheme"></person-paused-tasks>
             </view>
         </view>
         <view class="teacher-task-block" wx:if="{{isTeacher}}">
@@ -24,7 +21,9 @@
                     <view slot="title">进行中的课程</view>
                     <view slot="content" class='panel-content'>
                         <repeat for="{{tRunningTasks}}" item="item" index="index">
-                            <t-course-task1 class="t-task-comp" :taskInfo.sync="item" @teacher-check-course.user="checkCourse"></t-course-task1>
+                            <view @tap="checkCourse({{item}})">
+                                <t-course-task1 class="t-task-comp" :taskInfo.sync="item"></t-course-task1>
+                            </view>
                         </repeat>
                     </view>
                 </panel>
@@ -34,7 +33,9 @@
                     <view slot="title">已完成的课程</view>
                     <view slot="content" class="panel-content">
                         <repeat for="{{tCompleteTasks}}" item="item" index="index">
-                            <t-course-task2 class="t-task-comp" :taskInfo.sync="item" @teacher-check-course.user="reviewCourseGroup"></t-course-task2>
+                            <view @tap="reviewCourseGroup({{item}})">
+                                <t-course-task2 class="t-task-comp" :taskInfo.sync="item"></t-course-task2>
+                            </view>
                         </repeat>
                     </view>
                 </panel>
@@ -52,6 +53,7 @@
     import TeacherCourseTask from '../components/teacher-course-task'
     import panel from '../components/panel'
     import richButton from '../components/rich-button'
+    import PersonPausedTasks from '../components/PersonPausedTasks'
 
     import {getStuDetailInfo, getMyCourseTasks, activateGroupTask, cancelBind} from '../api'
     import {getLastDays} from '../util'
@@ -79,7 +81,8 @@
             't-course-task1': TeacherCourseTask,
             't-course-task2': TeacherCourseTask,
             panel: panel,
-            'rich-button': richButton
+            'rich-button': richButton,
+            'person-paused-tasks': PersonPausedTasks
         }
 
         watch = {
@@ -135,6 +138,9 @@
                         item.IsActivationGroup = item.FlnkID === groupTaskId
                     })
                     this.$apply()
+                    wepy.switchTab({
+                        url: '/pages/practice'
+                    })
                 })
             },
             checkCourse(task) {

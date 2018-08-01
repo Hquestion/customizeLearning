@@ -72,70 +72,72 @@
 
             </view>
             <view class="task-block task-common" hidden="{{!commonTasks || commonTasks.length === 0}}">
-                <block wx:for="{{commonTasks}}" wx:for-index="index" wx:for-item="item" wx:key="key">
-                    
-    <view class="personal-task {{userTheme}} {{(item.Status === 0 && !item.IsActivationGroup) ? 'paused': ''}} {{(item.Status === 1 || item.Status === 2 ) ? 'stopped': ''}} task-comp">
-        <view class="task-tag"  wx:if="{{item.Status === 0 && item.IsActivationGroup}}">
-            <view class="dashed-line"/>
-            <view class="tag">进行中的课程</view>
-        </view>
-        <view class="task-content" bindtap="$personalTask2$reviewTask" data-com-index="{{index}}">
-            <view class="row-block task-title-block">
-                <text>{{item.CourseCode}}</text>.
-                <text>{{item.CourseName}}</text>
-                <text class="normal"  wx:if="{{item.Status === 0}}">（已进行<text class="warning">{{item.lastDays}}</text>天）</text>
-            </view>
-            <view class="row-block task-group-block">
-                <text class="grey">小组组员：</text>
-                <text class="group-people">{{item.GroupLeaderName}}<text wx:if="{{item.AttendMembers}}">,</text>{{item.AttendMembers}}</text>
-            </view>
-            <view class="row-block flex-box">
-                <view class="task-teacher-block">
-                    <text class="grey">负责老师：</text>
-                    <text class="group-people">{{item.HeadTaecherName}}</text>
-                </view>
-                <view class="task-duration-block">
-                    <text class="grey">课程时长：</text>
-                    <text class="group-people">{{item.CourseDuration || '不限'}}天</text>
-                </view>
-            </view>
-        </view>
-        <view class="star-count">
-            <view class="block star-block" wx:if="{{item.Status !== 0}}">
-                <image class="icon star" src="../images/baoshi.png"/><text>{{item.StarNum || 0}}</text>
-            </view>
-            <view class="block fav-block">
-                <image class="icon fav" src="../images/zan.png" wx:if="{{!item.IsPraise}}"/>
-                <image class="icon fav" src="../images/zan2.png" wx:else/>
-                <text class="{{!!item.IsPraise ? 'faved': ''}}">{{item.PraiseNum || 0}}</text>
-            </view>
-            <view class="block change-block">
-                <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{item.RankChange >= 0}}"/>
-                <image class="icon change" src="../images/jiantou-xia.png" wx:else/>
-                <text>{{item.RankChange || 0}}</text>
-            </view>
-        </view>
-        <view class="button-block">
-            <view class="running" wx:if="{{item.Status === 0 && item.IsActivationGroup}}">
                 
-    <view class="rich-button {{$personalTask2$richButton1$size}} {{$personalTask2$richButton1$theme}}" bindtap="$personalTask2$richButton1$onTap" style="{{$personalTask2$richButton1$width ? ('width:' + $personalTask2$richButton1$width) : ''}}">
-        <image src="{{$personalTask2$richButton1$iconSrc}}"  wx:if="{{$personalTask2$richButton1$iconSrc}}"/>
-        {{$personalTask2$richButton1$text}}
+    <view class="person-paused-tasks">
+        <block wx:for="{{$personPausedTasks$commonTasks}}" wx:for-index="$personPausedTasks$index" wx:for-item="$personPausedTasks$taskInfo" wx:key="$personPausedTasks$index">
+            <view class="personal-task {{$personPausedTasks$theme}} {{($personPausedTasks$taskInfo.Status === 0 && !$personPausedTasks$taskInfo.IsActivationGroup) ? 'paused': ''}} {{($personPausedTasks$taskInfo.Status === 1 || $personPausedTasks$taskInfo.Status === 2 ) ? 'stopped': ''}}">
+                <view class="task-tag"  wx:if="{{$personPausedTasks$taskInfo.Status === 0 && $personPausedTasks$taskInfo.IsActivationGroup}}">
+                    <view class="dashed-line"/>
+                    <view class="tag">进行中的课程</view>
+                </view>
+                <view class="task-content" bindtap="$personPausedTasks$reviewTask">
+                    <view class="row-block task-title-block">
+                        <text>{{$personPausedTasks$taskInfo.CourseCode}}</text>.
+                        <text>{{$personPausedTasks$taskInfo.CourseName}}</text>
+                        <text class="normal"  wx:if="{{$personPausedTasks$taskInfo.Status === 0}}">（已进行<text class="warning">{{$personPausedTasks$taskInfo.lastDays}}</text>天）</text>
+                    </view>
+                    <view class="row-block task-group-block">
+                        <text class="grey">小组组员：</text>
+                        <text class="group-people">{{$personPausedTasks$taskInfo.GroupLeaderName}}<text wx:if="{{$personPausedTasks$taskInfo.AttendMembers}}">,</text>{{$personPausedTasks$taskInfo.AttendMembers}}</text>
+                    </view>
+                    <view class="row-block flex-box">
+                        <view class="task-teacher-block">
+                            <text class="grey">负责老师：</text>
+                            <text class="group-people">{{$personPausedTasks$taskInfo.HeadTaecherName}}</text>
+                        </view>
+                        <view class="task-duration-block">
+                            <text class="grey">课程时长：</text>
+                            <text class="group-people">{{$personPausedTasks$taskInfo.CourseDuration || '不限'}}天</text>
+                        </view>
+                    </view>
+                </view>
+                <view class="star-count">
+                    <view class="block star-block" wx:if="{{$personPausedTasks$taskInfo.Status !== 0}}">
+                        <image class="icon star" src="../images/baoshi.png"/><text>{{$personPausedTasks$taskInfo.StarNum || 0}}</text>
+                    </view>
+                    <view class="block fav-block">
+                        <image class="icon fav" src="../images/zan.png" wx:if="{{!$personPausedTasks$taskInfo.IsPraise}}"/>
+                        <image class="icon fav" src="../images/zan2.png" wx:else/>
+                        <text class="{{!!$personPausedTasks$taskInfo.IsPraise ? 'faved': ''}}">{{$personPausedTasks$taskInfo.PraiseNum || 0}}</text>
+                    </view>
+                    <view class="block change-block">
+                        <image class="icon change" src="../images/jiantou-shang.png" wx:if="{{$personPausedTasks$taskInfo.RankChange >= 0}}"/>
+                        <image class="icon change" src="../images/jiantou-xia.png" wx:else/>
+                        <text>{{$personPausedTasks$taskInfo.RankChange || 0}}</text>
+                    </view>
+                </view>
+                <view class="button-block">
+                    <view class="running" wx:if="{{$personPausedTasks$taskInfo.Status === 0 && $personPausedTasks$taskInfo.IsActivationGroup}}" bindtap="$personPausedTasks$onTapCoutinue" data-wpyontapcoutinue-a="{{$personPausedTasks$taskInfo}}">
+                        
+    <view class="rich-button {{$personPausedTasks$richButton1$size}} {{$personPausedTasks$bTheme}}" bindtap="$personPausedTasks$richButton1$onTap" style="{{$personPausedTasks$richButton1$width ? ('width:' + $personPausedTasks$richButton1$width) : ''}}" data-com-index="{{$personPausedTasks$index}}">
+        <image src="{{$personPausedTasks$richButton1$iconSrc}}"  wx:if="{{$personPausedTasks$richButton1$iconSrc}}"/>
+        {{$personPausedTasks$richButton1$text}}
     </view>
 
+                    </view>
+                    <view class="paused"  wx:if="{{$personPausedTasks$taskInfo.Status === 0 && !$personPausedTasks$taskInfo.IsActivationGroup}}" bindtap="$personPausedTasks$onTapStart" data-wpyontapstart-a="{{$personPausedTasks$taskInfo}}">
+                        
+    <view class="rich-button {{$personPausedTasks$richButton2$size}} {{$personPausedTasks$richButton2$theme}}" bindtap="$personPausedTasks$richButton2$onTap" style="{{$personPausedTasks$richButton2$width ? ('width:' + $personPausedTasks$richButton2$width) : ''}}" data-com-index="{{$personPausedTasks$index}}">
+        <image src="{{$personPausedTasks$richButton2$iconSrc}}"  wx:if="{{$personPausedTasks$richButton2$iconSrc}}"/>
+        {{$personPausedTasks$richButton2$text}}
+    </view>
+
+                    </view>
+                </view>
             </view>
-            <view class="paused"  wx:if="{{item.Status === 0 && !item.IsActivationGroup}}">
-                
-    <view class="rich-button {{$personalTask2$richButton2$size}} {{$personalTask2$richButton2$theme}}" bindtap="$personalTask2$richButton2$onTap" style="{{$personalTask2$richButton2$width ? ('width:' + $personalTask2$richButton2$width) : ''}}">
-        <image src="{{$personalTask2$richButton2$iconSrc}}"  wx:if="{{$personalTask2$richButton2$iconSrc}}"/>
-        {{$personalTask2$richButton2$text}}
+        </block>
     </view>
 
-            </view>
-        </view>
-    </view>
-
-                </block>
             </view>
         </view>
         <view class="teacher-task-block"  wx:if="{{isTeacher}}">
@@ -151,7 +153,8 @@
         <view class="content">
             <view class="panel-content">
                         <block wx:for="{{tRunningTasks}}" wx:for-index="index" wx:for-item="item" wx:key="key">
-                            
+                            <view bindtap="checkCourse" data-wpycheckcourse-a="{{item}}">
+                                
     <view class="teacher-course-task flex-box t-task-comp" bindtap="$tCourseTask1$CheckCourse" data-com-index="{{index}}" data-wpycheckcourse-a="{{item}}">
         <view class="task-content">
             <view class="row-block task-title-block">
@@ -194,6 +197,7 @@
         </view>
     </view>
 
+                            </view>
                         </block>
                     </view>
         </view>
@@ -212,7 +216,8 @@
         <view class="content">
             <view class="panel-content">
                         <block wx:for="{{tCompleteTasks}}" wx:for-index="index" wx:for-item="item" wx:key="key">
-                            
+                            <view bindtap="reviewCourseGroup" data-wpyreviewcoursegroup-a="{{item}}">
+                                
     <view class="teacher-course-task flex-box t-task-comp" bindtap="$tCourseTask2$CheckCourse" data-com-index="{{index}}" data-wpycheckcourse-a="{{item}}">
         <view class="task-content">
             <view class="row-block task-title-block">
@@ -255,6 +260,7 @@
         </view>
     </view>
 
+                            </view>
                         </block>
                     </view>
         </view>

@@ -1,3 +1,4 @@
+@import "./../components/PersonPausedTasks.wxss";
 @import "./../components/rich-button.wxss";
 @import "./../components/panel.wxss";
 @import "./../components/teacher-course-task.wxss";
