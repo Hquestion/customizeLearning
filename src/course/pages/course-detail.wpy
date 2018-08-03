@@ -1,6 +1,6 @@
 <template>
     <view class="course-detail-container">
-        <scroll-view scroll-y class="detail-block">
+        <view class="detail-block">
             <course-detail :courseInfo.sync="courseInfo"></course-detail>
             <view class="task-status">
                 <view class="grey task-brief">
@@ -20,10 +20,11 @@
                     </repeat>
                 </view>
             </view>
-        </scroll-view>
+        </view>
         <view class="button-block">
             <rich-button :text.sync="buttonText" @tap.user="selectClassmates" :theme.sync="buttonTheme"></rich-button>
         </view>
+        <image src="../../images/course-detail-bg.jpg"></image>
     </view>
 </template>
 
@@ -116,7 +117,7 @@
 
 <style>
     .course-detail-container {
-        padding: 20rpx;
+        padding:20rpx 20rpx 150rpx 20rpx;
     }
     .course-name {
         color: #1abcb0;
@@ -150,15 +151,18 @@
         margin-left:10rpx;
     }
     .detail-block {
-        height: calc(100vh - 140rpx);
+        height: auto;
     }
     .button-block {
-        position: fixed;
-        bottom: 0;
-        left: 0;
         width: 100%;
         height: 140rpx;
         padding: 20rpx 0;
-        background: #fff;
+    }
+    image {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: -1;
     }
 </style>
