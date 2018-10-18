@@ -563,7 +563,7 @@
                     if (data.isSelf || this.isScrollToNewEnable) {
                         this.scrollToCurrentMsg()
                     }
-                    let pageStack = getCurrentPages()
+                    let pageStack = wepy.getCurrentPages()
                     if (pageStack[pageStack.length - 1].route !== 'pages/practice') {
                         wepy.showTabBarRedDot({
                             index: 1
