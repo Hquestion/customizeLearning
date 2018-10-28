@@ -1,6 +1,8 @@
+@import "./../../components/panel.wxss";
 @import "./../../components/course-detail.wxss";
 @import "./../../components/rich-button.wxss";
 
+    @import "../../wxParse/wxParse.wxss";
     .course-detail-container {
         padding:20rpx 20rpx 150rpx 20rpx;
     }

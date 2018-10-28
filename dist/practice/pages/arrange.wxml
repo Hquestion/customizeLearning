@@ -66,7 +66,7 @@
         <view class="dialog-content">
             <view class="dialog-title">
                 <view>{{addStepTitle}}</view>
-                <icon type="cancel" color="#999" size="30" bindtap="$dialog$closeDialog"/>
+                <icon  wx:if="{{$dialog$closable}}" type="cancel" color="#999" size="30" bindtap="$dialog$closeDialog"/>
             </view>
             <view class="content-main">
                 <view>

@@ -2,7 +2,7 @@
     <view class="register-container">
         <view class="register-main">
             <view class="avatar-box">
-                <image src="../images/logo.jpg"/>
+                <image src="../images/logo2.jpg"/>
             </view>
             <view class="info">
                 欢迎访问个性化学习中心

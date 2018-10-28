@@ -1,7 +1,7 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+        value: true
 });
 exports.default = undefined;
 
@@ -20,29 +20,29 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Loading = function (_wepy$component) {
-    _inherits(Loading, _wepy$component);
+        _inherits(Loading, _wepy$component);
 
-    function Loading() {
-        var _ref;
+        function Loading() {
+                var _ref;
 
-        var _temp, _this, _ret;
+                var _temp, _this, _ret;
 
-        _classCallCheck(this, Loading);
+                _classCallCheck(this, Loading);
 
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
+                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                        args[_key] = arguments[_key];
+                }
+
+                return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Loading.__proto__ || Object.getPrototypeOf(Loading)).call.apply(_ref, [this].concat(args))), _this), _this.props = {}, _this.components = {}, _this.methods = {}, _temp), _possibleConstructorReturn(_this, _ret);
         }
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Loading.__proto__ || Object.getPrototypeOf(Loading)).call.apply(_ref, [this].concat(args))), _this), _this.props = {}, _this.components = {}, _this.methods = {}, _temp), _possibleConstructorReturn(_this, _ret);
-    }
+        _createClass(Loading, [{
+                key: 'onLoad',
+                value: function onLoad() {}
+        }]);
 
-    _createClass(Loading, [{
-        key: 'onLoad',
-        value: function onLoad() {}
-    }]);
-
-    return Loading;
+        return Loading;
 }(_wepy2.default.component);
 
 exports.default = Loading;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImxvYWRpbmcuanMiXSwibmFtZXMiOlsiTG9hZGluZyIsInByb3BzIiwiY29tcG9uZW50cyIsIm1ldGhvZHMiLCJ3ZXB5IiwiY29tcG9uZW50Il0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7QUFDSTs7Ozs7Ozs7Ozs7O0lBRXFCQSxPOzs7Ozs7Ozs7Ozs7Ozs0TEFDakJDLEssR0FBUSxFLFFBSVJDLFUsR0FBYSxFLFFBR2JDLE8sR0FBVSxFOzs7OztpQ0FJRCxDQUVSOzs7O0VBZGdDQyxlQUFLQyxTOztrQkFBckJMLE8iLCJmaWxlIjoibG9hZGluZy5qcyIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIGltcG9ydCB3ZXB5IGZyb20gJ3dlcHknXG5cbiAgICBleHBvcnQgZGVmYXVsdCBjbGFzcyBMb2FkaW5nIGV4dGVuZHMgd2VweS5jb21wb25lbnQge1xuICAgICAgICBwcm9wcyA9IHtcblxuICAgICAgICB9XG5cbiAgICAgICAgY29tcG9uZW50cyA9IHtcblxuICAgICAgICB9XG4gICAgICAgIG1ldGhvZHMgPSB7XG5cbiAgICAgICAgfVxuXG4gICAgICAgIG9uTG9hZCgpIHtcblxuICAgICAgICB9XG4gICAgfVxuIl19
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImxvYWRpbmcuanMiXSwibmFtZXMiOlsiTG9hZGluZyIsInByb3BzIiwiY29tcG9uZW50cyIsIm1ldGhvZHMiLCJjb21wb25lbnQiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7OztBQUNJOzs7Ozs7Ozs7Ozs7SUFFcUJBLE87Ozs7Ozs7Ozs7Ozs7O29NQUNqQkMsSyxHQUFRLEUsUUFJUkMsVSxHQUFhLEUsUUFHYkMsTyxHQUFVLEU7Ozs7O3lDQUlELENBRVI7Ozs7RUFkZ0MsZUFBS0MsUzs7a0JBQXJCSixPIiwiZmlsZSI6ImxvYWRpbmcuanMiLCJzb3VyY2VzQ29udGVudCI6WyJcclxuICAgIGltcG9ydCB3ZXB5IGZyb20gJ3dlcHknXHJcblxyXG4gICAgZXhwb3J0IGRlZmF1bHQgY2xhc3MgTG9hZGluZyBleHRlbmRzIHdlcHkuY29tcG9uZW50IHtcclxuICAgICAgICBwcm9wcyA9IHtcclxuXHJcbiAgICAgICAgfVxyXG5cclxuICAgICAgICBjb21wb25lbnRzID0ge1xyXG5cclxuICAgICAgICB9XHJcbiAgICAgICAgbWV0aG9kcyA9IHtcclxuXHJcbiAgICAgICAgfVxyXG5cclxuICAgICAgICBvbkxvYWQoKSB7XHJcblxyXG4gICAgICAgIH1cclxuICAgIH1cclxuIl19

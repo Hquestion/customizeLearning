@@ -1,7 +1,16 @@
 <template>
+    <import src="../../wxParse/wxParse.wxml"/>
     <view class="course-detail-container">
         <view class="detail-block">
             <course-detail :courseInfo.sync="courseInfo"></course-detail>
+            <panel class="prev-know-panel">
+                <view slot="title">早知道</view>
+                <view slot="content" class="rich-content">
+                    <!--<rich-text nodes="{{prevKnowContent}}" type="text"></rich-text>-->
+                    <!--<wx-parse :content="prevKnowContent"></wx-parse>-->
+                    <template is="wxParse" data="{{wxParseData: knowContent.nodes}}"/>
+                </view>
+            </panel>
             <view class="task-status">
                 <view class="grey task-brief">
                     成功完成<text class="warning">{{courseInfo.SuccessNum || 0}}</text>次，
@@ -32,8 +41,10 @@
     import wepy from 'wepy'
     import richButton from '../../components/rich-button'
     import courseDetail from '../../components/course-detail'
+    import panel from '../../components/panel'
+    import WxParse from '../../wxParse/wxParse.js'
 
-    import {getCourseDetailById, getSuccessTasksByCourseId, isStuInCourseGroup} from '../../api'
+    import {getCourseDetailById, getSuccessTasksByCourseId, isStuInCourseGroup, getPrevKnowByCourse} from '../../api'
     import {parseTime} from '../../util'
 
     export default class CourseDetail extends wepy.page {
@@ -43,7 +54,8 @@
 
         components = {
             'rich-button': richButton,
-            'course-detail': courseDetail
+            'course-detail': courseDetail,
+            'panel': panel
         }
 
         data = {
@@ -78,6 +90,12 @@
                 this.courseInfo.showCreateTime = parseTime(this.courseInfo.CreateTime)
                 this.courseInfo.showOpenStartTime = parseTime(this.courseInfo.OpenStartTime)
                 this.courseInfo.showOpenEndTime = parseTime(this.courseInfo.OpenEndTime)
+                this.$apply()
+            })
+
+            getPrevKnowByCourse(this.courseId).then(res => {
+                this.prevKnowContent = res.KnowContent
+                WxParse.wxParse('knowContent', 'html', res.KnowContent, this, 5)
                 this.$apply()
             })
 
@@ -116,6 +134,7 @@
 </script>
 
 <style>
+    @import "../../wxParse/wxParse.wxss";
     .course-detail-container {
         padding:20rpx 20rpx 150rpx 20rpx;
     }

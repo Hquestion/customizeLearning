@@ -68,6 +68,14 @@
                 </swiper-item>
             </swiper>
         </view>
+        <dialog class="auth-dialog" :visible.sync="authVisible" :closable="false">
+            <view slot="title">用户授权</view>
+            <view slot="main">
+                <button open-type="getUserInfo" style="margin-top: 30rpx;"
+                        @getuserinfo="bindGetUserInfo">授权登录</button>
+                <view class="tip">为了使用小主人学习中心，我们需要获取您的用户信息，请确认授权</view>
+            </view>
+        </dialog>
     </view>
 </template>
 
@@ -76,6 +84,8 @@
     import courseTask from '../components/course-task'
     import course from '../components/course'
     import emptyContent from '../components/empty-content'
+    import dialog from '../components/dialog'
+    import richButton from '../components/rich-button'
 
     import {login, getCourseCateBySchool, getCoursesByCategory, getCourseTaskOrderList, getStuDetailInfo, userPraise, userCancelPraise, getCurrentActivateTask} from '../api'
 
@@ -87,7 +97,9 @@
         components = {
             'course-task': courseTask,
             'course': course,
-            'empty-content': emptyContent
+            'empty-content': emptyContent,
+            dialog: dialog,
+            'rich-button': richButton
         }
 
         data = {
@@ -100,7 +112,8 @@
             courseCategories: [],
             activeCateId: '',
             cateCourseList: [],
-            userInfoDetail: null
+            userInfoDetail: null,
+            authVisible: false
         }
 
         computed = {
@@ -160,6 +173,12 @@
                         }
                     })
                 }
+            },
+            bindGetUserInfo(e) {
+                this.$parent.setGlobalData('wxUserInfo', e.detail.userInfo)
+                this.authVisible = false
+                this.$apply()
+                this.init()
             }
         }
 
@@ -268,11 +287,22 @@
 
         onLoad() {
             let self = this
-            this.$parent.getUserInfo(function (res) {
-                self.userInfo = res
-                self.$apply()
+            wepy.getSetting({
+                success (res) {
+                    if (res.authSetting['scope.userInfo']) {
+                        // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+                        self.$parent.getUserInfo(function (res) {
+                            self.userInfo = res
+                            self.$apply()
+                        })
+                        self.init()
+                    } else {
+                        self.authVisible = true
+                        self.$apply()
+                        console.log(self.authVisible)
+                    }
+                }
             })
-            self.init()
         }
     }
 </script>
@@ -340,5 +370,11 @@
     .empty-container {
         height: calc(100vh - 82rpx);
         background: #fff;
+    }
+    .auth-dialog .tip {
+        margin-top:30rpx;
+        font-size:26rpx;
+        color:#999;
+        text-align:center;
     }
 </style>

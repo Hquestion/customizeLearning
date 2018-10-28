@@ -2,7 +2,7 @@
     <view class="register-container">
         <view class="register-main">
             <view class="avatar-box">
-                <image src="../images/logo.jpg"></image>
+                <image src="../images/logo2.jpg"></image>
             </view>
             <view class="info">
                 欢迎访问个性化学习中心
@@ -113,10 +113,12 @@
         padding: 20rpx;
         margin: 0 auto;
         box-sizing: border-box;
+        height:150rpx;
     }
     .avatar-box image {
         width:300rpx;
         height:255rpx;
+        display: none;
     }
     .input-box {
         width: 90%;

@@ -1,5 +1,8 @@
 {
-	"description": "项目配置文件。",
+	"description": "项目配置文件",
+	"packOptions": {
+		"ignore": []
+	},
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -8,9 +11,12 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "1.9.90",
+	"libVersion": "2.3.0",
 	"appid": "wx5ca730507f3f182d",
-	"projectname": "%E5%B0%8F%E4%B8%BB%E4%BA%BA%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83",
+	"projectname": "customizeLearn",
+	"debugOptions": {
+		"hidedInDevtools": []
+	},
 	"isGameTourist": false,
 	"condition": {
 		"search": {

@@ -1,3 +1,5 @@
+@import "./../components/rich-button.wxss";
+@import "./../components/dialog.wxss";
 @import "./../components/empty-content.wxss";
 @import "./../components/course.wxss";
 @import "./../components/course-task.wxss";
@@ -64,4 +66,10 @@
     .empty-container {
         height: calc(100vh - 82rpx);
         background: #fff;
+    }
+    .auth-dialog .tip {
+        margin-top:30rpx;
+        font-size:26rpx;
+        color:#999;
+        text-align:center;
     }

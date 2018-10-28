@@ -22,10 +22,12 @@
         padding: 20rpx;
         margin: 0 auto;
         box-sizing: border-box;
+        height:150rpx;
     }
     .avatar-box image {
         width:300rpx;
         height:255rpx;
+        display: none;
     }
     .input-box {
         width: 90%;

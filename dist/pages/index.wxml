@@ -176,4 +176,21 @@
                 </swiper-item>
             </swiper>
         </view>
+        
+    <view class="dialog auth-dialog" hidden="{{!$dialog$visible}}">
+        <view class="mask"/>
+        <view class="dialog-content">
+            <view class="dialog-title">
+                <view>用户授权</view>
+                <icon  wx:if="{{$dialog$closable}}" type="cancel" color="#999" size="30" bindtap="$dialog$closeDialog"/>
+            </view>
+            <view class="content-main">
+                <view>
+                <button open-type="getUserInfo" style="margin-top: 30rpx;" bindgetuserinfo="bindGetUserInfo">授权登录</button>
+                <view class="tip">为了使用小主人学习中心，我们需要获取您的用户信息，请确认授权</view>
+            </view>
+            </view>
+        </view>
+    </view>
+
     </view>

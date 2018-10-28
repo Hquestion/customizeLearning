@@ -4,7 +4,7 @@
         <view class="dialog-content">
             <view class="dialog-title">
                 <slot name="title"></slot>
-                <icon type="cancel" color="#999" size="30" @tap="closeDialog"></icon>
+                <icon wx:if="{{closable}}" type="cancel" color="#999" size="30" @tap="closeDialog"></icon>
             </view>
             <view class="content-main">
                 <slot name="main"></slot>
@@ -20,6 +20,9 @@
             visible: {
                 default: false,
                 twoWay: true
+            },
+            closable: {
+                default: true
             }
         }
 
