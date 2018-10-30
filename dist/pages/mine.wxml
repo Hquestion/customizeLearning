@@ -17,7 +17,7 @@
         <view class="task-content" bindtap="$personalTask1$reviewTask">
             <view class="row-block task-title-block">
                 <text>{{$personalTask1$taskInfo.CourseCode}}</text>.
-                <text>{{$personalTask1$taskInfo.CourseName}}</text>
+                <text>{{$personalTask1$taskInfo.CourseName}}({{$personalTask1$taskInfo.GroupName}})</text>
                 <text class="normal"  wx:if="{{$personalTask1$taskInfo.Status === 0}}">（已进行<text class="warning">{{$personalTask1$taskInfo.lastDays}}</text>天）</text>
             </view>
             <view class="row-block task-group-block">
@@ -83,7 +83,7 @@
                 <view class="task-content" bindtap="$personPausedTasks$reviewTask">
                     <view class="row-block task-title-block">
                         <text>{{$personPausedTasks$taskInfo.CourseCode}}</text>.
-                        <text>{{$personPausedTasks$taskInfo.CourseName}}</text>
+                        <text>{{$personPausedTasks$taskInfo.CourseName}}({{$personPausedTasks$taskInfo.GroupName}})</text>
                         <text class="normal"  wx:if="{{$personPausedTasks$taskInfo.Status === 0}}">（已进行<text class="warning">{{$personPausedTasks$taskInfo.lastDays}}</text>天）</text>
                     </view>
                     <view class="row-block task-group-block">
@@ -159,7 +159,7 @@
         <view class="task-content">
             <view class="row-block task-title-block">
                 <text>{{item.CourseCode}}</text>.
-                <text>{{item.CourseName}}</text>
+                <text>{{item.CourseName}}({{item.GroupName}})</text>
                 <text class="normal"  wx:if="{{item.Status === 0}}">（已进行<text class="warning">{{item.lastDays}}</text>天）</text>
             </view>
             <view class="row-block task-group-block">
@@ -222,7 +222,7 @@
         <view class="task-content">
             <view class="row-block task-title-block">
                 <text>{{item.CourseCode}}</text>.
-                <text>{{item.CourseName}}</text>
+                <text>{{item.CourseName}}({{item.GroupName}})</text>
                 <text class="normal"  wx:if="{{item.Status === 0}}">（已进行<text class="warning">{{item.lastDays}}</text>天）</text>
             </view>
             <view class="row-block task-group-block">

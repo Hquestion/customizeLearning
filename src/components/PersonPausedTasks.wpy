@@ -9,7 +9,7 @@
                 <view class="task-content" @tap="reviewTask">
                     <view class="row-block task-title-block">
                         <text>{{taskInfo.CourseCode}}</text>.
-                        <text>{{taskInfo.CourseName}}</text>
+                        <text>{{taskInfo.CourseName}}({{taskInfo.GroupName}})</text>
                         <text class="normal" wx:if="{{taskInfo.Status === 0}}">（已进行<text class="warning">{{taskInfo.lastDays}}</text>天）</text>
                     </view>
                     <view class="row-block task-group-block">
