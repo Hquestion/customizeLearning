@@ -33,7 +33,7 @@
         <view class="button-block">
             <rich-button :text.sync="buttonText" @tap.user="selectClassmates" :theme.sync="buttonTheme"></rich-button>
         </view>
-        <image src="../../images/course-detail-bg.jpg"></image>
+        <image class="bg" src="../../images/course-detail-bg.jpg"></image>
     </view>
 </template>
 
@@ -177,7 +177,7 @@
         height: 140rpx;
         padding: 20rpx 0;
     }
-    image {
+    .course-detail-container .bg {
         position: fixed;
         left: 0;
         bottom: 0;

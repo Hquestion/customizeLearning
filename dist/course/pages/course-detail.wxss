@@ -45,7 +45,7 @@
         height: 140rpx;
         padding: 20rpx 0;
     }
-    image {
+    .course-detail-container .bg {
         position: fixed;
         left: 0;
         bottom: 0;
